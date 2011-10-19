@@ -1,0 +1,2 @@
+serviceClass: budgeteventplanner.client.GreetingService
+path: 85B10384A836D4F27E9B8BD5FD25D5A8.gwt.rpc

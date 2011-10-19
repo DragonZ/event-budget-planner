@@ -1,0 +1,3 @@
+# Module budgeteventplanner
+# RPC service class, partial path of RPC policy file
+budgeteventplanner.client.GreetingService, 85B10384A836D4F27E9B8BD5FD25D5A8.gwt.rpc
