@@ -1,5 +1,5 @@
-package budgeteventplanner.shared.dto.Entity;
-package budgeteventplanner.shared.dto.Nonentity;
+package budgeteventplanner.shared.dto.entity;
+package budgeteventplanner.shared.dto.nonentity;
 
 import java.util.UUID;
 
