@@ -1,6 +1,4 @@
 package budgeteventplanner.shared.dto.entity;
-package budgeteventplanner.shared.dto.nonentity;
-
 import java.util.UUID;
 
 import budgeteventplanner.shared.dto.Nonentity.Category;
@@ -17,11 +15,11 @@ public class BudgetItem
 	private double limit;
 	
 	
-	
+	/**************************************************************/
 	public static class Builder
 	{
 		private BudgetItem budgetItem;
-		
+
 		@Override
 		public Builder(String name)
 		{
@@ -38,13 +36,14 @@ public class BudgetItem
 			this.budgetItem.limit = limit;
 			return this;
 		}
-		
+		//
 		public Builder setId(int id)
 		{
 			this.budgetItem.budgetId = id;
 			return this;
 		}
+		
 	}
-	
+	/**************************************************************/
 	
 }

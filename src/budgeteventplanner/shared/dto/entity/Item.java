@@ -1,53 +1,60 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.ArrayList;
 import java.util.UUID;
+
 import budgeteventplanner.shared.dto.nonentity.Category;
+
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
 @Entity
-public class Budget
+public class Item
 {
-	private UUID budgetID;
+	private UUID itemID;
 	private Category category;
 	private String name;
-	private ArrayList<BudgetItem> budget_item_list;
-	private long eventID;
-	private long limit;
+	private Date dueDate;
+	private Vendor vendor;
+
+	
 	
 	/**************************************************************/
 	public static class Builder
 	{
-		private Budget budget;
+		private Item item;
 		
 		@Override
 		public Builder(String name)
 		{
-			this.budget.name= name;
-			this.budget.budgetID = UUID.randomUUID();
+			this.item.name = name;
+			this.itemID = UUID.randomUUID();
 		}
-				
-		public Builder set_budget_item_list(ArrayList<BudgetItem> list)
+		/*---------------------------------------------------*/
+		public Builder setVendor(Vendor vendor)
 		{
-			this.budget.budget_item_list = list;
+			this.item.vendor = vendor;
 			return this;
 		}
 		
-		public Builder setId(int id)
+		public Builder setdueDate(Date date)
 		{
-			this.budget.budgetID = id;
+			this.item.dueDate = date;
 			return this;
 		}
-		//
-		public Budget build() 
+		
+		public Builder setCategory(Category category)
 		{
-			return this.budget;
+			this.item.category = category;
+			return this;
+		}
+		/*---------------------------------------------------*/
+		public Item build() 
+		{
+			return this.item;
 		}
 		
 		
 	}
 	/**************************************************************/
-	
 	
 }
