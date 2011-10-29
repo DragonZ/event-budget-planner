@@ -10,7 +10,7 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class User
 {
-	private UUID UserID;
+	private UUID userID;
 	private String email;
 	private String name;
 	private int role;
@@ -22,32 +22,32 @@ public class User
 	/**************************************************************/
 	public static class Builder
 	{
-		private User User;
+		private User user;
 		
 		@Override
-		public Builder(String email, int role, int password)
+		public Builder(String email, int role, String password)
 		{
-			this.User.email= email;
-			this.User.role = role;
-			this.User.password = password;
-			this.UserID = UUID.randomUUID();
+			this.user.email= email;
+			this.user.role = role;
+			this.user.password = password;
+			this.user.userID = UUID.randomUUID();
 		}
 		/*---------------------------------------------------*/
 		public Builder SetCompany (String company)
 		{
-			this.User.company = company;
+			this.user.company = company;
 			return this;
 		}
 		
 		public Builder setAddress(String address)
 		{
-			this.User.address = address;
+			this.user.address = address;
 			return this;
 		}
 		
 		public Builder name(String name)
 		{
-			this.User.name= name;
+			this.user.name= name;
 			return this;
 		}
 		/*---------------------------------------------------*/
