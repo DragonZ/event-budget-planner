@@ -36,8 +36,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-
-	private final AddServiceAsync addService = GWT.create(AddService.class);
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -104,7 +103,8 @@ public class BudgetEventPlanner implements EntryPoint {
 				sendButton.setFocus(true);
 			}
 		});
-
+		
+		/*
 		class AddButtonHandler implements ClickHandler {
 			public void onClick(ClickEvent event) {
 				addService.add(Integer.parseInt(inputA.getText()), Integer.parseInt(inputB.getText()),
@@ -125,6 +125,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				);				
 			}
 		}
+		*/
 		
 		// Create a handler for the sendButton and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
@@ -194,6 +195,6 @@ public class BudgetEventPlanner implements EntryPoint {
 		nameField.addKeyUpHandler(handler);
 		
 		
-		addButton.addClickHandler(new AddButtonHandler());
+		//addButton.addClickHandler(new AddButtonHandler());
 	}
 }
