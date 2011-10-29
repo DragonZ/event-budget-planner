@@ -7,12 +7,13 @@ import budgeteventplanner.shared.dto.Nonentity.Category;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetItem item = new BudgetItem.Builder(500, new UUID()).setId(id).build();
+//		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
 @Entity
 public class BudgetItem
 {
-
+	private UUID budgetId;
 	private Category category;
+	private String name;
 	private double limit;
 	
 	
@@ -22,20 +23,24 @@ public class BudgetItem
 		private BudgetItem budgetItem;
 		
 		@Override
-		public Builder(int limit, UUID setId) {
-			this.budgetItem.limit = limit;
+		public Builder(String name)
+		{
+			this.budgetItem.name= name;
 		}
 		
-		public BudgetItem build() {
+		public BudgetItem build() 
+		{
 			return this.budgetItem;
 		}
 		
-		public Builder setLimit(int limit) {
+		public Builder setLimit(double limit)
+		{
 			this.budgetItem.limit = limit;
 			return this;
 		}
 		
-		public Builder setId(int id) {
+		public Builder setId(int id)
+		{
 			this.budgetItem.budgetId = id;
 			return this;
 		}
