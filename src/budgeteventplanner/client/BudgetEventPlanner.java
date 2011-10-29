@@ -35,6 +35,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
+	private final AddServiceAsync addService = GWT.create(AddService.class);
 	/**
 	 * This is the entry point method.
 	 */
@@ -43,12 +44,23 @@ public class BudgetEventPlanner implements EntryPoint {
 		final TextBox nameField = new TextBox();
 		nameField.setText("CS DI");
 		final Label errorLabel = new Label();
-
+		
+		
+		final TextBox inputA = new TextBox();
+		final TextBox inputB = new TextBox();
+		final Label addResult = new Label();
+		final Button addButton = new Button("Add");
+		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
+		RootPanel.get("nameFieldContainer").add(inputA);
+		RootPanel.get("nameFieldContainer").add(inputB);
+		RootPanel.get("nameFieldContainer").add(addResult);
+		RootPanel.get("nameFieldContainer").add(addButton);
+		
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
@@ -85,6 +97,27 @@ public class BudgetEventPlanner implements EntryPoint {
 			}
 		});
 
+		class AddButtonHandler implements ClickHandler {
+			public void onClick(ClickEvent event) {
+				addService.add(Integer.parseInt(inputA.getText()), Integer.parseInt(inputB.getText()),
+						new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								addResult.setText(result);
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								System.out.println("Failed!");
+								System.out.println(caught.getStackTrace());
+							}
+					
+						}
+				);				
+			}
+		}
+		
 		// Create a handler for the sendButton and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
 			/**
@@ -119,6 +152,9 @@ public class BudgetEventPlanner implements EntryPoint {
 				sendButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
+				
+
+				
 				greetingService.greetServer(textToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
@@ -148,5 +184,8 @@ public class BudgetEventPlanner implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
+		
+		
+		addButton.addClickHandler(new AddButtonHandler());
 	}
 }
