@@ -1,6 +1,7 @@
 package budgeteventplanner.client;
 
 import budgeteventplanner.shared.FieldVerifier;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,6 +14,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -41,8 +43,11 @@ public class BudgetEventPlanner implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Send");
+		final Button signButton = new Button("Sign In");
 		final TextBox nameField = new TextBox();
 		nameField.setText("CS DI");
+		final PasswordTextBox pwField = new PasswordTextBox();
+		pwField.setText("");
 		final Label errorLabel = new Label();
 		
 		
@@ -53,6 +58,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
+		signButton.addStyleName("signButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
@@ -62,6 +68,8 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(addButton);
 		
 		RootPanel.get("nameFieldContainer").add(nameField);
+		RootPanel.get("pwFieldContainer").add(pwField);
+		RootPanel.get("signButtonContainer").add(signButton);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
