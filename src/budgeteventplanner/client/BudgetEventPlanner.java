@@ -50,10 +50,10 @@ public class BudgetEventPlanner implements EntryPoint {
 		final Label errorLabel = new Label();
 		
 		
-		final TextBox inputA = new TextBox();
-		final TextBox inputB = new TextBox();
-		final Label addResult = new Label();
-		final Button addButton = new Button("Add");
+//		final TextBox inputA = new TextBox();
+//		final TextBox inputB = new TextBox();
+//		final Label addResult = new Label();
+//		final Button addButton = new Button("Add");
 		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
@@ -61,10 +61,10 @@ public class BudgetEventPlanner implements EntryPoint {
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(inputA);
-		RootPanel.get("nameFieldContainer").add(inputB);
-		RootPanel.get("nameFieldContainer").add(addResult);
-		RootPanel.get("nameFieldContainer").add(addButton);
+		//RootPanel.get("nameFieldContainer").add(inputA);
+		//RootPanel.get("nameFieldContainer").add(inputB);
+		//RootPanel.get("nameFieldContainer").add(addResult);
+		//RootPanel.get("nameFieldContainer").add(addButton);
 		
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("pwFieldContainer").add(pwField);
