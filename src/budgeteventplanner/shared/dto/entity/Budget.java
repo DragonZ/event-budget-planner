@@ -2,7 +2,7 @@ package budgeteventplanner.shared.dto.entity;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import budgeteventplanner.shared.dto.nonentity.Category;
+import budgeteventplanner.shared.dto.entity.Category;
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();

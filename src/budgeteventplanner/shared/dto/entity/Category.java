@@ -1,4 +1,4 @@
-package budgeteventplanner.shared.dto.Nonentity;
+package budgeteventplanner.shared.dto.entity;
 
 public class Category
 {

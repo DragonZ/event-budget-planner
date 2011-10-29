@@ -1,56 +1,49 @@
 package budgeteventplanner.shared.dto.entity;
 
 import java.util.UUID;
-
 import budgeteventplanner.shared.dto.entity.Category;
-
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
+//		BudgetService Service = (new BudgetService).Builder(......).setId(id).build();
 @Entity
-public class Item
+public class Service
 {
-	private UUID itemID;
-	private Category category;
 	private String name;
-	private Date dueDate;
-	private Vendor vendor;
-
+	private Category category;
+	private Double price;
 	
 	
 	/**************************************************************/
 	public static class Builder
 	{
-		private Item item;
+		private Service Service;
 		
 		@Override
-		public Builder(String name)
+		public Builder()
 		{
-			this.item.name = name;
-			this.itemID = UUID.randomUUID();
 		}
 		/*---------------------------------------------------*/
-		public Builder setVendor(Vendor vendor)
+		public Builder SetName (String name)
 		{
-			this.item.vendor = vendor;
+			this.Service.name = name;
 			return this;
 		}
 		
-		public Builder setdueDate(Date date)
+		public Builder setCategory (Category category)
 		{
-			this.item.dueDate = date;
+			this.Service.category = category;
 			return this;
 		}
 		
-		public Builder setCategory(Category category)
+		public Builder setPrice(Double price)
 		{
-			this.item.category = category;
+			this.Service.price= price;
 			return this;
 		}
 		/*---------------------------------------------------*/
-		public Item build() 
+		public Service build() 
 		{
-			return this.item;
+			return this.Service;
 		}
 		
 		
