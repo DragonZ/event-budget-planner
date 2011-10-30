@@ -29,57 +29,59 @@ public class Event
 	/**************************************************************/
 	public static class Builder
 	{
-		private Event item;
+		private Event event;
 		/*------------------------------------------------------*/
 		public Builder(Event event) {
-			this.item = (Event) event.clone();
+			this.event = (Event) event.clone();
 		}
 		/*------------------------------------------------------*/
 		
 		@Override
 		public Builder(String name, Organizer organizer, int visibility)
 		{
-			this.item.name = name;
-			this.item.organizer = organizer;
-			this.item.visibility = visibility;
-			this.item.eventID= UUID.randomUUID();
-			this.item.itemList = Lists.newArrayList();
-			this.item.attendeeList = Lists.newArrayList();
+			this.event.name = name;
+			this.event.organizer = organizer;
+			this.event.visibility = visibility;
+			this.event.eventID= UUID.randomUUID();
+			this.event.itemList = Lists.newArrayList();
+			this.event.attendeeList = Lists.newArrayList();
 
 		}
 		/*---------------------------------------------------*/
-		public Builder addItem(Item item)
-		{
-			this.item.itemList.add(item);
-			return this;
-		}
 
-		public Builder addAttendee(Attendee attendee)
-		{
-			this.item.attendeeList.add(attendee);
-			return this;
-		}
 		
 		public Builder setStartTime (Date startTime)
 		{
-			this.item.startTime= startTime;
+			this.event.startTime= startTime;
 			return this;
 		}
 		public Builder setEndTime (Date endTime)
 		{
-			this.item.endTime= endTime;
+			this.event.endTime= endTime;
 			return this;
 		}
 		public Builder setLocation (Address location)
 		{
-			this.item.location= location;
+			this.event.location= location;
 			return this;
 		}
 		
 		/*---------------------------------------------------*/
 		public Event build() 
 		{
-			return this.item;
+			return this.event;
+		}
+		/*---------------------------------------------------*/
+		public Builder addItem(Item event)
+		{
+			this.event.itemList.add(event);
+			return this;
+		}
+
+		public Builder addAttendee(Attendee attendee)
+		{
+			this.event.attendeeList.add(attendee);
+			return this;
 		}
 	}
 	/**************************************************************/

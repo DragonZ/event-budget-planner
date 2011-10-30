@@ -16,10 +16,6 @@ public class Organizer
 	private List<String> eventList;
 	private List<String> contactList;
 	private String name;
-
-	
-	
-	
 	
 	/**************************************************************/
 	public static class Builder
@@ -39,17 +35,7 @@ public class Organizer
 			this.organizer.contactList.contactList = Lists.newArrayList();
 		}
 		/*---------------------------------------------------*/
-		public Builder addEvent(String event)
-		{
-			this.organizer.eventList.add(event);
-			return this;
-		}
 
-		public Builder addContact(String contact)
-		{
-			this.organizer.contacttList.add(contact);
-			return this;
-		}
 		
 		public Builder setName (String name)
 		{
@@ -61,11 +47,23 @@ public class Organizer
 		{
 			return this.organizer;
 		}
+		/*--------------------------------------------------------*/
+		public Builder addEvent(String event)
+		{
+			this.organizer.eventList.add(event);
+			return this;
+		}
+
+		public Builder addContact(String contact)
+		{
+			this.organizer.contacttList.add(contact);
+			return this;
+		}
 	}
 	/**************************************************************/
 	
 	
-		// Somewhere else we may call organizer = new Organizer.Builder(orgainzer).addEvent("aaa").build();
+		// Somewhere else we may call organizer = new (Organizer.Builder)(orgainzer).addEvent("aaa").build();
 //		new Organizer.Builder(orgainzer)
 //			.addEvent("aaa")
 //			.addEvent("aaa")
