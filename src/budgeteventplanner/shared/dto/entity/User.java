@@ -23,7 +23,11 @@ public class User
 	public static class Builder
 	{
 		private User user;
-		
+		/*------------------------------------------------------*/
+		public Builder(User user) {
+			this.user = (User) user.clone();
+		}
+		/*------------------------------------------------------*/
 		@Override
 		public Builder(String email, int role, String password)
 		{

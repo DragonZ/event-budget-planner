@@ -19,7 +19,11 @@ public class BudgetItem
 	public static class Builder
 	{
 		private BudgetItem budgetItem;
-
+		/*------------------------------------------------------*/
+		public Builder(BudgetItem budgetItem) {
+			this.budgetItem = (BudgetItem) budgetItem.clone();
+		}
+		/*------------------------------------------------------*/
 		@Override
 		public Builder(String name)
 		{

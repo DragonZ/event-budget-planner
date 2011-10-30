@@ -22,7 +22,11 @@ public class Item
 	public static class Builder
 	{
 		private Item item;
-		
+		/*------------------------------------------------------*/
+		public Builder(Item item) {
+			this.item = (Item) item.clone();
+		}
+		/*------------------------------------------------------*/
 		@Override
 		public Builder(String name)
 		{

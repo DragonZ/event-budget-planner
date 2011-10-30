@@ -18,7 +18,11 @@ public class Attendee
 	public static class Builder
 	{
 		private Attendee attendee;
-		
+		/*------------------------------------------------------*/
+		public Builder(Attendee attendee) {
+			this.attendee = (Attendee) attendee.clone();
+		}
+		/*------------------------------------------------------*/
 		@Override
 		public Builder(String name, String email)
 		{

@@ -23,7 +23,11 @@ public class Address
 	public static class Builder
 	{
 		private Address address;
-		
+		/*------------------------------------------------------*/
+		public Builder(Address address) {
+			this.address = (Address) address.clone();
+		}
+		/*------------------------------------------------------*/
 		@Override
 		public Builder(String firstName, String lastName)
 		{
@@ -66,11 +70,11 @@ public class Address
 		}
 	}
 	/**************************************************************/
-	public boolean validate()
+	public static boolean validate()
 	{
-		
+		return false;
 	}
-	public String toString()
+	public static String toString()
 	{
 		return firstName+" "+lastName+" "+street+" "+city+" "+state+" "+zipcode+" "+country;
 	}
