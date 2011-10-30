@@ -1,6 +1,5 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.UUID;
 import budgeteventplanner.shared.dto.entity.Category;
 import com.googlecode.objectify.annotation.Entity;
 
@@ -18,7 +17,6 @@ public class Service
 	{
 		private Service Service;
 		
-		@Override
 		public Builder()
 		{
 		}
@@ -45,9 +43,18 @@ public class Service
 		{
 			return this.Service;
 		}
-		
-		
 	}
 	/**************************************************************/
-	
+	public String name()
+	{
+		return name;
+	}
+	public Category category()
+	{
+		return category;
+	}
+	public Double price()
+	{
+		return price;
+	}
 }

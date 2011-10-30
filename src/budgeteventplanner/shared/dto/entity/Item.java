@@ -1,5 +1,6 @@
 package budgeteventplanner.shared.dto.entity;
 
+import java.util.Date;
 import java.util.UUID;
 
 import budgeteventplanner.shared.dto.entity.Category;
@@ -24,14 +25,19 @@ public class Item
 		private Item item;
 		/*------------------------------------------------------*/
 		public Builder(Item item) {
-			this.item = (Item) item.clone();
+			try {
+				this.item = (Item) item.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		@Override
+
 		public Builder(String name)
 		{
 			this.item.name = name;
-			this.itemID = UUID.randomUUID();
+			this.item.itemID = UUID.randomUUID();
 		}
 		/*---------------------------------------------------*/
 		public Builder setVendor(Vendor vendor)
@@ -56,9 +62,26 @@ public class Item
 		{
 			return this.item;
 		}
-		
-		
 	}
 	/**************************************************************/
-	
+	public UUID itemID()
+	{
+		return itemID;
+	}
+	public Category category()
+	{
+		return category;
+	}
+	public String name()
+	{
+		return name;
+	}
+	public Date dueDate()
+	{
+		return dueDate;
+	}
+	public Vendor vendor()
+	{
+		return vendor;
+	}
 }

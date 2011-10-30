@@ -1,7 +1,7 @@
 package budgeteventplanner.shared.dto.entity;
 import java.util.UUID;
 
-import budgeteventplanner.shared.dto.Nonentity.Category;
+import budgeteventplanner.shared.dto.entity.Category;
 
 import com.googlecode.objectify.annotation.Entity;
 
@@ -21,19 +21,21 @@ public class BudgetItem
 		private BudgetItem budgetItem;
 		/*------------------------------------------------------*/
 		public Builder(BudgetItem budgetItem) {
-			this.budgetItem = (BudgetItem) budgetItem.clone();
+			try {
+				this.budgetItem = (BudgetItem) budgetItem.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		@Override
+
 		public Builder(String name)
 		{
 			this.budgetItem.name= name;
 		}
 		
-		public BudgetItem build() 
-		{
-			return this.budgetItem;
-		}
+
 		
 		public Builder setLimit(double limit)
 		{
@@ -41,13 +43,27 @@ public class BudgetItem
 			return this;
 		}
 		//
-		public Builder setId(int id)
+		public BudgetItem build() 
 		{
-			this.budgetItem.budgetId = id;
-			return this;
+			return this.budgetItem;
 		}
-		
 	}
-	/**************************************************************/
+	/**************** Getter *************************/
+	public UUID budgetId()
+	{
+		return budgetId;
+	}
+	public Category category()
+	{
+		return category;
+	}
+	public String name()
+	{
+		return name;
+	}
+	public double limit()
+	{
+		return limit;
+	}
 	
 }

@@ -1,6 +1,6 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public class Event
 	private String name;
 	private Organizer organizer;
 	private Date startTime;
-	private Date EndTime;
+	private Date endTime;
 	private Address location;
 	private int visibility;
 	private List<Item> itemList;
@@ -32,27 +32,30 @@ public class Event
 		private Event event;
 		/*------------------------------------------------------*/
 		public Builder(Event event) {
-			this.event = (Event) event.clone();
+			try {
+				this.event = (Event) event.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		
-		@Override
+
 		public Builder(String name, Organizer organizer, int visibility)
 		{
 			this.event.name = name;
 			this.event.organizer = organizer;
 			this.event.visibility = visibility;
-			this.event.eventID= UUID.randomUUID();
+			this.event.eventID = UUID.randomUUID();
 			this.event.itemList = Lists.newArrayList();
 			this.event.attendeeList = Lists.newArrayList();
-
 		}
 		/*---------------------------------------------------*/
 
 		
 		public Builder setStartTime (Date startTime)
 		{
-			this.event.startTime= startTime;
+			this.event.startTime = startTime;
 			return this;
 		}
 		public Builder setEndTime (Date endTime)
@@ -86,15 +89,49 @@ public class Event
 	}
 	/**************************************************************/
 	
-	public List<Item> getItemList()
+	public List<Item> itemList()
 	{
 		return itemList;
 	}
 	
-	public List<Attendee> getAttendeeList()
+	public List<Attendee> attendeeList()
 	{
 		return attendeeList;
 	}
 	
+	public UUID eventID()
+	{
+		return eventID;
+	}
+	
+	public String name()
+	{
+		return name;
+	}
+	
+	public Organizer organizer()
+	{
+		return organizer;
+	}
+	
+	public Date startTime()
+	{
+		return startTime;
+	}
+	
+	public Date endTime()
+	{
+		return endTime;
+	}
+	
+	public Address location()
+	{
+		return location;
+	}
+	
+	public int visibility()
+	{
+		return visibility;
+	}
 	
 }

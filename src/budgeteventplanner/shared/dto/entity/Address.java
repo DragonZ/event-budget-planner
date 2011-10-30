@@ -1,7 +1,5 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.UUID;
-import budgeteventplanner.shared.dto.entity.Category;
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetAttendee Address = (new BudgetAttendee).Builder(......).setId(id).build();
@@ -25,10 +23,15 @@ public class Address
 		private Address address;
 		/*------------------------------------------------------*/
 		public Builder(Address address) {
-			this.address = (Address) address.clone();
+			try {
+				this.address = (Address) address.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		@Override
+
 		public Builder(String firstName, String lastName)
 		{
 			this.address.firstName = firstName;
@@ -70,11 +73,11 @@ public class Address
 		}
 	}
 	/**************************************************************/
-	public static boolean validate()
+	public boolean validate()
 	{
 		return false;
 	}
-	public static String toString()
+	public String toString()
 	{
 		return firstName+" "+lastName+" "+street+" "+city+" "+state+" "+zipcode+" "+country;
 	}

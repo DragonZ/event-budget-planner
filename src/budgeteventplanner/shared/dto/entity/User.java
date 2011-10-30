@@ -2,8 +2,6 @@ package budgeteventplanner.shared.dto.entity;
 
 import java.util.UUID;
 
-import budgeteventplanner.shared.dto.entity.Category;
-
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetUser User = (new BudgetUser).Builder(......).setId(id).build();
@@ -25,10 +23,15 @@ public class User
 		private User user;
 		/*------------------------------------------------------*/
 		public Builder(User user) {
-			this.user = (User) user.clone();
+			try {
+				this.user = (User) user.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		@Override
+
 		public Builder(String email, int role, String password)
 		{
 			this.user.email= email;
@@ -57,11 +60,37 @@ public class User
 		/*---------------------------------------------------*/
 		public User build() 
 		{
-			return this.User;
+			return this.user;
 		}
-		
-		
 	}
 	/**************************************************************/
+	public UUID userID()
+	{
+		return userID;
+	}
+	public String email()
+	{
+		return email;
+	}
+	public String name()
+	{
+		return name;
+	}
+	public int role()
+	{
+		return role;
+	}
+	public String password()
+	{
+		return password;
+	}
+	public String company()
+	{
+		return company;
+	}
+	public String address()
+	{
+		return address;
+	}
 	
 }

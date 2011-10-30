@@ -1,6 +1,5 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,16 +22,20 @@ public class Organizer
 		private Organizer organizer;
 		/*------------------------------------------------------*/
 		public Builder(Organizer orgainzer) {
-			this.organizer = (Organizer) orgainzer.clone();
+			try {
+				this.organizer = (Organizer) orgainzer.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		/*------------------------------------------------------*/
-		
-		@Override
+
 		public Builder(String firstName, String lastName)
 		{
 			this.organizer.organizerID= UUID.randomUUID();
-			this.organizer.contactList.eventList = Lists.newArrayList(); 
-			this.organizer.contactList.contactList = Lists.newArrayList();
+			this.organizer.eventList = Lists.newArrayList(); 
+			this.organizer.contactList = Lists.newArrayList();
 		}
 		/*---------------------------------------------------*/
 
@@ -56,7 +59,7 @@ public class Organizer
 
 		public Builder addContact(String contact)
 		{
-			this.organizer.contacttList.add(contact);
+			this.organizer.contactList.add(contact);
 			return this;
 		}
 	}
@@ -74,13 +77,19 @@ public class Organizer
 //			.addEvent("aaa")
 //			.build();
 
-	public List<String> getContactList()
+	public List<String> contactList()
 	{
-		return contactList;
-		
-		
+		return contactList;	
 	}
 	
+	public UUID organizerID()
+	{
+		return organizerID;	
+	}
 	
+	public String name()
+	{
+		return name;	
+	}
 	
 }

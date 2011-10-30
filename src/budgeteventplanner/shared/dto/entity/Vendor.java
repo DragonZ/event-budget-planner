@@ -1,7 +1,7 @@
 package budgeteventplanner.shared.dto.entity;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import java.util.UUID;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
@@ -30,13 +30,18 @@ public class Vendor
 		/*------------------------------------------------------*/
 		public Builder(Vendor event) 
 		{
-			this.vendor = (Vendor) event.clone();
-			this.organizer.contactList.itemList = Lists.newArrayList(); 
-			this.organizer.contactList.serviceList = Lists.newArrayList();
+			try {
+				this.vendor = (Vendor) event.clone();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.vendor.itemList = Lists.newArrayList(); 
+			this.vendor.serviceList = Lists.newArrayList();
 		}
 		/*------------------------------------------------------*/
 		
-		@Override
+
 		public Builder(String name)
 		{
 			this.vendor.name = name;
@@ -70,26 +75,36 @@ public class Vendor
 		}
 
 	}
-	/**************************************************************/
 	
-	public List<Item> getItemList()
+	/************** Getters ********************************/
+	public UUID vendorID()
+	{
+		return vendorID;
+	}
+	
+	public Address location()
+	{
+		return location;
+	}
+	
+	public List<Item> itemList()
 	{
 		return itemList;
 	}
 	
-	public List<Item> getServiceList()
+	public List<Category> categoryList()
 	{
-		return serviceList;
+		return categoryList;
 	}
 	
-	public String getName()
+	public String name()
 	{
 		return name;
 	}
-	
-	public List<Attendee> getAttendeeList()
+
+	public List<Service> serviceList()
 	{
-		return attendeeList;
+		return serviceList;
 	}
 	
 	
