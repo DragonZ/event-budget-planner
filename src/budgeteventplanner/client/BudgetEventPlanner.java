@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -27,9 +28,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
 	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
+	private static final String SERVER_ERROR = "Please enter at least four characters.";
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
@@ -41,41 +40,51 @@ public class BudgetEventPlanner implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		
+		final Button XiaYuanButton = new Button("XiaYuan");
+		final Button ZhenLongButton = new Button("ZhenLong");
+		final Button XuXuanButton = new Button("XuXuan");
+		final Button XuXuan2Button = new Button("XuXuan2");
+		XiaYuanButton.addStyleName("XiaYuanButton");
+		ZhenLongButton.addStyleName("ZhenLongButton");
+		XuXuanButton.addStyleName("XuXuanButton");
+		XuXuan2Button.addStyleName("XuXuan2Button");
+		RootPanel.get("XiaYuanButtonContainer").add(XiaYuanButton);
+		RootPanel.get("ZhenLongButtonContainer").add(ZhenLongButton);
+		RootPanel.get("XuXuanButtonContainer").add(XuXuanButton);
+		RootPanel.get("XuXuan2ButtonContainer").add(XuXuan2Button);
+		
 		final Button sendButton = new Button("Send");
-		final Button signButton = new Button("Sign In");
+		final Button loginButton = new Button("Login");
+		loginButton.setWidth("80px");
+		final Button signButton = new Button("Sign Up");
+		signButton.setWidth("80px");
 		final TextBox nameField = new TextBox();
-		nameField.setText("CS DI");
+		nameField.setText("");
+		nameField.setWidth("210px");
 		final PasswordTextBox pwField = new PasswordTextBox();
 		pwField.setText("");
+		pwField.setWidth("210px");
 		final Label errorLabel = new Label();
-		
-		
-//		final TextBox inputA = new TextBox();
-//		final TextBox inputB = new TextBox();
-//		final Label addResult = new Label();
-//		final Button addButton = new Button("Add");
 		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
+		loginButton.addStyleName("loginButton");
 		signButton.addStyleName("signButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
-		//RootPanel.get("nameFieldContainer").add(inputA);
-		//RootPanel.get("nameFieldContainer").add(inputB);
-		//RootPanel.get("nameFieldContainer").add(addResult);
-		//RootPanel.get("nameFieldContainer").add(addButton);
-		
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("pwFieldContainer").add(pwField);
+		RootPanel.get("loginButtonContainer").add(loginButton);
 		RootPanel.get("signButtonContainer").add(signButton);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
+		//RootPanel.get("sendButtonContainer").add(sendButton);
+		//RootPanel.get("errorLabelContainer").add(errorLabel);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
 		nameField.selectAll();
-
+		
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -94,15 +103,222 @@ public class BudgetEventPlanner implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-
+		
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
+				loginButton.setEnabled(true);
+				signButton.setEnabled(true);
+				nameField.setFocus(true);
+				nameField.setText("");
+				pwField.setText("");
+				RootPanel.get("test").setVisible(true);
+				RootPanel.get("main").setVisible(false);
 			}
 		});
+		
+		XiaYuanButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("XiaYuan").setVisible(true);
+				RootPanel.get("main").setVisible(false);
+			}
+		});
+		
+		ZhenLongButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("ZhenLong").setVisible(true);
+				RootPanel.get("main").setVisible(false);
+			}
+		});
+		
+		XuXuanButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("XuXuan").setVisible(true);
+				RootPanel.get("main").setVisible(false);
+			}
+		});
+		
+		XuXuan2Button.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("XuXuan2").setVisible(true);
+				RootPanel.get("main").setVisible(false);
+			}
+		});
+		
+		// Create the popup signup box
+		final DialogBox signupBox = new DialogBox();
+		signupBox.setText("Sign Up");
+		signupBox.setAnimationEnabled(true);
+		final TextBox emailAdd = new TextBox();
+		emailAdd.setWidth("200px");
+		final PasswordTextBox first_pw = new PasswordTextBox();
+		first_pw.setWidth("200px");
+		final PasswordTextBox second_pw = new PasswordTextBox();
+		second_pw.setWidth("200px");
+		final TextArea address = new TextArea();
+		address.setSize("200px", "50px");
+		final TextBox city = new TextBox();
+		city.setWidth("120px");
+		final TextBox state = new TextBox();
+		state.setMaxLength(2);
+		state.setWidth("40px");
+		final TextBox zipCode = new TextBox();
+		zipCode.setWidth("60px");
+		zipCode.setMaxLength(5);
+		final Button submitButton = new Button("Submit");
+		submitButton.getElement().setId("submitButton");
+		final Button cancelButton = new Button("Cancel");
+		cancelButton.getElement().setId("cancelButton");
+		final Label textToServerLabel_su = new Label();
+		final HTML serverResponseLabel_su = new HTML();
+		VerticalPanel signupVPanel = new VerticalPanel();
+		signupVPanel.addStyleName("signupVPanel");
+		signupVPanel.add(new HTML("<b>Username:</b>"));
+		signupVPanel.add(emailAdd);
+		signupVPanel.add(textToServerLabel_su);
+		signupVPanel.add(new HTML("<br><b>Password:</b>"));
+		signupVPanel.add(serverResponseLabel_su);
+		signupVPanel.add(first_pw);
+		signupVPanel.add(new HTML("<br><b>Retype Password:</b>"));
+		signupVPanel.add(second_pw);
+		signupVPanel.add(new HTML("<br><b>Address:</b>"));
+		signupVPanel.add(address);
+		signupVPanel.add(new HTML("<br><b>City:</b>"));
+		signupVPanel.add(city);
+		signupVPanel.add(new HTML("<br><b>State:</b>"));
+		signupVPanel.add(state);
+		signupVPanel.add(new HTML("<br><b>Zip Code:</b>"));
+		signupVPanel.add(zipCode);
+		signupVPanel.add(new HTML(""));
+		signupVPanel.add(new HTML(""));
+		signupVPanel.add(new HTML(""));
+		signupVPanel.add(new HTML(""));
+		signupVPanel.add(new HTML(""));	
+		signupVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		signupVPanel.add(submitButton);
+		signupVPanel.add(cancelButton);
+		signupVPanel.setSpacing(5);
+		signupBox.setWidget(signupVPanel);
+		
+		//Add a handler to open the signup dialog
+		signButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				nameField.setText("");
+				pwField.setText("");
+				signupBox.show();
+				signupBox.center();
+				emailAdd.setFocus(true);
+				loginButton.setEnabled(false);
+				signButton.setEnabled(false);
+			}
+		});
+		
+		final DialogBox signedBox = new DialogBox();
+		signedBox.setText("Success!");
+		signedBox.setAnimationEnabled(true);
+		final Button backButton = new Button("Back");
+		backButton.getElement().setId("backButton");
+		VerticalPanel successVPanel = new VerticalPanel();
+		successVPanel.addStyleName("successVPanel");
+		successVPanel.add(new HTML("<b>You have successfully signed up.</b>"));
+		successVPanel.add(new HTML("<b>Welcome to Budget Event Manager!</b>"));
+		successVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		successVPanel.add(backButton);
+		signedBox.setWidget(successVPanel);
+
+		final HTML errorSign = new HTML("");
+		
+		final DialogBox errorBox = new DialogBox();
+		errorBox.setText("Error!");
+		errorBox.setAnimationEnabled(true);
+		final Button okButton = new Button("OK");
+		backButton.getElement().setId("okButton");
+		VerticalPanel errorVPanel = new VerticalPanel();
+		errorVPanel.addStyleName("errorVPanel");
+		errorVPanel.add(errorSign);
+		errorVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		errorVPanel.add(okButton);
+		errorBox.setWidget(errorVPanel);
+		
+		// Add a handler to submit the information
+		submitButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(emailAdd.getText().isEmpty()){
+					errorSign.setText("Invalid username");
+				}
+				else if(first_pw.getText().isEmpty()){
+					errorSign.setText("Invalid password");
+				}
+				else if(!first_pw.getText().equals(second_pw.getText())){
+					errorSign.setText("Re-typed password is not correct");
+				}
+				else if(address.getText().isEmpty()){
+					errorSign.setText("Invalid address");
+				}
+				else if(city.getText().isEmpty()){
+					errorSign.setText("Invalid city");
+				}
+				else if(state.getText().length()<2){
+					errorSign.setText("Invalid state");
+				}
+				else if(zipCode.getText().length()<5){
+					errorSign.setText("Invalid zipcode");
+				}
+				
+				if(errorSign.getText().isEmpty()){					
+					signupBox.hide();
+					//loginButton.setEnabled(true);
+					//loginButton.setFocus(true);
+					//signButton.setEnabled(true);
+					emailAdd.setText("");
+					first_pw.setText("");
+					second_pw.setText("");
+					address.setText("");
+					city.setText("");
+					state.setText("");
+					zipCode.setText("");
+				
+					signedBox.show();
+					signedBox.center();
+					backButton.setFocus(true);
+				}
+				else{
+					errorBox.show();
+					errorBox.center();
+					okButton.setFocus(true);
+				}
+			}
+		});
+
+		//Add a handler to cancel the sign up
+		cancelButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				signupBox.hide();
+				loginButton.setEnabled(true);
+				signButton.setEnabled(true);
+				nameField.setFocus(true);
+			}
+		});	
+		
+		//Add a handler to back to the index
+		backButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				signedBox.hide();
+				loginButton.setEnabled(true);
+				signButton.setEnabled(true);
+				nameField.setFocus(true);
+			}
+		});	
+		
+		//Add a handler to back to the sign up
+		okButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				errorSign.setText("");
+				errorBox.hide();
+				emailAdd.setFocus(true);
+			}
+		});	
 		
 		/*
 		class AddButtonHandler implements ClickHandler {
@@ -152,17 +368,17 @@ public class BudgetEventPlanner implements EntryPoint {
 				// First, we validate the input.
 				errorLabel.setText("");
 				String textToServer = nameField.getText();
-				if (!FieldVerifier.isValidName(textToServer)) {
-					errorLabel.setText("Please enter at least four characters");
-					return;
-				}
+				//String pwToServer = pwField.getText();
+//				if (!FieldVerifier.isValidName(textToServer)) {
+//					errorLabel.setText("Please enter at least four characters");
+//					return;
+//				}
 
 				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
+				loginButton.setEnabled(false);
+				signButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-				
-
 				
 				greetingService.greetServer(textToServer,
 						new AsyncCallback<String>() {
@@ -191,9 +407,9 @@ public class BudgetEventPlanner implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
-		sendButton.addClickHandler(handler);
+		//sendButton.addClickHandler(handler);
+		loginButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
-		
 		
 		//addButton.addClickHandler(new AddButtonHandler());
 	}
