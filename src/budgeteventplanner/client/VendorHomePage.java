@@ -92,7 +92,7 @@ public class VendorHomePage implements EntryPoint {
 		initializeServiceTable();
 		//event table
 
-		eventFolders.setWidth("50px"); //TODO SIZE
+		eventFolders.setWidth("150px"); //TODO SIZE
 		eventFolders.addItem(pendingEvent);
 		eventFolders.addItem(acceptedEvent);
 		eventFolders.addItem(ignoredEvent);
@@ -117,7 +117,7 @@ public class VendorHomePage implements EntryPoint {
 		addPanel.setSize("100%", "100%");
 		category.setSize("30%", "100%");
 		service.setSize("40%", "100%");
-		addService.setSize("20%", "100%");
+		//addService.setSize("20%", "100%");
 		
 		tab.add(vendorPage, "Vendor");
 		tab.add(vendorService, "Service");
