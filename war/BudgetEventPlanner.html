@@ -45,31 +45,69 @@
       </div>
     </noscript>
 
-    <h1>Budget Event Manager</h1>
+	<script language="javascript"> 
+	function toggle() {
+		var ele = document.getElementById("test");
+		var text = document.getElementById("displaytext");
+		var index = document.getElementById("main");
+		if(ele.style.display == "block") {
+    			ele.style.display = "none";
+    			index.style.display = "block";
+			text.innerHTML = "show test";
+  		}
+		else {
+			ele.style.display = "block";
+			index.style.display = "none";
+			text.innerHTML = "show main";
+		}
+	} 
+	</script>
 
-    <table align="center">
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Username:</td>        
-      </tr>
-      <tr>
-        <td width="250px" id="nameFieldContainer"></td>
-      </tr>
-      <tr>
-      	<td colspan="2" style="font-weight:bold;">Password:</td>
-      </tr>
-      <tr>
-      	<td width="250px" id="pwFieldContainer"></td>
-      </tr>
-      <tr>
-		<td></td><td id="loginButtonContainer"></td>
-      </tr>
-      <tr>
-      	<td align="right">Need account?</td>
-        <td id="signButtonContainer"></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
-      </tr>
-    </table>
+	<div id="main">
+    	<h1>Budget Event Manager</h1>
+  	  	<table align="center">
+  	  	<tr>
+  	  		<td id="XiaYuanButtonContainer"></td>
+  	  	</tr>
+  	  	<tr>
+  	  		<td id="ZhenLongButtonContainer"></td>
+  	  	</tr>
+  	  		<td id="XuXuanButtonContainer"></td>
+  	  	<tr>
+  	  		<td id="XuXuan2ButtonContainer"></td>
+  	  	</tr>
+      	<tr>
+        	<td colspan="2" style="font-weight:bold;">Username:(At least 4 characters)</td>        
+      	</tr>
+      	<tr>
+        	<td width="300px" id="nameFieldContainer"></td>
+      	</tr>
+      	<tr>
+      		<td colspan="2" style="font-weight:bold;">Password:</td>
+      	</tr>
+      	<tr>
+      		<td width="300px" id="pwFieldContainer"></td>
+      	</tr>
+      	<tr>
+			<td></td><td id="loginButtonContainer" href="javascript:toggle();"></td>
+      	</tr>
+      	<tr>
+      		<td align="right">Need an account?</td>
+        	<td id="signButtonContainer"></td>
+      	</tr>
+    	</table>
+    </div>
+    <div id="XiaYuan" style="display: none">
+    	<h1>Xia Yuan's Page</h1>
+    </div>
+    <div id="ZhenLong" style="display: none">
+    	<h1>ZhenLong's Page</h1>
+    </div>
+    <div id="XuXuan" style="display: none">
+    	<h1>XuXuan's Page</h1>
+    </div>
+    <div id="XuXuan2" style="display: none">
+    	<h1>XuXuan's Second Page</h1>
+    </div>
   </body>
 </html>
