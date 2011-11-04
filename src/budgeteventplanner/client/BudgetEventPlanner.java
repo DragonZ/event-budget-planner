@@ -49,10 +49,10 @@ public class BudgetEventPlanner implements EntryPoint {
 		ZhenLongButton.addStyleName("ZhenLongButton");
 		XuXuanButton.addStyleName("XuXuanButton");
 		XuXuan2Button.addStyleName("XuXuan2Button");
-		RootPanel.get("XiaYuanButtonContainer").add(XiaYuanButton);
-		RootPanel.get("ZhenLongButtonContainer").add(ZhenLongButton);
-		RootPanel.get("XuXuanButtonContainer").add(XuXuanButton);
-		RootPanel.get("XuXuan2ButtonContainer").add(XuXuan2Button);
+		//RootPanel.get("XiaYuanButtonContainer").add(XiaYuanButton);
+		//RootPanel.get("ZhenLongButtonContainer").add(ZhenLongButton);
+		//RootPanel.get("XuXuanButtonContainer").add(XuXuanButton);
+		//RootPanel.get("XuXuan2ButtonContainer").add(XuXuan2Button);
 		
 		final Button sendButton = new Button("Send");
 		final Button loginButton = new Button("Login");
@@ -111,10 +111,10 @@ public class BudgetEventPlanner implements EntryPoint {
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
+				RootPanel.get(nameField.getText()).setVisible(true);
+				RootPanel.get("main").setVisible(false);
 				nameField.setText("");
 				pwField.setText("");
-				RootPanel.get("test").setVisible(true);
-				RootPanel.get("main").setVisible(false);
 			}
 		});
 		
