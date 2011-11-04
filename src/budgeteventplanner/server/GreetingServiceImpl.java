@@ -1,3 +1,7 @@
+/*
+ * Xuan Xu created public Integer sendEmail(String name, String email);
+ * Xuan Xu created public String getAttendeeInfo(String AttendeeName);
+ */
 package budgeteventplanner.server;
 
 import java.io.UnsupportedEncodingException;
