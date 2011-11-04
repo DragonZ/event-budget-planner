@@ -130,6 +130,7 @@ public class AttendeeRegistration implements EntryPoint {
 							
 							dialogBox.center();
 							closeButton.setFocus(true);
+							//RootPanel.get("attendeeManager").setVisible(true);
 							
 						}
 						
