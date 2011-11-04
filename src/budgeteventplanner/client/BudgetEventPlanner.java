@@ -1,7 +1,5 @@
 package budgeteventplanner.client;
 
-import budgeteventplanner.shared.FieldVerifier;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,19 +39,6 @@ public class BudgetEventPlanner implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		
-		final Button XiaYuanButton = new Button("XiaYuan");
-		final Button ZhenLongButton = new Button("ZhenLong");
-		final Button XuXuanButton = new Button("XuXuan");
-		final Button XuXuan2Button = new Button("XuXuan2");
-		XiaYuanButton.addStyleName("XiaYuanButton");
-		ZhenLongButton.addStyleName("ZhenLongButton");
-		XuXuanButton.addStyleName("XuXuanButton");
-		XuXuan2Button.addStyleName("XuXuan2Button");
-		//RootPanel.get("XiaYuanButtonContainer").add(XiaYuanButton);
-		//RootPanel.get("ZhenLongButtonContainer").add(ZhenLongButton);
-		//RootPanel.get("XuXuanButtonContainer").add(XuXuanButton);
-		//RootPanel.get("XuXuan2ButtonContainer").add(XuXuan2Button);
-		
 		final Button sendButton = new Button("Send");
 		final Button loginButton = new Button("Login");
 		loginButton.setWidth("80px");
@@ -78,8 +63,6 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("pwFieldContainer").add(pwField);
 		RootPanel.get("loginButtonContainer").add(loginButton);
 		RootPanel.get("signButtonContainer").add(signButton);
-		//RootPanel.get("sendButtonContainer").add(sendButton);
-		//RootPanel.get("errorLabelContainer").add(errorLabel);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
@@ -115,34 +98,6 @@ public class BudgetEventPlanner implements EntryPoint {
 				RootPanel.get("main").setVisible(false);
 				nameField.setText("");
 				pwField.setText("");
-			}
-		});
-		
-		XiaYuanButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("XiaYuan").setVisible(true);
-				RootPanel.get("main").setVisible(false);
-			}
-		});
-		
-		ZhenLongButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("ZhenLong").setVisible(true);
-				RootPanel.get("main").setVisible(false);
-			}
-		});
-		
-		XuXuanButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("XuXuan").setVisible(true);
-				RootPanel.get("main").setVisible(false);
-			}
-		});
-		
-		XuXuan2Button.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				RootPanel.get("XuXuan2").setVisible(true);
-				RootPanel.get("main").setVisible(false);
 			}
 		});
 		
@@ -268,9 +223,6 @@ public class BudgetEventPlanner implements EntryPoint {
 				
 				if(errorSign.getText().isEmpty()){					
 					signupBox.hide();
-					//loginButton.setEnabled(true);
-					//loginButton.setFocus(true);
-					//signButton.setEnabled(true);
 					emailAdd.setText("");
 					first_pw.setText("");
 					second_pw.setText("");
@@ -320,29 +272,6 @@ public class BudgetEventPlanner implements EntryPoint {
 			}
 		});	
 		
-		/*
-		class AddButtonHandler implements ClickHandler {
-			public void onClick(ClickEvent event) {
-				addService.add(Integer.parseInt(inputA.getText()), Integer.parseInt(inputB.getText()),
-						new AsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								addResult.setText(result);
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								System.out.println("Failed!");
-								System.out.println(caught.getStackTrace());
-							}
-					
-						}
-				);				
-			}
-		}
-		*/
-		
 		// Create a handler for the sendButton and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
 			/**
@@ -368,11 +297,6 @@ public class BudgetEventPlanner implements EntryPoint {
 				// First, we validate the input.
 				errorLabel.setText("");
 				String textToServer = nameField.getText();
-				//String pwToServer = pwField.getText();
-//				if (!FieldVerifier.isValidName(textToServer)) {
-//					errorLabel.setText("Please enter at least four characters");
-//					return;
-//				}
 
 				// Then, we send the input to the server.
 				loginButton.setEnabled(false);
@@ -407,10 +331,8 @@ public class BudgetEventPlanner implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
-		//sendButton.addClickHandler(handler);
 		loginButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
-		
-		//addButton.addClickHandler(new AddButtonHandler());
+
 	}
 }
