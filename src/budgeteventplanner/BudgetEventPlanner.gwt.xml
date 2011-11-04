@@ -15,7 +15,6 @@
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='budgeteventplanner.client.BudgetEventPlanner'/>
-  <entry-point class='budgeteventplanner.client.BudgetPanel'/>
   <entry-point class='budgeteventplanner.client.AttendeeManager'/>
   <entry-point class='budgeteventplanner.client.AttendeeRegistration'/>
   <entry-point class='budgeteventplanner.client.VendorHomePage'/>
