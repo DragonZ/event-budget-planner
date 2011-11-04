@@ -28,6 +28,8 @@ public class AttendeeRegistration implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 	
+	
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -116,6 +118,7 @@ public class AttendeeRegistration implements EntryPoint {
 				submit.setFocus(true);
 			}
 		});   
+		//emailBox.setFocus(true);
 		
 	        class MyHandler implements ClickHandler {
 		
@@ -131,13 +134,25 @@ public class AttendeeRegistration implements EntryPoint {
 							dialogBox.center();
 							closeButton.setFocus(true);
 							//RootPanel.get("attendeeManager").setVisible(true);
-							
+							emailBox.setText("");
+							firstNameBox.setText("");
+							midNameBox.setText("");
+							jobTitleBox.setText("");
+							lastNameBox.setText("");
+							companyBox.setText("");
+							address1Box.setText("");
+							address2Box.setText("");
+							cityBox.setText("");
+							stateBox.setText("");
+							zipBox.setText("");
+							phoneBox.setText("");
 						}
 						
 					}
 							
 					);
 					
+				
 				}
 	        }
 	        MyHandler handler = new MyHandler();
