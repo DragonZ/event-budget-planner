@@ -20,7 +20,7 @@ public class Address
 	/**************************************************************/
 	public static class Builder
 	{
-		private Address address;
+		private Address address = new Address();
 		/*------------------------------------------------------*/
 		public Builder(Address address) {
 			try {
@@ -80,6 +80,27 @@ public class Address
 	public String toString()
 	{
 		return firstName+" "+lastName+" "+street+" "+city+" "+state+" "+zipcode+" "+country;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public String getCity() {
+		return city;
+	}
+	public String getState() {
+		return state;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public String getCountry() {
+		return country;
 	}
 	
 	
