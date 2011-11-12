@@ -11,9 +11,19 @@
     <servlet-class>budgeteventplanner.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
+  <servlet>
+    <servlet-name>dataServlet</servlet-name>
+    <servlet-class>budgeteventplanner.server.DataServiceImpl</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/budgeteventplanner/greet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>dataServlet</servlet-name>
+    <url-pattern>/budgeteventplanner/data</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
