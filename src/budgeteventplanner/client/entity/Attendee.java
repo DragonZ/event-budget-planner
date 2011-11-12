@@ -1,12 +1,13 @@
 package budgeteventplanner.client.entity;
 
-import java.util.UUID;
+
+import budgeteventplanner.shared.UUID;
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetAttendee Attendee = (new BudgetAttendee).Builder(......).setId(id).build();
 @Entity
 public class Attendee {
-	private UUID attendeeID;
+	private String attendeeID;
 	private String name;
 	private String email;
 	private Address address;
@@ -34,7 +35,7 @@ public class Attendee {
 		}
 	}
 
-	public UUID getAttendeeID() {
+	public String getAttendeeID() {
 		return attendeeID;
 	}
 

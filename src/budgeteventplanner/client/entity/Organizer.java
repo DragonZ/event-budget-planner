@@ -1,7 +1,8 @@
 package budgeteventplanner.client.entity;
 
 import java.util.List;
-import java.util.UUID;
+
+import budgeteventplanner.shared.UUID;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.googlecode.objectify.annotation.Entity;
@@ -19,7 +20,7 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class Organizer {
 
-	private UUID organizerID;
+	private String organizerID;
 	private List<String> eventList;
 	private List<String> contactList;
 	private String name;
@@ -60,7 +61,7 @@ public class Organizer {
 		}
 	}
 
-	public UUID getOrganizerID() {
+	public String getOrganizerID() {
 		return organizerID;
 	}
 

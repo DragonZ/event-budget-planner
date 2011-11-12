@@ -1,7 +1,4 @@
 package budgeteventplanner.client.entity;
-import java.util.UUID;
-
-import budgeteventplanner.client.entity.Category;
 
 import com.googlecode.objectify.annotation.Entity;
 
@@ -9,7 +6,7 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class BudgetItem
 {
-	private UUID budgetId;
+	private String budgetId;
 	private Category category;
 	private String name;
 	private Double limit;
@@ -39,7 +36,7 @@ public class BudgetItem
 		}
 	}
 
-	public UUID getBudgetId() {
+	public String getBudgetId() {
 		return budgetId;
 	}
 

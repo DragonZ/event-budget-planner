@@ -1,16 +1,15 @@
 package budgeteventplanner.client.entity;
 
 import java.util.Date;
-import java.util.UUID;
 
-import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
 @Entity
 public class Item {
-	private UUID itemID;
+	private String itemID;
 	private Category category;
 	private String name;
 	private Date dueDate;
@@ -48,7 +47,7 @@ public class Item {
 		}
 	}
 
-	public UUID getItemID() {
+	public String getItemID() {
 		return itemID;
 	}
 

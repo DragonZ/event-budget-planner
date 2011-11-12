@@ -2,7 +2,8 @@ package budgeteventplanner.client.entity;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+
+import budgeteventplanner.shared.UUID;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.googlecode.objectify.annotation.Entity;
@@ -11,7 +12,7 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class Event
 {
-	private UUID eventID;
+	private String eventID;
 	private String name;
 	private Organizer organizer;
 	private Date startTime;
@@ -55,12 +56,11 @@ public class Event
 			return this;
 		}
 		
-		/*---------------------------------------------------*/
 		public Event build() 
 		{
 			return this.event;
 		}
-		/*---------------------------------------------------*/
+		
 		public Builder addItem(Item event)
 		{
 			this.event.itemList.add(event);
@@ -84,7 +84,7 @@ public class Event
 		return attendeeList;
 	}
 	
-	public UUID eventID()
+	public String eventID()
 	{
 		return eventID;
 	}
