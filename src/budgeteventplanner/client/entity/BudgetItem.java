@@ -12,63 +12,46 @@ public class BudgetItem
 	private UUID budgetId;
 	private Category category;
 	private String name;
-	private double limit;
-	
-	
-	/**************************************************************/
+	private Double limit;
+
 	public static class Builder
 	{
-		private BudgetItem budgetItem = new BudgetItem();
-		/*------------------------------------------------------*/
+		private BudgetItem budgetItem;
+		
 		public Builder(BudgetItem budgetItem) {
-			try {
-				this.budgetItem = (BudgetItem) budgetItem.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.budgetItem = budgetItem;
 		}
-		/*------------------------------------------------------*/
 
 		public Builder(String name)
 		{
 			this.budgetItem.name= name;
 		}
-		
 
-		
 		public Builder setLimit(double limit)
 		{
 			this.budgetItem.limit = limit;
 			return this;
 		}
-		//
+
 		public BudgetItem build() 
 		{
 			return this.budgetItem;
 		}
 	}
-	/**************** Getter *************************/
-
 
 	public UUID getBudgetId() {
 		return budgetId;
 	}
 
-
 	public Category getCategory() {
 		return category;
 	}
-
 
 	public String getName() {
 		return name;
 	}
 
-
-	public double getLimit() {
+	public Double getLimit() {
 		return limit;
 	}
-
-	
 }

@@ -2,33 +2,23 @@ package budgeteventplanner.client.entity;
 
 public class Category
 {
-	
-	String name;
-	
-	
+	private String name;
+
 	public static class Builder
 	{
-		private Category category = new Category();
-		/*------------------------------------------------------*/
-		public Builder(Event event) {
-			try {
-				this.category = (Category) category.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		private Category category;
+		
+		public Builder(Category category) {
+			this.category = category;
 		}
-		/*------------------------------------------------------*/
 
 		public Builder(String name)
 		{
 			this.category.name = name;
-
 		}
-		/*---------------------------------------------------*/
-
 	}
-	
 
-	
+	public String getName() {
+		return name;
+	}
 }

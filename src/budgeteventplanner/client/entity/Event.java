@@ -11,7 +11,6 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class Event
 {
-
 	private UUID eventID;
 	private String name;
 	private Organizer organizer;
@@ -22,24 +21,13 @@ public class Event
 	private List<Item> itemList;
 	private List<Attendee> attendeeList;
 
-	
-	
-	
-	
-	/**************************************************************/
 	public static class Builder
 	{
-		private Event event = new Event();
-		/*------------------------------------------------------*/
+		private Event event;
+		
 		public Builder(Event event) {
-			try {
-				this.event = (Event) event.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.event = event;
 		}
-		/*------------------------------------------------------*/
 
 		public Builder(String name, Organizer organizer, int visibility)
 		{
@@ -50,8 +38,6 @@ public class Event
 			this.event.itemList = Lists.newArrayList();
 			this.event.attendeeList = Lists.newArrayList();
 		}
-		/*---------------------------------------------------*/
-
 		
 		public Builder setStartTime (Date startTime)
 		{
@@ -87,79 +73,50 @@ public class Event
 			return this;
 		}
 	}
-	/**************************************************************/
-
-
-
-
-
-	public UUID getEventID() {
-		return eventID;
-	}
-
-
-
-
-
-	public String getName() {
-		return name;
-	}
-
-
-
-
-
-	public Organizer getOrganizer() {
-		return organizer;
-	}
-
-
-
-
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-
-
-
-
-	public Date getEndTime() {
-		return endTime;
-	}
-
-
-
-
-
-	public Address getLocation() {
-		return location;
-	}
-
-
-
-
-
-	public int getVisibility() {
-		return visibility;
-	}
-
-
-
-
-
-	public List<Item> getItemList() {
+	
+	public List<Item> itemList()
+	{
 		return itemList;
 	}
-
-
-
-
-
-	public List<Attendee> getAttendeeList() {
+	
+	public List<Attendee> attendeeList()
+	{
 		return attendeeList;
 	}
-
+	
+	public UUID eventID()
+	{
+		return eventID;
+	}
+	
+	public String name()
+	{
+		return name;
+	}
+	
+	public Organizer organizer()
+	{
+		return organizer;
+	}
+	
+	public Date startTime()
+	{
+		return startTime;
+	}
+	
+	public Date endTime()
+	{
+		return endTime;
+	}
+	
+	public Address location()
+	{
+		return location;
+	}
+	
+	public int visibility()
+	{
+		return visibility;
+	}
 	
 }

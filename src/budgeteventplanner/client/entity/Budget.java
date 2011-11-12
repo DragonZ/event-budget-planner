@@ -10,8 +10,7 @@ import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
 @Entity
-public class Budget
-{
+public class Budget {
 	private UUID budgetID;
 	private Category category;
 	private String name;
@@ -19,40 +18,27 @@ public class Budget
 	private long eventID;
 	private long limit;
 
-	/**************************************************************/
-	public static class Builder
-	{
-		private Budget budget = new Budget();
-		/*------------------------------------------------------*/
-		public Builder(Budget budget) {
-			try {
-				this.budget = (Budget) budget.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		/*------------------------------------------------------*/
+	public static class Builder {
+		private Budget budget;
 
-		public Builder(String name)
-		{
-			this.budget.name= name;
+		public Builder(Budget budget) {
+			this.budget = budget;
+		}
+
+		public Builder(String name) {
+			this.budget.name = name;
 			this.budget.budgetID = UUID.randomUUID();
 		}
 
-		public Builder set_budget_item_list(ArrayList<BudgetItem> list)
-		{
+		public Builder set_budget_item_list(ArrayList<BudgetItem> list) {
 			this.budget.budget_item_list = list;
 			return this;
 		}
 
-		//
-		public Budget build() 
-		{
+		public Budget build() {
 			return this.budget;
 		}
 	}
-	/**************************************************************/
 
 	public UUID getBudgetID() {
 		return budgetID;
@@ -77,7 +63,4 @@ public class Budget
 	public long getLimit() {
 		return limit;
 	}
-
-
-
 }
