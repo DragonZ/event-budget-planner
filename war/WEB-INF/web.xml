@@ -25,6 +25,16 @@
     <servlet-name>eventServlet</servlet-name>
     <servlet-class>budgeteventplanner.server.EventServiceImpl</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>attendeeServlet</servlet-name>
+    <servlet-class>budgeteventplanner.server.AttendeeServiceImpl</servlet-class>
+  </servlet>
+      
+  <servlet>
+    <servlet-name>budgetServlet</servlet-name>
+    <servlet-class>budgeteventplanner.server.BudgetServiceImpl</servlet-class>
+  </servlet>      
       
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
@@ -44,6 +54,16 @@
   <servlet-mapping>
     <servlet-name>eventServlet</servlet-name>
     <url-pattern>/budgeteventplanner/event</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>attendeeServlet</servlet-name>
+    <url-pattern>/budgeteventplanner/attendee</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>budgetServlet</servlet-name>
+    <url-pattern>/budgeteventplanner/budget</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
