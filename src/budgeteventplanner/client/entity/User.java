@@ -1,104 +1,76 @@
 package budgeteventplanner.client.entity;
 
-import java.util.UUID;
+import javax.persistence.Id;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetUser User = (new BudgetUser).Builder(......).setId(id).build();
 @Entity
-public class User
-{
-	private UUID userID;
+public class User {
+	@Id
 	private String email;
 	private String name;
-	private Integer role;
+	private int role;
 	private String password;
 	private String company;
 	private String address;
-	
-	
-	/**************************************************************/
-	public static class Builder
-	{
-		private User user = new User();
-		/*------------------------------------------------------*/
-		public Builder(User user) {
-			try {
-				this.user = (User) user.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		/*------------------------------------------------------*/
 
-		public Builder(String email, int role, String password)
-		{
-			this.user.email= email;
+	public User() {}
+	
+	public static class Builder {
+		private User user = new User();
+
+		public Builder(User user) {
+			this.user = user;
+		}
+
+		public Builder(String email, String password, int role) {
+			this.user.email = email;
 			this.user.role = role;
 			this.user.password = password;
-		//	this.user.userID = UUID.randomUUID();
 		}
-		/*---------------------------------------------------*/
-		public Builder SetCompany (String company)
-		{
+
+		public Builder SetCompany(String company) {
 			this.user.company = company;
 			return this;
 		}
-		
-		public Builder setAddress(String address)
-		{
+
+		public Builder setAddress(String address) {
 			this.user.address = address;
 			return this;
 		}
-		
-		public Builder name(String name)
-		{
-			this.user.name= name;
+
+		public Builder name(String name) {
+			this.user.name = name;
 			return this;
 		}
-		/*---------------------------------------------------*/
-		public User build() 
-		{
+
+		public User build() {
 			return this.user;
 		}
 	}
-	/**************************************************************/
-
-
-	public UUID getUserID() {
-		return userID;
-	}
-
 
 	public String getEmail() {
 		return email;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-
 
 	public Integer getRole() {
 		return role;
 	}
 
-
 	public String getPassword() {
 		return password;
 	}
 
-
-	public String getCompany() {
+	public String getPompany() {
 		return company;
 	}
-
 
 	public String getAddress() {
 		return address;
 	}
 
-	
 }

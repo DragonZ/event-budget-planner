@@ -1,5 +1,6 @@
 package budgeteventplanner.client;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import budgeteventplanner.client.entity.TestEntity;
@@ -20,10 +21,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class DatabaseTestPage implements EntryPoint {
 
 	private final DataServiceAsync dataService = GWT.create(DataService.class);
-	
+
+	private final UserServiceAsync userService = GWT.create(UserService.class);
+
 	@Override
 	public void onModuleLoad() {
-		// TODO Auto-generated method stub
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -42,31 +44,30 @@ public class DatabaseTestPage implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-		
+
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
 			}
 		});
-		
+
 		// database component
 		final Button putButton = new Button("Put");
 		final Button getButton = new Button("Get");
 		final TextBox dbname = new TextBox();
 		final TextBox dbaddress = new TextBox();
 		final TextBox dblimit = new TextBox();
-		
+
 		RootPanel.get("databseContainer").add(dbname);
 		RootPanel.get("databseContainer").add(dbaddress);
 		RootPanel.get("databseContainer").add(dblimit);
 		RootPanel.get("databseContainer").add(putButton);
 		RootPanel.get("databseContainer").add(getButton);
-		
+
 		class DBPutHandler implements ClickHandler {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				dataService.putEntity(dbname.getText(), dbaddress.getText(),
 						Integer.parseInt(dblimit.getText()),
 						new AsyncCallback<Void>() {
@@ -84,7 +85,6 @@ public class DatabaseTestPage implements EntryPoint {
 
 							@Override
 							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
 								dialogBox.setText("Remote Procedure Call");
 								serverResponseLabel
 										.removeStyleName("serverResponseLabelError");
@@ -104,7 +104,6 @@ public class DatabaseTestPage implements EntryPoint {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				dataService.getEntityByLimit(
 						Integer.parseInt(dblimit.getText()),
 						new AsyncCallback<ArrayList<TestEntity>>() {
@@ -122,7 +121,6 @@ public class DatabaseTestPage implements EntryPoint {
 
 							@Override
 							public void onSuccess(ArrayList<TestEntity> result) {
-								// TODO Auto-generated method stub
 								dialogBox.setText("Remote Procedure Call");
 								serverResponseLabel
 										.removeStyleName("serverResponseLabelError");
@@ -140,6 +138,96 @@ public class DatabaseTestPage implements EntryPoint {
 
 		DBGetHandler dbgethandler = new DBGetHandler();
 		getButton.addClickHandler(dbgethandler);
+
+		final Button registerButton = new Button("Register");
+		final Button loginButton = new Button("Login");
+		final TextBox dbemail = new TextBox();
+		final TextBox dbrole = new TextBox();
+		final TextBox dbpasswd = new TextBox();
+
+		RootPanel.get("registerContainer").add(dbemail);
+		RootPanel.get("registerContainer").add(dbpasswd);
+		RootPanel.get("registerContainer").add(dbrole);
+		RootPanel.get("registerContainer").add(registerButton);
+		RootPanel.get("registerContainer").add(loginButton);
+
+		class DBRegisterHandler implements ClickHandler {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				try {
+					userService.register(dbemail.getText(), dbpasswd.getText(),
+							Integer.parseInt(dbrole.getText()),
+							new AsyncCallback<Void>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									dialogBox
+											.setText("Remote Procedure Call - Failure");
+									serverResponseLabel
+											.addStyleName("serverResponseLabelError");
+									serverResponseLabel
+											.setHTML("RPC Call Failed!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									dialogBox.setText("Remote Procedure Call");
+									serverResponseLabel
+											.removeStyleName("serverResponseLabelError");
+									serverResponseLabel
+											.setHTML("Registered Successfully!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+							});
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+		registerButton.addClickHandler(new DBRegisterHandler());
+		
+		class DBLoginHandler implements ClickHandler {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				try {
+					userService.login(dbemail.getText(), dbpasswd.getText(),
+							new AsyncCallback<Integer>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									// Show the RPC error message to the user
+									dialogBox
+											.setText("Remote Procedure Call - Failure");
+									serverResponseLabel
+											.addStyleName("serverResponseLabelError");
+									serverResponseLabel.setHTML("RPC Call Failed!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+
+								@Override
+								public void onSuccess(Integer result) {
+									dialogBox.setText("Remote Procedure Call");
+									serverResponseLabel
+											.removeStyleName("serverResponseLabelError");
+									serverResponseLabel.setHTML(result.toString());
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+							});
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		loginButton.addClickHandler(new DBLoginHandler());
 	}
 
 }
