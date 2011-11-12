@@ -1,5 +1,7 @@
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,16 +31,19 @@ public class BudgetEventPlanner implements EntryPoint {
 	private static final String SERVER_ERROR = "Please enter at least four characters.";
 
 	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
+	 * Create a remote service proxy to talk to the server-side Greeting
+	 * service.
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-	
+
+	private final DataServiceAsync dataService = GWT.create(DataService.class);
+
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+
 		final Button sendButton = new Button("Send");
 		final Button loginButton = new Button("Login");
 		loginButton.setWidth("80px");
@@ -51,7 +56,14 @@ public class BudgetEventPlanner implements EntryPoint {
 		pwField.setText("");
 		pwField.setWidth("210px");
 		final Label errorLabel = new Label();
-		
+
+		// database component
+		final Button putButton = new Button("Put");
+		final Button getButton = new Button("Get");
+		final TextBox dbname = new TextBox();
+		final TextBox dbaddress = new TextBox();
+		final TextBox dblimit = new TextBox();
+
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 		loginButton.addStyleName("loginButton");
@@ -64,10 +76,15 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("loginButtonContainer").add(loginButton);
 		RootPanel.get("signButtonContainer").add(signButton);
 
+		RootPanel.get("databseContainer").add(dbname);
+		RootPanel.get("databseContainer").add(dbaddress);
+		RootPanel.get("databseContainer").add(dblimit);
+		RootPanel.get("databseContainer").add(putButton);
+		RootPanel.get("databseContainer").add(getButton);
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
 		nameField.selectAll();
-		
+
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -86,7 +103,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-		
+
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -100,7 +117,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				pwField.setText("");
 			}
 		});
-		
+
 		// Create the popup signup box
 		final DialogBox signupBox = new DialogBox();
 		signupBox.setText("Sign Up");
@@ -149,14 +166,14 @@ public class BudgetEventPlanner implements EntryPoint {
 		signupVPanel.add(new HTML(""));
 		signupVPanel.add(new HTML(""));
 		signupVPanel.add(new HTML(""));
-		signupVPanel.add(new HTML(""));	
+		signupVPanel.add(new HTML(""));
 		signupVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		signupVPanel.add(submitButton);
 		signupVPanel.add(cancelButton);
 		signupVPanel.setSpacing(5);
 		signupBox.setWidget(signupVPanel);
-		
-		//Add a handler to open the signup dialog
+
+		// Add a handler to open the signup dialog
 		signButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				nameField.setText("");
@@ -168,7 +185,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				signButton.setEnabled(false);
 			}
 		});
-		
+
 		final DialogBox signedBox = new DialogBox();
 		signedBox.setText("Success!");
 		signedBox.setAnimationEnabled(true);
@@ -183,7 +200,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		signedBox.setWidget(successVPanel);
 
 		final HTML errorSign = new HTML("");
-		
+
 		final DialogBox errorBox = new DialogBox();
 		errorBox.setText("Error!");
 		errorBox.setAnimationEnabled(true);
@@ -195,33 +212,27 @@ public class BudgetEventPlanner implements EntryPoint {
 		errorVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		errorVPanel.add(okButton);
 		errorBox.setWidget(errorVPanel);
-		
+
 		// Add a handler to submit the information
 		submitButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(emailAdd.getText().isEmpty()){
+				if (emailAdd.getText().isEmpty()) {
 					errorSign.setText("Invalid username");
-				}
-				else if(first_pw.getText().isEmpty()){
+				} else if (first_pw.getText().isEmpty()) {
 					errorSign.setText("Invalid password");
-				}
-				else if(!first_pw.getText().equals(second_pw.getText())){
+				} else if (!first_pw.getText().equals(second_pw.getText())) {
 					errorSign.setText("Re-typed password is not correct");
-				}
-				else if(address.getText().isEmpty()){
+				} else if (address.getText().isEmpty()) {
 					errorSign.setText("Invalid address");
-				}
-				else if(city.getText().isEmpty()){
+				} else if (city.getText().isEmpty()) {
 					errorSign.setText("Invalid city");
-				}
-				else if(state.getText().length()<2){
+				} else if (state.getText().length() < 2) {
 					errorSign.setText("Invalid state");
-				}
-				else if(zipCode.getText().length()<5){
+				} else if (zipCode.getText().length() < 5) {
 					errorSign.setText("Invalid zipcode");
 				}
-				
-				if(errorSign.getText().isEmpty()){					
+
+				if (errorSign.getText().isEmpty()) {
 					signupBox.hide();
 					emailAdd.setText("");
 					first_pw.setText("");
@@ -230,12 +241,11 @@ public class BudgetEventPlanner implements EntryPoint {
 					city.setText("");
 					state.setText("");
 					zipCode.setText("");
-				
+
 					signedBox.show();
 					signedBox.center();
 					backButton.setFocus(true);
-				}
-				else{
+				} else {
 					errorBox.show();
 					errorBox.center();
 					okButton.setFocus(true);
@@ -243,7 +253,7 @@ public class BudgetEventPlanner implements EntryPoint {
 			}
 		});
 
-		//Add a handler to cancel the sign up
+		// Add a handler to cancel the sign up
 		cancelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				signupBox.hide();
@@ -251,9 +261,9 @@ public class BudgetEventPlanner implements EntryPoint {
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
 			}
-		});	
-		
-		//Add a handler to back to the index
+		});
+
+		// Add a handler to back to the index
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				signedBox.hide();
@@ -261,17 +271,17 @@ public class BudgetEventPlanner implements EntryPoint {
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
 			}
-		});	
-		
-		//Add a handler to back to the sign up
+		});
+
+		// Add a handler to back to the sign up
 		okButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				errorSign.setText("");
 				errorBox.hide();
 				emailAdd.setFocus(true);
 			}
-		});	
-		
+		});
+
 		// Create a handler for the sendButton and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
 			/**
@@ -291,7 +301,8 @@ public class BudgetEventPlanner implements EntryPoint {
 			}
 
 			/**
-			 * Send the name from the nameField to the server and wait for a response.
+			 * Send the name from the nameField to the server and wait for a
+			 * response.
 			 */
 			private void sendNameToServer() {
 				// First, we validate the input.
@@ -303,7 +314,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				signButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-				
+
 				greetingService.greetServer(textToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
@@ -333,6 +344,85 @@ public class BudgetEventPlanner implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		loginButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
+
+		class DBPutHandler implements ClickHandler {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				dataService.putEntity(dbname.getText(), dbaddress.getText(),
+						Integer.parseInt(dblimit.getText()),
+						new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								// Show the RPC error message to the user
+								dialogBox
+										.setText("Remote Procedure Call - Failure");
+								serverResponseLabel
+										.addStyleName("serverResponseLabelError");
+								serverResponseLabel.setHTML(SERVER_ERROR);
+								dialogBox.center();
+								closeButton.setFocus(true);
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								dialogBox.setText("Remote Procedure Call");
+								serverResponseLabel
+										.removeStyleName("serverResponseLabelError");
+								serverResponseLabel.setHTML("Success");
+								dialogBox.center();
+								closeButton.setFocus(true);
+							}
+						});
+			}
+
+		}
+
+		DBPutHandler dbputhandler = new DBPutHandler();
+		putButton.addClickHandler(dbputhandler);
+
+		class DBGetHandler implements ClickHandler {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				dataService.getEntityByLimit(
+						Integer.parseInt(dblimit.getText()),
+						new AsyncCallback<ArrayList<TestEntity>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								// Show the RPC error message to the user
+								dialogBox
+										.setText("Remote Procedure Call - Failure");
+								serverResponseLabel
+										.addStyleName("serverResponseLabelError");
+								serverResponseLabel.setHTML(SERVER_ERROR);
+								dialogBox.center();
+								closeButton.setFocus(true);
+							}
+
+							@Override
+							public void onSuccess(ArrayList<TestEntity> result) {
+								// TODO Auto-generated method stub
+								dialogBox.setText("Remote Procedure Call");
+								serverResponseLabel
+										.removeStyleName("serverResponseLabelError");
+								String html = new String();
+								for (TestEntity ent : result) {
+									html += ent.toString();
+								}
+								serverResponseLabel.setHTML(html);
+								dialogBox.center();
+								closeButton.setFocus(true);
+							}
+						});
+			}
+		}
+
+		DBGetHandler dbgethandler = new DBGetHandler();
+		getButton.addClickHandler(dbgethandler);
 
 	}
 }

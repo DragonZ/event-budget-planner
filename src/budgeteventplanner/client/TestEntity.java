@@ -23,10 +23,11 @@ public class TestEntity implements Serializable{
 	
 	@Override
 	public String toString() {
-	  return name + "\t" + address + "\t" + Integer.toString(limit);
+	  return name + "\t" + address + "\t" + Integer.toString(limit) + "\n";
 	}
+	
 	public static class Builder {
-		TestEntity entity;
+		TestEntity entity = new TestEntity();
 
 		public Builder(String name) {
 			this.entity.name = name;
