@@ -1,4 +1,4 @@
-package budgeteventplanner.client;
+package budgeteventplanner.client.entity;
 
 import java.io.Serializable;
 

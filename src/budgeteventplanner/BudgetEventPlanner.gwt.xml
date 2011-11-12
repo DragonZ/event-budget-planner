@@ -18,7 +18,8 @@
   <entry-point class='budgeteventplanner.client.AttendeeManager'/>
   <entry-point class='budgeteventplanner.client.AttendeeRegistration'/>
   <entry-point class='budgeteventplanner.client.VendorHomePage'/>
-    <entry-point class='budgeteventplanner.client.EventBudgetPanel'/>
+  <entry-point class='budgeteventplanner.client.EventBudgetPanel'/>
+  <entry-point class='budgeteventplanner.client.DatabaseTestPage'/>
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
   <source path='shared'/>

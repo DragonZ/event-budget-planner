@@ -3,7 +3,7 @@ package budgeteventplanner.server;
 import java.util.ArrayList;
 
 import budgeteventplanner.client.DataService;
-import budgeteventplanner.client.TestEntity;
+import budgeteventplanner.client.entity.TestEntity;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;

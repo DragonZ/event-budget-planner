@@ -2,6 +2,8 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 
+import budgeteventplanner.client.entity.TestEntity;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,7 +39,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
-	private final DataServiceAsync dataService = GWT.create(DataService.class);
+	
 
 	/**
 	 * This is the entry point method.
@@ -57,12 +59,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		pwField.setWidth("210px");
 		final Label errorLabel = new Label();
 
-		// database component
-		final Button putButton = new Button("Put");
-		final Button getButton = new Button("Get");
-		final TextBox dbname = new TextBox();
-		final TextBox dbaddress = new TextBox();
-		final TextBox dblimit = new TextBox();
+
 
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
@@ -76,11 +73,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("loginButtonContainer").add(loginButton);
 		RootPanel.get("signButtonContainer").add(signButton);
 
-		RootPanel.get("databseContainer").add(dbname);
-		RootPanel.get("databseContainer").add(dbaddress);
-		RootPanel.get("databseContainer").add(dblimit);
-		RootPanel.get("databseContainer").add(putButton);
-		RootPanel.get("databseContainer").add(getButton);
+
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
 		nameField.selectAll();
@@ -344,85 +337,5 @@ public class BudgetEventPlanner implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		loginButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
-
-		class DBPutHandler implements ClickHandler {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				dataService.putEntity(dbname.getText(), dbaddress.getText(),
-						Integer.parseInt(dblimit.getText()),
-						new AsyncCallback<Void>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-
-							@Override
-							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML("Success");
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
-			}
-
-		}
-
-		DBPutHandler dbputhandler = new DBPutHandler();
-		putButton.addClickHandler(dbputhandler);
-
-		class DBGetHandler implements ClickHandler {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				dataService.getEntityByLimit(
-						Integer.parseInt(dblimit.getText()),
-						new AsyncCallback<ArrayList<TestEntity>>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-
-							@Override
-							public void onSuccess(ArrayList<TestEntity> result) {
-								// TODO Auto-generated method stub
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								String html = new String();
-								for (TestEntity ent : result) {
-									html += ent.toString();
-								}
-								serverResponseLabel.setHTML(html);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
-			}
-		}
-
-		DBGetHandler dbgethandler = new DBGetHandler();
-		getButton.addClickHandler(dbgethandler);
-
 	}
 }
