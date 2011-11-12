@@ -19,7 +19,7 @@ public class Organizer
 	/**************************************************************/
 	public static class Builder
 	{
-		private Organizer organizer;
+		private Organizer organizer = new Organizer();
 		/*------------------------------------------------------*/
 		public Builder(Organizer orgainzer) {
 			try {
@@ -64,6 +64,22 @@ public class Organizer
 		}
 	}
 	/**************************************************************/
+
+	public UUID getOrganizerID() {
+		return organizerID;
+	}
+
+	public List<String> getEventList() {
+		return eventList;
+	}
+
+	public List<String> getContactList() {
+		return contactList;
+	}
+
+	public String getName() {
+		return name;
+	}
 	
 	
 		// Somewhere else we may call organizer = new (Organizer.Builder)(orgainzer).addEvent("aaa").build();
@@ -77,19 +93,6 @@ public class Organizer
 //			.addEvent("aaa")
 //			.build();
 
-	public List<String> contactList()
-	{
-		return contactList;	
-	}
-	
-	public UUID organizerID()
-	{
-		return organizerID;	
-	}
-	
-	public String name()
-	{
-		return name;	
-	}
+
 	
 }

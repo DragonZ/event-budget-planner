@@ -11,7 +11,7 @@ public class User
 	private UUID userID;
 	private String email;
 	private String name;
-	private int role;
+	private Integer role;
 	private String password;
 	private String company;
 	private String address;
@@ -20,7 +20,7 @@ public class User
 	/**************************************************************/
 	public static class Builder
 	{
-		private User user;
+		private User user = new User();
 		/*------------------------------------------------------*/
 		public Builder(User user) {
 			try {
@@ -37,7 +37,7 @@ public class User
 			this.user.email= email;
 			this.user.role = role;
 			this.user.password = password;
-			this.user.userID = UUID.randomUUID();
+		//	this.user.userID = UUID.randomUUID();
 		}
 		/*---------------------------------------------------*/
 		public Builder SetCompany (String company)
@@ -64,33 +64,41 @@ public class User
 		}
 	}
 	/**************************************************************/
-	public UUID userID()
-	{
+
+
+	public UUID getUserID() {
 		return userID;
 	}
-	public String email()
-	{
+
+
+	public String getEmail() {
 		return email;
 	}
-	public String name()
-	{
+
+
+	public String getName() {
 		return name;
 	}
-	public int role()
-	{
+
+
+	public Integer getRole() {
 		return role;
 	}
-	public String password()
-	{
+
+
+	public String getPassword() {
 		return password;
 	}
-	public String company()
-	{
+
+
+	public String getCompany() {
 		return company;
 	}
-	public String address()
-	{
+
+
+	public String getAddress() {
 		return address;
 	}
+
 	
 }

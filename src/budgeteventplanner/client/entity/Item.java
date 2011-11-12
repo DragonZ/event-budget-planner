@@ -22,7 +22,7 @@ public class Item
 	/**************************************************************/
 	public static class Builder
 	{
-		private Item item;
+		private Item item = new Item();
 		/*------------------------------------------------------*/
 		public Builder(Item item) {
 			try {
@@ -64,24 +64,35 @@ public class Item
 		}
 	}
 	/**************************************************************/
-	public UUID itemID()
-	{
+
+
+
+	public UUID getItemID() {
 		return itemID;
 	}
-	public Category category()
-	{
+
+
+
+	public Category getCategory() {
 		return category;
 	}
-	public String name()
-	{
+
+
+
+	public String getName() {
 		return name;
 	}
-	public Date dueDate()
-	{
+
+
+
+	public Date getDueDate() {
 		return dueDate;
 	}
-	public Vendor vendor()
-	{
+
+
+
+	public Vendor getVendor() {
 		return vendor;
 	}
+
 }

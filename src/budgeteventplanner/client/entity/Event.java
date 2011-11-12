@@ -29,7 +29,7 @@ public class Event
 	/**************************************************************/
 	public static class Builder
 	{
-		private Event event;
+		private Event event = new Event();
 		/*------------------------------------------------------*/
 		public Builder(Event event) {
 			try {
@@ -88,50 +88,78 @@ public class Event
 		}
 	}
 	/**************************************************************/
-	
-	public List<Item> itemList()
-	{
-		return itemList;
-	}
-	
-	public List<Attendee> attendeeList()
-	{
-		return attendeeList;
-	}
-	
-	public UUID eventID()
-	{
+
+
+
+
+
+	public UUID getEventID() {
 		return eventID;
 	}
-	
-	public String name()
-	{
+
+
+
+
+
+	public String getName() {
 		return name;
 	}
-	
-	public Organizer organizer()
-	{
+
+
+
+
+
+	public Organizer getOrganizer() {
 		return organizer;
 	}
-	
-	public Date startTime()
-	{
+
+
+
+
+
+	public Date getStartTime() {
 		return startTime;
 	}
-	
-	public Date endTime()
-	{
+
+
+
+
+
+	public Date getEndTime() {
 		return endTime;
 	}
-	
-	public Address location()
-	{
+
+
+
+
+
+	public Address getLocation() {
 		return location;
 	}
-	
-	public int visibility()
-	{
+
+
+
+
+
+	public int getVisibility() {
 		return visibility;
 	}
+
+
+
+
+
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+
+
+
+
+	public List<Attendee> getAttendeeList() {
+		return attendeeList;
+	}
+
 	
 }

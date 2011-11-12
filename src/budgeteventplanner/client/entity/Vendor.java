@@ -26,7 +26,7 @@ public class Vendor
 	/**************************************************************/
 	public static class Builder
 	{
-		private Vendor vendor;
+		private Vendor vendor = new Vendor();
 		/*------------------------------------------------------*/
 		public Builder(Vendor event) 
 		{
@@ -75,37 +75,57 @@ public class Vendor
 		}
 
 	}
-	
-	/************** Getters ********************************/
-	public UUID vendorID()
-	{
+
+
+
+
+
+	public UUID getVendorID() {
 		return vendorID;
 	}
-	
-	public Address location()
-	{
-		return location;
-	}
-	
-	public List<Item> itemList()
-	{
-		return itemList;
-	}
-	
-	public List<Category> categoryList()
-	{
-		return categoryList;
-	}
-	
-	public String name()
-	{
+
+
+
+
+
+	public String getName() {
 		return name;
 	}
 
-	public List<Service> serviceList()
-	{
+
+
+
+
+	public List<Category> getCategoryList() {
+		return categoryList;
+	}
+
+
+
+
+
+	public Address getLocation() {
+		return location;
+	}
+
+
+
+
+
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+
+
+
+
+	public List<Service> getServiceList() {
 		return serviceList;
 	}
+	
+
+
 	
 	
 }

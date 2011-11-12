@@ -22,7 +22,7 @@ public class Budget
 	/**************************************************************/
 	public static class Builder
 	{
-		private Budget budget;
+		private Budget budget = new Budget();
 		/*------------------------------------------------------*/
 		public Builder(Budget budget) {
 			try {
@@ -53,30 +53,31 @@ public class Budget
 		}
 	}
 	/**************************************************************/
-	public UUID budgetID()
-	{
+
+	public UUID getBudgetID() {
 		return budgetID;
 	}
-	public Category category()
-	{
+
+	public Category getCategory() {
 		return category;
 	}
-	public String name()
-	{
+
+	public String getName() {
 		return name;
 	}
-	public List<BudgetItem> budget_item_list()
-	{
+
+	public List<BudgetItem> getBudget_item_list() {
 		return budget_item_list;
 	}
-	public long eventID()
-	{
+
+	public long getEventID() {
 		return eventID;
 	}
-	public long limit()
-	{
+
+	public long getLimit() {
 		return limit;
 	}
+
 
 
 }

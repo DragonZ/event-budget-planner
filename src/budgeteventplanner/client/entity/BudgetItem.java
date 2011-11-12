@@ -18,7 +18,7 @@ public class BudgetItem
 	/**************************************************************/
 	public static class Builder
 	{
-		private BudgetItem budgetItem;
+		private BudgetItem budgetItem = new BudgetItem();
 		/*------------------------------------------------------*/
 		public Builder(BudgetItem budgetItem) {
 			try {
@@ -49,21 +49,26 @@ public class BudgetItem
 		}
 	}
 	/**************** Getter *************************/
-	public UUID budgetId()
-	{
+
+
+	public UUID getBudgetId() {
 		return budgetId;
 	}
-	public Category category()
-	{
+
+
+	public Category getCategory() {
 		return category;
 	}
-	public String name()
-	{
+
+
+	public String getName() {
 		return name;
 	}
-	public double limit()
-	{
+
+
+	public double getLimit() {
 		return limit;
 	}
+
 	
 }

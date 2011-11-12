@@ -16,7 +16,7 @@ public class Service
 	/**************************************************************/
 	public static class Builder
 	{
-		private Service Service;
+		private Service Service = new Service();
 		
 		public Builder()
 		{
@@ -46,16 +46,20 @@ public class Service
 		}
 	}
 	/**************************************************************/
-	public String name()
-	{
+
+
+	public String getName() {
 		return name;
 	}
-	public Category category()
-	{
+
+
+	public Category getCategory() {
 		return category;
 	}
-	public Double price()
-	{
+
+
+	public Double getPrice() {
 		return price;
 	}
+
 }

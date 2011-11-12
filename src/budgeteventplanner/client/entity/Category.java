@@ -8,7 +8,7 @@ public class Category
 	
 	public static class Builder
 	{
-		private Category category;
+		private Category category = new Category();
 		/*------------------------------------------------------*/
 		public Builder(Event event) {
 			try {
