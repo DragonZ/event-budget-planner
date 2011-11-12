@@ -13,7 +13,7 @@ public class Attendee {
 	private Address address;
 
 	public static class Builder {
-		private Attendee attendee;
+		private Attendee attendee = new Attendee();
 
 		public Builder(Attendee attendee) {
 			this.attendee = attendee;

@@ -18,7 +18,7 @@ public class Budget {
 	private long limit;
 
 	public static class Builder {
-		private Budget budget;
+		private Budget budget = new Budget();
 
 		public Builder(Budget budget) {
 			this.budget = budget;

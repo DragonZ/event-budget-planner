@@ -13,7 +13,7 @@ public class BudgetItem
 
 	public static class Builder
 	{
-		private BudgetItem budgetItem;
+		private BudgetItem budgetItem = new BudgetItem();
 		
 		public Builder(BudgetItem budgetItem) {
 			this.budgetItem = budgetItem;

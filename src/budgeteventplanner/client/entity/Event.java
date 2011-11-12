@@ -24,7 +24,7 @@ public class Event
 
 	public static class Builder
 	{
-		private Event event;
+		private Event event = new Event();
 		
 		public Builder(Event event) {
 			this.event = event;

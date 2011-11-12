@@ -18,7 +18,7 @@ public class Vendor {
 	private List<Service> serviceList;
 
 	public static class Builder {
-		private Vendor vendor;
+		private Vendor vendor = new Vendor();
 
 		public Builder(Vendor vendor) {
 			this.vendor = vendor;

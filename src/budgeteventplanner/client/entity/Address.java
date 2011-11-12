@@ -14,7 +14,7 @@ public class Address {
 	private String country;
 
 	public static class Builder {
-		private Address address;
+		private Address address = new Address();
 
 		public Builder(Address address) {
 			this.address = address;

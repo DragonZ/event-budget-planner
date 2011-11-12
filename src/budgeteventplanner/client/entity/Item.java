@@ -16,7 +16,7 @@ public class Item {
 	private Vendor vendor;
 
 	public static class Builder {
-		private Item item;
+		private Item item = new Item();
 
 		public Builder(Item item) {
 			this.item = item;
