@@ -41,8 +41,6 @@ public class BudgetEventPlanner implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
-	
-
 	/**
 	 * This is the entry point method.
 	 */
@@ -61,8 +59,6 @@ public class BudgetEventPlanner implements EntryPoint {
 		pwField.setWidth("210px");
 		final Label errorLabel = new Label();
 
-
-
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 		loginButton.addStyleName("loginButton");
@@ -74,7 +70,6 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("pwFieldContainer").add(pwField);
 		RootPanel.get("loginButtonContainer").add(loginButton);
 		RootPanel.get("signButtonContainer").add(signButton);
-
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
@@ -120,6 +115,8 @@ public class BudgetEventPlanner implements EntryPoint {
 				exceptionBox.hide();
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
+				nameField.setText("");
+				pwField.setText("");
 				nameField.setFocus(true);
 			}
 		});
@@ -147,7 +144,6 @@ public class BudgetEventPlanner implements EntryPoint {
 								@Override
 								public void onFailure(Throwable caught) {
 									// Show the RPC error message to the user
-									//System.out.print("Failure.");
 									exceptionBox.center();
 									clearButton.setFocus(true);
 								}
@@ -155,7 +151,6 @@ public class BudgetEventPlanner implements EntryPoint {
 								@Override
 								public void onSuccess(Integer result) {
 									// TODO Auto-generated method stub
-									//System.out.print("Success.");
 									String typeTurn = new String();
 									if(result == 0){ // Event Manager
 										typeTurn = "XiaYuan";
@@ -164,7 +159,8 @@ public class BudgetEventPlanner implements EntryPoint {
 										typeTurn = "ZhenLong";
 									}
 									else{
-										typeTurn = nameField.getText();
+										exceptionBox.center();
+										clearButton.setFocus(true);
 									}
 									RootPanel.get(typeTurn).setVisible(true);
 									RootPanel.get("main").setVisible(false);
