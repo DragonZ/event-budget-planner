@@ -1,8 +1,6 @@
 package budgeteventplanner.client;
 
-import java.util.ArrayList;
-
-import budgeteventplanner.client.entity.TestEntity;
+import java.security.NoSuchAlgorithmException;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -16,6 +14,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -26,6 +25,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class BudgetEventPlanner implements EntryPoint {
+	
+	private final UserServiceAsync userService = GWT.create(UserService.class);
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -36,6 +37,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
+	
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
@@ -104,12 +106,56 @@ public class BudgetEventPlanner implements EntryPoint {
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
-				RootPanel.get(nameField.getText()).setVisible(true);
-				RootPanel.get("main").setVisible(false);
-				nameField.setText("");
-				pwField.setText("");
-			}
-		});
+				if(nameField.getText().equals("XuXuan")||nameField.getText().equals("XuXuan2")){
+					RootPanel.get(nameField.getText()).setVisible(true);
+					RootPanel.get("main").setVisible(false);
+					nameField.setText("");
+					pwField.setText("");
+				}
+				else{
+					try {
+						userService.login(nameField.getText(), pwField.getText(),
+							new AsyncCallback<Integer>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									// Show the RPC error message to the user
+									//System.out.print("Failure.");
+									dialogBox
+											.setText("Remote Procedure Call - Failure");
+									serverResponseLabel
+											.addStyleName("serverResponseLabelError");
+									serverResponseLabel.setHTML("RPC Call Failed!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+								
+								@Override
+								public void onSuccess(Integer result) {
+									// TODO Auto-generated method stub
+									//System.out.print("Success.");
+									String typeTurn = new String();
+									if(result == 0){ // Event Manager
+										typeTurn = "XiaYuan";
+									}
+									else if(result == 1){ // Vender
+										typeTurn = "ZhenLong";
+									}
+									else{
+										typeTurn = nameField.getText();
+									}
+									RootPanel.get(typeTurn).setVisible(true);
+									RootPanel.get("main").setVisible(false);
+									nameField.setText("");
+									pwField.setText("");
+								}
+							});
+					} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+				} // end if
+			} // end onClick
+		}); // end CloseButton Handler
 
 		// Create the popup signup box
 		final DialogBox signupBox = new DialogBox();
@@ -117,6 +163,9 @@ public class BudgetEventPlanner implements EntryPoint {
 		signupBox.setAnimationEnabled(true);
 		final TextBox emailAdd = new TextBox();
 		emailAdd.setWidth("200px");
+		final ListBox userType = new ListBox();
+		userType.addItem("Manager");
+		userType.addItem("Vender");
 		final PasswordTextBox first_pw = new PasswordTextBox();
 		first_pw.setWidth("200px");
 		final PasswordTextBox second_pw = new PasswordTextBox();
@@ -142,6 +191,8 @@ public class BudgetEventPlanner implements EntryPoint {
 		signupVPanel.add(new HTML("<b>Username:</b>"));
 		signupVPanel.add(emailAdd);
 		signupVPanel.add(textToServerLabel_su);
+		signupVPanel.add(new HTML("<br><b>User Type:</b>"));
+		signupVPanel.add(userType);
 		signupVPanel.add(new HTML("<br><b>Password:</b>"));
 		signupVPanel.add(serverResponseLabel_su);
 		signupVPanel.add(first_pw);
@@ -206,7 +257,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		errorVPanel.add(okButton);
 		errorBox.setWidget(errorVPanel);
 
-		// Add a handler to submit the information
+		// Add a handler to submit the informationprivate final UserServiceAsync userService = GWT.create(UserService.class);
 		submitButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (emailAdd.getText().isEmpty()) {
@@ -215,29 +266,58 @@ public class BudgetEventPlanner implements EntryPoint {
 					errorSign.setText("Invalid password");
 				} else if (!first_pw.getText().equals(second_pw.getText())) {
 					errorSign.setText("Re-typed password is not correct");
-				} else if (address.getText().isEmpty()) {
-					errorSign.setText("Invalid address");
-				} else if (city.getText().isEmpty()) {
-					errorSign.setText("Invalid city");
-				} else if (state.getText().length() < 2) {
-					errorSign.setText("Invalid state");
-				} else if (zipCode.getText().length() < 5) {
-					errorSign.setText("Invalid zipcode");
-				}
+				} 
+//				else if (address.getText().isEmpty()) {
+//					errorSign.setText("Invalid address");
+//				} else if (PASSWORD_NOT_MATCHcity.getText().isEmpty()) {
+//					errorSign.setText("Invalid city");
+//				} else if (state.getText().length() < 2) {
+//					errorSign.setText("Invalid state");
+//				} else if (zipCode.getText().length() < 5) {
+//					errorSign.setText("Invalid zipcode");
+//				}
 
 				if (errorSign.getText().isEmpty()) {
-					signupBox.hide();
-					emailAdd.setText("");
-					first_pw.setText("");
-					second_pw.setText("");
-					address.setText("");
-					city.setText("");
-					state.setText("");
-					zipCode.setText("");
-
-					signedBox.show();
-					signedBox.center();
-					backButton.setFocus(true);
+					
+					try {
+						userService.register(emailAdd.getText(), first_pw.getText(), new Integer(userType.getSelectedIndex()),
+								new AsyncCallback<Void>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										// Show the RPC error message to the user
+										//System.out.print("Failure.");
+										dialogBox
+												.setText("Remote Procedure Call - Failure");
+										serverResponseLabel
+												.addStyleName("serverResponseLabelError");
+										serverResponseLabel.setHTML("RPC Call Failed!");
+										dialogBox.center();
+										closeButton.setFocus(true);
+									}
+									
+									@Override
+									public void onSuccess(Void result) {
+										// TODO Auto-generated method stub
+										//System.out.print("Success.");
+										signupBox.hide();
+										emailAdd.setText("");
+										userType.setItemSelected(0, true);
+										first_pw.setText("");
+										second_pw.setText("");
+										address.setText("");
+										city.setText("");
+										state.setText("");
+										zipCode.setText("");
+										signedBox.show();
+										signedBox.center();
+										backButton.setFocus(true);
+									}
+								});
+					} catch (NoSuchAlgorithmException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				} else {
 					errorBox.show();
 					errorBox.center();
@@ -250,6 +330,14 @@ public class BudgetEventPlanner implements EntryPoint {
 		cancelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				signupBox.hide();
+				emailAdd.setText("");
+				userType.setItemSelected(0, true);
+				first_pw.setText("");
+				second_pw.setText("");
+				address.setText("");
+				city.setText("");
+				state.setText("");
+				zipCode.setText("");
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
