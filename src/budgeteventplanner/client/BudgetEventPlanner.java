@@ -98,6 +98,31 @@ public class BudgetEventPlanner implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
+		
+		final DialogBox exceptionBox = new DialogBox();
+		exceptionBox.setText("Failure");
+		exceptionBox.setAnimationEnabled(true);
+		final Button clearButton = new Button("Close");
+		closeButton.getElement().setId("clearButton");
+		final Label exceptionLabel = new Label();
+		final HTML exceptionResponseLabel = new HTML();
+		VerticalPanel exceptionPanel = new VerticalPanel();
+		exceptionPanel.addStyleName("exceptionPanel");
+		exceptionPanel.add(new HTML("<b>Incorrect Username or Password!</b>"));
+		exceptionPanel.add(exceptionLabel);
+		exceptionPanel.add(exceptionResponseLabel);
+		exceptionPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		exceptionPanel.add(clearButton);
+		exceptionBox.setWidget(exceptionPanel);
+		
+		clearButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				exceptionBox.hide();
+				loginButton.setEnabled(true);
+				signButton.setEnabled(true);
+				nameField.setFocus(true);
+			}
+		});
 
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
@@ -112,6 +137,9 @@ public class BudgetEventPlanner implements EntryPoint {
 					nameField.setText("");
 					pwField.setText("");
 				}
+				else if(nameField.getText().isEmpty()){
+					
+				}
 				else{
 					try {
 						userService.login(nameField.getText(), pwField.getText(),
@@ -120,13 +148,8 @@ public class BudgetEventPlanner implements EntryPoint {
 								public void onFailure(Throwable caught) {
 									// Show the RPC error message to the user
 									//System.out.print("Failure.");
-									dialogBox
-											.setText("Remote Procedure Call - Failure");
-									serverResponseLabel
-											.addStyleName("serverResponseLabelError");
-									serverResponseLabel.setHTML("RPC Call Failed!");
-									dialogBox.center();
-									closeButton.setFocus(true);
+									exceptionBox.center();
+									clearButton.setFocus(true);
 								}
 								
 								@Override
@@ -160,7 +183,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		// Create the popup signup box
 		final DialogBox signupBox = new DialogBox();
 		signupBox.setText("Sign Up");
-		signupBox.setAnimationEnabled(true);
+		//signupBox.setAnimationEnabled(true);
 		final TextBox emailAdd = new TextBox();
 		emailAdd.setWidth("200px");
 		final ListBox userType = new ListBox();
@@ -286,13 +309,8 @@ public class BudgetEventPlanner implements EntryPoint {
 									public void onFailure(Throwable caught) {
 										// Show the RPC error message to the user
 										//System.out.print("Failure.");
-										dialogBox
-												.setText("Remote Procedure Call - Failure");
-										serverResponseLabel
-												.addStyleName("serverResponseLabelError");
-										serverResponseLabel.setHTML("RPC Call Failed!");
-										dialogBox.center();
-										closeButton.setFocus(true);
+										exceptionBox.center();
+										clearButton.setFocus(true);
 									}
 									
 									@Override
@@ -387,16 +405,20 @@ public class BudgetEventPlanner implements EntryPoint {
 			 */
 			private void sendNameToServer() {
 				// First, we validate the input.
-				errorLabel.setText("");
-				String textToServer = nameField.getText();
+				if(nameField.getText().isEmpty()){
+				
+				}
+				else{
+					errorLabel.setText("");
+					String textToServer = nameField.getText();
 
-				// Then, we send the input to the server.
-				loginButton.setEnabled(false);
-				signButton.setEnabled(false);
-				textToServerLabel.setText(textToServer);
-				serverResponseLabel.setText("");
+				// 	Then, we send the input to the server.
+					loginButton.setEnabled(false);
+					signButton.setEnabled(false);
+					textToServerLabel.setText(textToServer);
+					serverResponseLabel.setText("");
 
-				greetingService.greetServer(textToServer,
+					greetingService.greetServer(textToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
@@ -418,6 +440,7 @@ public class BudgetEventPlanner implements EntryPoint {
 								closeButton.setFocus(true);
 							}
 						});
+				}
 			}
 		}
 
