@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -42,8 +43,9 @@ public class VendorHomePage implements EntryPoint {
 	TreeItem pendingEvent;
 	TreeItem acceptedEvent;
 	TreeItem ignoredEvent;
-	//TreeItem eventHistory;
 	FlexTable events;
+	//TreeItem eventHistory;
+	//CAN DO
 	
 	DockPanel vendorService;
 	FlexTable existingService;
@@ -51,9 +53,8 @@ public class VendorHomePage implements EntryPoint {
 	ListBox category;
 	TextBox service;
 	//TextBox/TextArea description;
+	//TO BE DECIDED
 	Button addService;
-	//Button deleteService;
-	//Button modify == delete then add new one
 	
 	Hyperlink acceptHyperlink[];
 	Hyperlink ignoreHyperlink[];
@@ -61,54 +62,72 @@ public class VendorHomePage implements EntryPoint {
 	
 	Hyperlink deleteHyperlink[];
 	
-	//private final DataServiceAsync dataService = GWT.create(DataService.class);
-	
 	@Override
 	public void onModuleLoad() {
 		
-		tab = new TabPanel();
-		//the bottom tab panel
+		tab = new TabPanel();			//the bottom tab panel for vendor page
 		
-		vendorPage = new DockPanel();
-		vendorService = new DockPanel();
-		addPanel = new HorizontalPanel();
-		//the panel contains all components
-		
-		eventFolders = new Tree();
-		pendingEvent = new TreeItem("Pending Events");
-		acceptedEvent = new TreeItem("Accepted Events");
-		ignoredEvent = new TreeItem("Ignored Events");
-		//eventHistory = new TreeItem("Events History");
-		//tree and treeItems
-		
-		events = new FlexTable();
-		events.getColumnFormatter().setWidth(0, "100px");
-		events.getColumnFormatter().setWidth(1, "100px");
-		events.getColumnFormatter().setWidth(3, "100px");
-		existingService = new FlexTable();
-		//events.setWidth("350px");      //TODO SIZE
-		//new method to initialize the service table
-		initializeServiceTable();
-		//event table
+		vendorPage = new DockPanel();		//vendor home page panel
+		vendorService = new DockPanel();	//vendor service management page panel
+		addPanel = new HorizontalPanel();	//nested panel in the service panel
 
-		eventFolders.setWidth("150px"); //TODO SIZE
+		
+		eventFolders = new Tree();			//vendor home page folders
+		pendingEvent = new TreeItem("Pending Events");	//pending 
+		acceptedEvent = new TreeItem("Accepted Events");//accepted
+		ignoredEvent = new TreeItem("Ignored Events");	//ignored
+		//eventHistory = new TreeItem("Events History");
+		//CAN DO
+		
+		eventFolders.setWidth("150px");
+		//size issue to be done
 		eventFolders.addItem(pendingEvent);
 		eventFolders.addItem(acceptedEvent);
 		eventFolders.addItem(ignoredEvent);
 		//eventFolders.addItem(eventHistory);
+		//CAN DO
+		
+		
+		events = new FlexTable();							//table for entries in a certain folder
+		events.getColumnFormatter().setWidth(0, "100px");	
+		events.getColumnFormatter().setWidth(1, "100px");
+		events.getColumnFormatter().setWidth(3, "100px");
+		//size issue to be done
+		
+		existingService = new FlexTable();					//table for service management page
+		initializeServiceTable();							//new method to initialize the service table
+		
 		
 		vendorPage.add(eventFolders, DockPanel.WEST);
 		vendorPage.add(events, DockPanel.EAST);
 		
-		category = new ListBox();
-		//get category from server/store the categories in the client?
-		//addItem("...");
-		//setVisibleItemCount(1/5);
+		category = new ListBox();						//get category from server
+		initializeCategory();
+		 
 		service = new TextBox();
+		//TextArea description = new TextArea();
+	    //description.setCharacterWidth(80);
+	    //description.setVisibleLines(50);
 		addService = new Button("ADD");
-		//click handler
+		 /* 
+		addService.addClickHandler(new ClickHandler()
+		{
+			public void onClick(ClickEvent event)
+			{
+				String sentCategory = category.getItemText(category.getSelectedIndex());
+				String sentText = service.getText();
+				//TODO description
+				
+				//add to server
+				
+				//refresh the table
+			}
+		});*/
+		
+		
 		addPanel.add(category);
 		addPanel.add(service);
+		//addPanel.add(description);
 		addPanel.add(addService);
 		//vendorService.add(addService, DockPanel.NORTH);
 		vendorService.add(existingService, DockPanel.CENTER);
@@ -147,6 +166,16 @@ public class VendorHomePage implements EntryPoint {
 		existingService.setWidget(0, 1, new Label("Service"));
 		//existingService.setWidget(0, 0, new Label("Description"));
 		existingService.setWidget(0, 2, new Label("Option"));
+	}
+	
+	public void initializeCategory()
+	{
+		//get information from server
+		
+		for(int i = 0; i < 7; i++)
+		{
+			category.addItem(Integer.toString(i));
+		}
 	}
 	
 	public class treeHandler<TreeItem> implements SelectionHandler<TreeItem>
