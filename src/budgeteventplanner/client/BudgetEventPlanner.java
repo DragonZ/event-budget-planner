@@ -128,7 +128,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
 				nameField.setFocus(true);
-				if(nameField.getText().equals("XuXuan")||nameField.getText().equals("XuXuan2")){
+				if(nameField.getText().equals("XuXuan")||nameField.getText().equals("XuXuan2")||nameField.getText().equals("XiaYuan")||nameField.getText().equals("ZhenLong")){
 					RootPanel.get(nameField.getText()).setVisible(true);
 					RootPanel.get("main").setVisible(false);
 					nameField.setText("");
