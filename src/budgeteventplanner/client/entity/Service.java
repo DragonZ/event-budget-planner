@@ -10,6 +10,7 @@ public class Service {
 	private String name;
 	private Category category;
 	private String description;
+	private String VendorID;
 
 	public static class Builder {
 		private Service service = new Service();
@@ -28,8 +29,13 @@ public class Service {
 			return this;
 		}
 
-		public Builder setPrice(String description) {
+		public Builder setDescription(String description) {
 			this.service.description = description;
+			return this;
+		}
+		
+		public Builder setVendorID(String VendorID) {
+			this.service.VendorID = VendorID;
 			return this;
 		}
 
@@ -48,5 +54,9 @@ public class Service {
 
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getVendorID() {
+		return VendorID;
 	}
 }
