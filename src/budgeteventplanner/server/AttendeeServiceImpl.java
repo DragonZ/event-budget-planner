@@ -61,5 +61,11 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		ofy.put(attendee);
 	}
 	
+	@Override
+	public Integer attendeeLogin(String registrationCode)
+			throws NoSuchAlgorithmException {
+		return 1;
+	}
+	
 	
 }
