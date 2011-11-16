@@ -9,7 +9,7 @@ import com.googlecode.objectify.annotation.Entity;
 public class Service {
 	private String name;
 	private Category category;
-	private Double price;
+	private String description;
 
 	public static class Builder {
 		private Service service = new Service();
@@ -28,8 +28,8 @@ public class Service {
 			return this;
 		}
 
-		public Builder setPrice(Double price) {
-			this.service.price = price;
+		public Builder setPrice(String description) {
+			this.service.description = description;
 			return this;
 		}
 
@@ -46,7 +46,7 @@ public class Service {
 		return category;
 	}
 
-	public Double getPrice() {
-		return price;
+	public String getDescription() {
+		return description;
 	}
 }
