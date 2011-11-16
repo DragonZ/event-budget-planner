@@ -227,7 +227,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 					int total_event=event_table.getRowCount();
 					for (row=1;row<=total_event;row++)
 					{
-						if (budget_table.getWidget(row, 6).equals(budget_mod))
+						if (budget_table.getWidget(row, 4).equals(budget_mod))
 							break;
 					}
 					budget_pop_up(1, row, budget_table);
@@ -521,7 +521,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	}
 	public void view_info_pop_up(String eventId)
 	{
-final DialogBox d=new DialogBox();
+		final DialogBox d=new DialogBox();
 		
 		VerticalPanel panel=new VerticalPanel();
 		String panelTitle="<strong><big>Event Information:</big></strong>";
