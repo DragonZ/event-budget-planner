@@ -1,5 +1,6 @@
 package budgeteventplanner.client;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import budgeteventplanner.client.entity.Attendee;
@@ -14,4 +15,5 @@ public interface AttendeeService extends RemoteService {
 	public void saveAttendeeInfo(String attendeeID,  String email, 
 			String firstName, String midName, String lastName, 
 			String jobTitle, String companyName, String address, String phoneNum);
+	Integer attendeeLogin(String registrationCode) throws NoSuchAlgorithmException;
 }
