@@ -9,6 +9,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("event")
 public interface EventService extends RemoteService {
-	void createEvent(String eventName, Organizer organizer, Integer role) throws NoSuchAlgorithmException;
+	void createEvent(String eventName, String organizer, Integer visibility) throws NoSuchAlgorithmException;
 
 }

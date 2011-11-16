@@ -1,10 +1,10 @@
 package budgeteventplanner.client.entity;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import budgeteventplanner.shared.UUID;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.googlecode.objectify.annotation.Entity;
 
 /**
@@ -15,14 +15,15 @@ import com.googlecode.objectify.annotation.Entity;
  * .addEvent("aaa") .build();
  */
 
+@SuppressWarnings("serial")
 // BudgetAttendee Organizer = (new
 // BudgetAttendee).Builder(......).setId(id).build();
 @Entity
-public class Organizer {
+public class Organizer implements Serializable{
 
 	private String organizerID;
-	private List<String> eventList;
-	private List<String> contactList;
+	private ArrayList<String> eventList;
+	private ArrayList<String> contactList;
 	private String name;
 
 	public Organizer() {
@@ -37,8 +38,8 @@ public class Organizer {
 
 		public Builder(String firstName, String lastName) {
 			this.organizer.organizerID = UUID.randomUUID();
-			this.organizer.eventList = Lists.newArrayList();
-			this.organizer.contactList = Lists.newArrayList();
+			this.organizer.eventList = new ArrayList<String>();
+			this.organizer.contactList = new ArrayList<String>();
 		}
 
 		public Builder setName(String name) {
@@ -65,11 +66,11 @@ public class Organizer {
 		return organizerID;
 	}
 
-	public List<String> getEventList() {
+	public ArrayList<String> getEventList() {
 		return eventList;
 	}
 
-	public List<String> getContactList() {
+	public ArrayList<String> getContactList() {
 		return contactList;
 	}
 

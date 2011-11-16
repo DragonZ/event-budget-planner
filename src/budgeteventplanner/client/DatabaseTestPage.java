@@ -3,6 +3,7 @@ package budgeteventplanner.client;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import budgeteventplanner.client.entity.Organizer;
 import budgeteventplanner.client.entity.TestEntity;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -23,6 +24,8 @@ public class DatabaseTestPage implements EntryPoint {
 	private final DataServiceAsync dataService = GWT.create(DataService.class);
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
+	
+	private final EventServiceAsync eventService = GWT.create(EventService.class);
 
 	@Override
 	public void onModuleLoad() {
@@ -139,6 +142,11 @@ public class DatabaseTestPage implements EntryPoint {
 		DBGetHandler dbgethandler = new DBGetHandler();
 		getButton.addClickHandler(dbgethandler);
 
+
+
+		
+		
+		//registyer component
 		final Button registerButton = new Button("Register");
 		final Button loginButton = new Button("Login");
 		final TextBox dbemail = new TextBox();
@@ -213,7 +221,7 @@ public class DatabaseTestPage implements EntryPoint {
 
 								@Override
 								public void onSuccess(Integer result) {
-									dialogBox.setText("Remote Procedure Call");
+									dialogBox.setText("Remote Procedure Call - Success");
 									serverResponseLabel
 											.removeStyleName("serverResponseLabelError");
 									serverResponseLabel.setHTML(result.toString());
@@ -228,6 +236,99 @@ public class DatabaseTestPage implements EntryPoint {
 		}
 
 		loginButton.addClickHandler(new DBLoginHandler());
+		
+		//event component
+		final Label eventTestLabel = new Label("Event service test");
+		final Button putButton2 = new Button("put2");
+		final Button getButton2 = new Button("get2");
+		final TextBox dbeventname = new TextBox();
+		final TextBox dborganizer = new TextBox();
+		final TextBox dbvisibility = new TextBox();
+
+		RootPanel.get("eventContainer").add(eventTestLabel);
+		RootPanel.get("eventContainer").add(dbeventname);
+		RootPanel.get("eventContainer").add(dborganizer);
+		RootPanel.get("eventContainer").add(dbvisibility);
+		RootPanel.get("eventContainer").add(putButton2);
+		RootPanel.get("eventContainer").add(getButton2);
+
+		class DBPut2Handler implements ClickHandler {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				try {
+					eventService.createEvent(dbeventname.getText(), 
+							dborganizer.getText(), Integer.parseInt(dbvisibility.getText()),
+							new AsyncCallback<Void>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									dialogBox
+											.setText("Remote Procedure Call - Failure");
+									serverResponseLabel
+											.addStyleName("serverResponseLabelError");
+									serverResponseLabel
+											.setHTML("RPC Call Failed!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									dialogBox.setText("Remote Procedure Call");
+									serverResponseLabel
+											.removeStyleName("serverResponseLabelError");
+									serverResponseLabel
+											.setHTML("Registered Successfully!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+							});
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+		putButton2.addClickHandler(new DBPut2Handler());
+		
+	/*	class DBGet2Handler implements ClickHandler {
+
+
+			@Override
+			public void onClick(ClickEvent event) {
+				try {
+					userService.login(dbemail2.getText(), dbpasswd.getText(),
+							new AsyncCallback<Integer>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									// Show the RPC error message to the user
+									dialogBox
+											.setText("Remote Procedure Call - Failure");
+									serverResponseLabel
+											.addStyleName("serverResponseLabelError");
+									serverResponseLabel.setHTML("RPC Call Failed!");
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+
+								@Override
+								public void onSuccess(Integer result) {
+									dialogBox.setText("Remote Procedure Call");
+									serverResponseLabel
+											.removeStyleName("serverResponseLabelError");
+									serverResponseLabel.setHTML(result.toString());
+									dialogBox.center();
+									closeButton.setFocus(true);
+								}
+							});
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		getButton2.addClickHandler(new DBLoginHandler());*/
 	}
 
 }

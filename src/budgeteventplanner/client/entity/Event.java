@@ -3,6 +3,8 @@ package budgeteventplanner.client.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Id;
+
 import budgeteventplanner.shared.UUID;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
@@ -12,13 +14,14 @@ import com.googlecode.objectify.annotation.Entity;
 @Entity
 public class Event
 {
+	@Id
 	private String eventID;
 	private String name;
-	private Organizer organizer;
+	private String organizerId;
 	private Date startTime;
 	private Date endTime;
 	private Address location;
-	private int visibility;
+	private Integer visibility;
 	private List<Item> itemList;
 	private List<Attendee> attendeeList;
 
@@ -30,10 +33,10 @@ public class Event
 			this.event = event;
 		}
 
-		public Builder(String name, Organizer organizer, int visibility)
+		public Builder(String name, String organizerId, Integer visibility)
 		{
 			this.event.name = name;
-			this.event.organizer = organizer;
+			this.event.organizerId = organizerId;
 			this.event.visibility = visibility;
 			this.event.eventID = UUID.randomUUID();
 			this.event.itemList = Lists.newArrayList();
@@ -94,9 +97,9 @@ public class Event
 		return name;
 	}
 	
-	public Organizer organizer()
+	public String organizer()
 	{
-		return organizer;
+		return organizerId;
 	}
 	
 	public Date startTime()
@@ -114,7 +117,7 @@ public class Event
 		return location;
 	}
 	
-	public int visibility()
+	public Integer visibility()
 	{
 		return visibility;
 	}

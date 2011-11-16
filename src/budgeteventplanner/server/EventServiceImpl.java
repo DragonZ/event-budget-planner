@@ -17,11 +17,11 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
 	}
 
 	@Override
-	public void createEvent(String eventName, Organizer organizer, Integer role)
+	public void createEvent(String eventName, String organizer, Integer visibility)
 			throws NoSuchAlgorithmException {
 		// TODO Auto-generated method stub
 		Objectify ofy = ObjectifyService.begin();
-		Event event= new Event.Builder(eventName, organizer, role)
+		Event event= new Event.Builder(eventName, organizer, visibility)
 		.build();
 		ofy.put(event);
 		

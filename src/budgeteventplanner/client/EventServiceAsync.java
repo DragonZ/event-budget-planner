@@ -7,6 +7,6 @@ import budgeteventplanner.client.entity.Organizer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface EventServiceAsync {
-	void createEvent(String eventName, Organizer organizer, Integer role, AsyncCallback<Void> callback) throws NoSuchAlgorithmException;
+	void createEvent(String eventName, String organizer, Integer visibility, AsyncCallback<Void> callback) throws NoSuchAlgorithmException;
 
 }
