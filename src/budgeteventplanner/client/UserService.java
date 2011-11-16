@@ -9,4 +9,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface UserService extends RemoteService {
 	void register(String email, String password, Integer role) throws NoSuchAlgorithmException;
 	Integer login(String email, String password) throws NoSuchAlgorithmException;
+	Integer attendeeLogin(String registrationCode) throws NoSuchAlgorithmException;
 }
