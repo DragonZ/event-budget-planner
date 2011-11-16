@@ -16,6 +16,10 @@ public class Category
 		{
 			this.category.name = name;
 		}
+		public Category build()
+		{
+			return this.category;
+		}
 	}
 
 	public String getName() {
