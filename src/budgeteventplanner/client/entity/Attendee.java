@@ -10,7 +10,9 @@ public class Attendee {
 	private String attendeeID;
 	private String name;
 	private String email;
-	private Address address;
+	private String address;
+	private String jobtitle;
+	private String companyName;
 
 	public static class Builder {
 		private Attendee attendee = new Attendee();
@@ -25,11 +27,26 @@ public class Attendee {
 			this.attendee.attendeeID = UUID.randomUUID();
 		}
 
-		public Builder SetName(String name) {
+		public Builder setName(String name) {
 			this.attendee.name = name;
 			return this;
 		}
-
+		
+		public Builder setAddress(String address) {
+			this.attendee.address = address;
+			return this;
+		}
+		
+		public Builder setJobtitle(String jobtitle) {
+			this.attendee.jobtitle = jobtitle;
+			return this;
+		}
+		
+		public Builder setCompanyName(String companyName) {
+			this.attendee.companyName = companyName;
+			return this;
+		}
+		
 		public Attendee build() {
 			return this.attendee;
 		}
@@ -47,7 +64,7 @@ public class Attendee {
 		return email;
 	}
 
-	public Address getAddress() {
+	public String getAddress() {
 		return address;
 	}
 }
