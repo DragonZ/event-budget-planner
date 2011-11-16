@@ -12,4 +12,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface AttendeeService extends RemoteService {
 	void createAttendee(String firstName, String lastName, String email) throws NoSuchAlgorithmException;
 	ArrayList<Attendee> getAttendeeList(String eventOrganizerID);
+	public void saveAttendeeInfo(String attendeeID,  String email, 
+			String firstName, String midName, String lastName, 
+			String jobTitle, String companyName, String address, String phoneNum);
 }

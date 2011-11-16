@@ -31,6 +31,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		
 	}
 	
+	@Override
 	public ArrayList<Attendee> getAttendeeList(String eventOrganizerID)
 	{
 		
@@ -42,12 +43,23 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		for (Attendee fetched : q) {
 			attendees.add(fetched);
 		}
-		return attendees;
-		
-		
-		
+		return attendees;		
 	}
 	
+	
+	// This function updates the info of a given attendee
+	public void saveAttendeeInfo(String attendeeID,  String email, 
+			String firstName, String midName, String lastName, 
+			String jobTitle, String companyName, String address, String phoneNum)
+	{
+		Objectify ofy = ObjectifyService.begin();
+		Attendee attendee = ofy.query(Attendee.class).filter("id", attendeeID).get();
+		ArrayList<Attendee> entities = new ArrayList<Attendee>();
+
+		attendee = new Attendee.Builder(attendee).setName(lastName).setCompanyName(companyName).setJobtitle(jobTitle).build();
+		
+		ofy.put(attendee);
+	}
 	
 	
 }
