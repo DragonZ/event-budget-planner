@@ -13,7 +13,7 @@ public class Vendor {
 	private String vendorID;
 	private String name;
 	private List<Category> categoryList;
-	private Address location;
+	private String location;
 	private List<Item> itemList;
 	private List<Service> serviceList;
 
@@ -26,12 +26,11 @@ public class Vendor {
 			this.vendor.serviceList = Lists.newArrayList();
 		}
 
-		public Builder(String name) {
-			this.vendor.name = name;
+		public Builder() {
 			this.vendor.vendorID = UUID.randomUUID();
 		}
 
-		public Builder setLocation(Address location) {
+		public Builder setLocation(String location) {
 			this.vendor.location = location;
 			return this;
 		}
@@ -63,7 +62,7 @@ public class Vendor {
 		return categoryList;
 	}
 
-	public Address getLocation() {
+	public String getLocation() {
 		return location;
 	}
 
