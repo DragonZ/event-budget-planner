@@ -45,6 +45,11 @@
     <servlet-name>categoryServlet</servlet-name>
     <servlet-class>budgeteventplanner.server.CategoryServiceImpl</servlet-class>
   </servlet>
+  
+  <servlet>
+    <servlet-name>organizerServlet</servlet-name>
+    <servlet-class>budgeteventplanner.server.OrganizerServiceImpl</servlet-class>
+  </servlet>
       
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
@@ -85,6 +90,11 @@
     <servlet-name>categoryServlet</servlet-name>
     <url-pattern>/budgeteventplanner/category</url-pattern>
   </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>organizerServlet</servlet-name>
+    <url-pattern>/budgeteventplanner/organizer</url-pattern>
+  </servlet-mapping>  
   
   <!-- Default page to serve -->
   <welcome-file-list>

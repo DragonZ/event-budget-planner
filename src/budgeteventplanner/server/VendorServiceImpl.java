@@ -6,6 +6,8 @@ import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.client.entity.User;
+
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -66,6 +68,8 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 		Objectify ofy = ObjectifyService.begin();
 		@SuppressWarnings("unchecked")
 		List<Category> list = (List<Category>)(ofy.query(Category.class).fetch());
+	//	ArrayList<Category> result = Lists.newArrayList();
+		
 		return list;
 	}
 
