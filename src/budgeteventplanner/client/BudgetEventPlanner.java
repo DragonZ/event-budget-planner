@@ -284,15 +284,15 @@ public class BudgetEventPlanner implements EntryPoint {
 		final HTML serverResponseLabel_su = new HTML();
 		VerticalPanel signupVPanel = new VerticalPanel();
 		signupVPanel.addStyleName("signupVPanel");
-		signupVPanel.add(new HTML("<b>Username:</b>"));
+		signupVPanel.add(new HTML("<b>*Username:</b>"));
 		signupVPanel.add(emailAdd);
 		signupVPanel.add(textToServerLabel_su);
-		signupVPanel.add(new HTML("<br><b>User Type:</b>"));
+		signupVPanel.add(new HTML("<br><b>*User Type:</b>"));
 		signupVPanel.add(userType);
-		signupVPanel.add(new HTML("<br><b>Password:</b>"));
+		signupVPanel.add(new HTML("<br><b>*Password:</b>"));
 		signupVPanel.add(serverResponseLabel_su);
 		signupVPanel.add(first_pw);
-		signupVPanel.add(new HTML("<br><b>Retype Password:</b>"));
+		signupVPanel.add(new HTML("<br><b>*Retype Password:</b>"));
 		signupVPanel.add(second_pw);
 		signupVPanel.add(new HTML("<br><b>Address:</b>"));
 		signupVPanel.add(address);
@@ -358,7 +358,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		// Add a handler to submit the informationprivate final UserServiceAsync userService = GWT.create(UserService.class);
 		submitButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (emailAdd.getText().isEmpty()) {
+				if (emailAdd.getText().isEmpty()||(!emailAdd.getText().contains("@"))||(!emailAdd.getText().contains("."))) {
 					errorSign.setText("Invalid username");
 				} 
 				else if (first_pw.getText().isEmpty()) {
