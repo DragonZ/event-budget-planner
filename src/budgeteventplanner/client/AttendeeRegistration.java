@@ -26,8 +26,8 @@ public class AttendeeRegistration implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
+	private final AttendeeServiceAsync attendeeService = GWT
+			.create(AttendeeService.class);
 	final Label emailLabel=new Label("*Email:");
 	final TextBox emailBox=new TextBox();
 	final Label firstNameLabel=new Label("*First Name:");
@@ -143,11 +143,11 @@ public class AttendeeRegistration implements EntryPoint {
 					
 					if(!checkForm())	return;
 					
-					greetingService.sendEmail(firstNameBox.getText(), emailBox.getText(), new AsyncCallback<Integer>(){
+					attendeeService.updateAttendeeInfo(attendeeID, firstNameBox.getName()+" "+midNameBox.getName(),emailBox.getName(),jobTitleBox.getName(), companyBox.getName(), address1Box.getName()+"\n"+ address2Box.getName()+"\n"+cityBox.getName()+"\n"+stateBox.getName()+"\n"+zipBox.getName(),phoneBox.getName(), new AsyncCallback<Void>(){
 						public void onFailure(Throwable caught) {
 						}
 
-						public void onSuccess(Integer result) {
+						public void onSuccess(Void result) {
 							
 							((HTML) dialogVPanel.getWidget(0)).setHTML("<b>Submit Successful!</b>");
 							dialogBox.center();

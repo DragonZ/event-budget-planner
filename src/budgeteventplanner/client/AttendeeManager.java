@@ -15,17 +15,17 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AttendeeManager implements EntryPoint {
-
-
-
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -44,14 +44,23 @@ public class AttendeeManager implements EntryPoint {
 			.create(AttendeeService.class);
 
 	final static TextArea infoBox = new TextArea();
-	static Label[] attendees;// = new Label[5];
+	static ArrayList<Label> attendees= new ArrayList<Label>();// = new Label[5];
 	static HorizontalPanel hPanel = new HorizontalPanel();
 	static TreeItem root = new TreeItem("Attendees");
-	List<Attendee> attendeeList;
+//	static VerticalPanel dialogVPanel = new VerticalPanel();
+	//final static DialogBox wusuowei = new DialogBox();
 	@Override
 	public void onModuleLoad() {
 		// TODO Auto-generated method stub
-
+		
+//		dialogVPanel.addStyleName("dialogVPanel");
+//		dialogVPanel.add(new HTML("<b>Submit Successful!</b>"));
+//	
+//		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+//		wusuowei.setWidget(dialogVPanel);
+	
+		
+		
 		hPanel.setSpacing(50);
 		RootPanel.get("attendees").add(hPanel);
 		hPanel.setSize("100%", "100%");
@@ -105,31 +114,28 @@ public class AttendeeManager implements EntryPoint {
 
 	public static void showAttendees(String eventID) {
 		
-			attendeeService.getAttendeeList(eventID, new AsyncCallback<ArrayList<Attendee>>(){
+			attendeeService.getAttendeeListByOrganizerId(eventID, new AsyncCallback<ArrayList<Attendee>>(){
 				public void onFailure(Throwable caught){}
 				public	void onSuccess(ArrayList<Attendee> attendeeList){
-				attendees = new MyLabel[attendeeList.size()];
 
-				for (int i = 0; i < attendeeList.size(); i++) {
-					attendees[i] = new Label(attendeeList.get(i).getName());
+			
+				    for (int i = 0; i < attendeeList.size(); i++) {
+
+				    	System.out.println("Name:"+attendeeList.get(i).getName());
+					attendees.add(new Label(attendeeList.get(i).getName()));
 					final String info=attendeeList.get(i).toString();
-					//attendees[i].setAttendeeInfo(attendeeList.get(i).toString());
-					root.addItem(attendees[i]);
-					attendees[i].addClickHandler(new ClickHandler(){
+					root.addItem(attendees.get(i));
+					attendees.get(i).addClickHandler(new ClickHandler(){
 
 						
 						public void onClick(ClickEvent event) {
 							// TODO Auto-generated method stub
 							infoBox.setText(info);
 						}
-						
-						
 					} );
-					//attendees[i].addClickHandler(new MyHandler());
 				}
 				} 
 			});
-
 
 		Tree hTree = new Tree();
 		hTree.addItem(root);
