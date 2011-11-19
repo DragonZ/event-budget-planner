@@ -1,9 +1,10 @@
 package budgeteventplanner.server;
 
 import java.security.NoSuchAlgorithmException;
+
 import budgeteventplanner.client.EventService;
 import budgeteventplanner.client.entity.Event;
-import budgeteventplanner.client.entity.Organizer;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
