@@ -20,6 +20,7 @@
     <servlet-name>vendorServlet</servlet-name>
     <servlet-class>budgeteventplanner.server.VendorServiceImpl</servlet-class>
   </servlet>
+  
   <servlet>
     <servlet-name>userServlet</servlet-name>
     <servlet-class>budgeteventplanner.server.UserServiceImpl</servlet-class>
@@ -39,6 +40,11 @@
     <servlet-name>budgetServlet</servlet-name>
     <servlet-class>budgeteventplanner.server.BudgetServiceImpl</servlet-class>
   </servlet>      
+  
+  <servlet>
+    <servlet-name>categoryServlet</servlet-name>
+    <servlet-class>budgeteventplanner.server.CategoryServiceImpl</servlet-class>
+  </servlet>
       
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
@@ -73,6 +79,11 @@
   <servlet-mapping>
     <servlet-name>budgetServlet</servlet-name>
     <url-pattern>/budgeteventplanner/budget</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>categoryServlet</servlet-name>
+    <url-pattern>/budgeteventplanner/category</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
