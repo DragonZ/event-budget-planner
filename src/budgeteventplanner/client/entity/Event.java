@@ -18,7 +18,7 @@ public class Event implements Serializable {
 	private String name;
 	private Date startTime;
 	private Date endTime;
-	private Address location;
+	private String address;
 	private Integer status;
 
 	public static final Integer ACTIVE = 0;
@@ -34,11 +34,14 @@ public class Event implements Serializable {
 			this.event = event;
 		}
 
-		public Builder(String organizerId, String name, Integer status) {
+		public Builder(String organizerId, String name, Date startTime, Date endTime, String address) {
 			this.event = new Event();
 			this.event.eventId = UUID.randomUUID();
 			this.event.organizerId = organizerId;
 			this.event.name = name;
+			this.event.startTime = startTime;
+			this.event.endTime = endTime;
+			this.event.address = address;
 			this.event.status = INACTIVE;
 		}
 
@@ -57,8 +60,8 @@ public class Event implements Serializable {
 			return this;
 		}
 
-		public Builder setLocation(Address location) {
-			this.event.location = location;
+		public Builder setAddress(String address) {
+			this.event.address = address;
 			return this;
 		}
 
@@ -92,8 +95,8 @@ public class Event implements Serializable {
 		return endTime;
 	}
 
-	public Address getLocation() {
-		return location;
+	public String getAddress() {
+		return address;
 	}
 
 	public Integer getStatus() {
