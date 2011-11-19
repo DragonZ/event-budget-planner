@@ -8,56 +8,74 @@ import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
 @Entity
 public class ServiceRequest {
-	List<Service> listService= query(Service.class).filter("vendorId","xxxxx")
-	for (Service s : listService)
-	
 	@Id
 	private String requestId;
 	private String serviceId;
+	private String eventId;
 	private String name;
 	private Date dueDate;
-
 	private Integer status;
-	
-	public static final Integer PENDING = 1;
-	public static final Integer ACCEPTED = 2;
-	public static final Integer IGNORED = 0;
-	
-	
-	public ServiceRequest(){}
-	
+
+	public static final Integer PENDING = 0;
+	public static final Integer ACCEPTED = 1;
+	public static final Integer IGNORED = 2;
+
+	public ServiceRequest() {}
+
 	public static class Builder {
-		private ServiceRequest request = new ServiceRequest();
+		private ServiceRequest request;
+
+		public Builder(String serviceId, String eventId, String name,
+				Date dueDate) {
+			this.request.requestId = UUID.randomUUID();
+			this.request.serviceId = serviceId;
+			this.request.eventId = eventId;
+			this.request.name = name;
+			this.request.dueDate = dueDate;
+			this.request.status = PENDING;
+		}
 
 		public Builder(ServiceRequest item) {
 			this.request = item;
 		}
 
-		public Builder(String name) {
-			this.request.name = name;
-			this.request.requestId = UUID.randomUUID();
+		public Builder setEventId(String eventId) {
+			this.request.eventId = eventId;
+			return this;
 		}
 
-		public Builder setdueDate(Date date) {
+		public Builder setName(String name) {
+			this.request.name = name;
+			return this;
+		}
+
+		public Builder setDueDate(Date date) {
 			this.request.dueDate = date;
 			return this;
 		}
 
+		public Builder setStatus(Integer status) {
+			this.request.status = status;
+			return this;
+		}
 
 		public ServiceRequest build() {
 			return this.request;
 		}
 	}
 
-	public String getItemID() {
+	public String getRequestId() {
 		return requestId;
 	}
 
-	public Category getCategory() {
-		return category;
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public String getEventId() {
+		return eventId;
 	}
 
 	public String getName() {
@@ -68,8 +86,7 @@ public class ServiceRequest {
 		return dueDate;
 	}
 
-	public Vendor getVendor() {
-		return vendor;
+	public Integer getStatus() {
+		return status;
 	}
-
 }
