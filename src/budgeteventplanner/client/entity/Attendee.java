@@ -1,30 +1,34 @@
 package budgeteventplanner.client.entity;
 
 
+import javax.persistence.Id;
+
 import budgeteventplanner.shared.UUID;
+
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetAttendee Attendee = (new BudgetAttendee).Builder(......).setId(id).build();
 @Entity
 public class Attendee {
-	private String attendeeID;
+	@Id
+	private String attendeeId;
 	private String name;
 	private String email;
 	private String address;
-	private String jobtitle;
+	private String jobTitle;
 	private String companyName;
 
 	public static class Builder {
-		private Attendee attendee = new Attendee();
+		private Attendee attendee;
 
 		public Builder(Attendee attendee) {
 			this.attendee = attendee;
 		}
 
 		public Builder(String name, String email) {
+			this.attendee = new Attendee();
+			this.attendee.attendeeId = UUID.randomUUID();
 			this.attendee.name = name;
 			this.attendee.email = email;
-			this.attendee.attendeeID = UUID.randomUUID();
 		}
 
 		public Builder setName(String name) {
@@ -37,8 +41,8 @@ public class Attendee {
 			return this;
 		}
 		
-		public Builder setJobtitle(String jobtitle) {
-			this.attendee.jobtitle = jobtitle;
+		public Builder setJobTitle(String jobTitle) {
+			this.attendee.jobTitle = jobTitle;
 			return this;
 		}
 		
@@ -52,8 +56,8 @@ public class Attendee {
 		}
 	}
 
-	public String getAttendeeID() {
-		return attendeeID;
+	public String getAttendeeId() {
+		return attendeeId;
 	}
 
 	public String getName() {
@@ -66,5 +70,13 @@ public class Attendee {
 
 	public String getAddress() {
 		return address;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public String getCompanyName() {
+		return companyName;
 	}
 }
