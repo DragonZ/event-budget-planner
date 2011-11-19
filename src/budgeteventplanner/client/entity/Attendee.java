@@ -1,6 +1,5 @@
 package budgeteventplanner.client.entity;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Id;
@@ -11,7 +10,7 @@ import com.googlecode.objectify.annotation.Entity;
 
 @SuppressWarnings("serial")
 @Entity
-public class Attendee implements Serializable{
+public class Attendee implements Serializable {
 	@Id
 	private String attendeeId;
 	private String eventId;
@@ -20,9 +19,11 @@ public class Attendee implements Serializable{
 	private String address;
 	private String jobTitle;
 	private String companyName;
+	private String phoneNumber;
 
-	public Attendee(){}
-	
+	public Attendee() {
+	}
+
 	public static class Builder {
 		private Attendee attendee;
 
@@ -42,22 +43,32 @@ public class Attendee implements Serializable{
 			this.attendee.name = name;
 			return this;
 		}
-		
+
+		public Builder setEmail(String email) {
+			this.attendee.email = email;
+			return this;
+		}
+
 		public Builder setAddress(String address) {
 			this.attendee.address = address;
 			return this;
 		}
-		
+
 		public Builder setJobTitle(String jobTitle) {
 			this.attendee.jobTitle = jobTitle;
 			return this;
 		}
-		
+
 		public Builder setCompanyName(String companyName) {
 			this.attendee.companyName = companyName;
 			return this;
 		}
-		
+
+		public Builder setPhoneNumber(String phoneNumber) {
+			this.attendee.phoneNumber = phoneNumber;
+			return this;
+		}
+
 		public Attendee build() {
 			return this.attendee;
 		}
@@ -89,5 +100,16 @@ public class Attendee implements Serializable{
 
 	public String getCompanyName() {
 		return companyName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public String toString() {
+		String result = "\nName: " + name + "\nEmail: " + email + "\nAddress: "
+				+ address + "\nJob Title: " + jobTitle + "\nCompany Name: "
+				+ companyName + "\nPhone Number: " + phoneNumber;
+		return result;
 	}
 }

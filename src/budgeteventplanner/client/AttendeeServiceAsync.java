@@ -1,18 +1,15 @@
 package budgeteventplanner.client;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
-import budgeteventplanner.client.entity.Attendee;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface AttendeeServiceAsync {
-	void createAttendee(String firstName, String lastName, String email, AsyncCallback<String> callback);
-	void getAttendeeList(String eventOrganizerID, AsyncCallback<ArrayList<Attendee>> callback);
-	void saveAttendeeInfo(String attendeeID,  String email, 
-			String firstName, String midName, String lastName, 
-			String jobTitle, String companyName, String address, String phoneNum, AsyncCallback<Void> callback);
-	void attendeeLogin(String registrationCode, AsyncCallback<Integer> callback) throws NoSuchAlgorithmException;
+import budgeteventplanner.client.entity.Attendee;
 
+public interface AttendeeServiceAsync {
+	void createAttendee(String eventId, String name, String email, AsyncCallback<String> attendeeId);
+	void getAttendeeListByOrganizerId(String organizerId, AsyncCallback<ArrayList<Attendee>> attendeeList);
+	void getAttendeeListByEventId(String eventId, AsyncCallback<ArrayList<Attendee>> attendeeList);
+	void updateAttendeeInfo(String attendeeId, String name, String email, String jobTitle, String companyName, String address, String phoneNum, AsyncCallback<Void> feedback);
+	void attendeeLogin(String registrationCode, AsyncCallback<Integer> status);
 }
