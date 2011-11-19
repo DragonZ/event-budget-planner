@@ -23,10 +23,9 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 			throws NoSuchAlgorithmException {
 		// TODO Auto-generated method stub
 		Objectify ofy = ObjectifyService.begin();
-		Attendee attendee= new Attendee.Builder(firstName, lastName)
-		.build();
+		Attendee attendee= new Attendee.Builder(firstName, lastName, email).build();
 		ofy.put(attendee);
-		return attendee.getAttendeeID();
+		return attendee.getAttendeeId();
 		
 	}
 	
@@ -54,7 +53,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = ofy.query(Attendee.class).filter("id", attendeeID).get();
 
-		attendee = new Attendee.Builder(attendee).setName(lastName).setCompanyName(companyName).setJobtitle(jobTitle).build();
+		new Attendee.Builder(attendee).setName(lastName).setCompanyName(companyName).setJobTitle(jobTitle).build();
 		
 		ofy.put(attendee);
 	}
