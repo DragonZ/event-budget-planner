@@ -1,5 +1,6 @@
 package budgeteventplanner.client.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
@@ -8,8 +9,9 @@ import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
+@SuppressWarnings("serial")
 @Entity
-public class ServiceRequest {
+public class ServiceRequest implements Serializable{
 	@Id
 	private String requestId;
 	private String serviceId;

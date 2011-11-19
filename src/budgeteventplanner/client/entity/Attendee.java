@@ -1,14 +1,17 @@
 package budgeteventplanner.client.entity;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Id;
 
 import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
+@SuppressWarnings("serial")
 @Entity
-public class Attendee {
+public class Attendee implements Serializable{
 	@Id
 	private String attendeeId;
 	private String eventId;
@@ -18,6 +21,8 @@ public class Attendee {
 	private String jobTitle;
 	private String companyName;
 
+	public Attendee(){}
+	
 	public static class Builder {
 		private Attendee attendee;
 

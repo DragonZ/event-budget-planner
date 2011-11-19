@@ -1,5 +1,6 @@
 package budgeteventplanner.client.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
@@ -8,9 +9,9 @@ import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetAttendee Event = (new BudgetAttendee).Builder(......).setId(id).build();
+@SuppressWarnings("serial")
 @Entity
-public class Event {
+public class Event implements Serializable {
 	@Id
 	private String eventId;
 	private String organizerId;
@@ -24,8 +25,7 @@ public class Event {
 	public static final Integer INACTIVE = 1;
 	public static final Integer TRASHED = 2;
 
-	public Event() {
-	}
+	public Event() {}
 
 	public static class Builder {
 		private Event event;

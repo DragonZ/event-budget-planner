@@ -1,15 +1,22 @@
 package budgeteventplanner.client.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Id;
 
 import budgeteventplanner.shared.UUID;
 
-public class Category
-{
+import com.googlecode.objectify.annotation.Entity;
+
+@SuppressWarnings("serial")
+@Entity
+public class Category implements Serializable {
 	@Id
 	private String categoryId;
 	private String name;
 
+	public Category(){}
+	
 	public static class Builder
 	{
 		private Category category;

@@ -1,13 +1,16 @@
 package budgeteventplanner.client.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Id;
 
 import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
+@SuppressWarnings("serial")
 @Entity
-public class User {
+public class User implements Serializable {
 	private String userId;
 	@Id
 	private String email;

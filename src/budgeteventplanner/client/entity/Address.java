@@ -1,10 +1,12 @@
 package budgeteventplanner.client.entity;
 
+import java.io.Serializable;
+
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetAttendee Address = (new BudgetAttendee).Builder(......).setId(id).build();
+@SuppressWarnings("serial")
 @Entity
-public class Address {
+public class Address implements Serializable{
 	private String firstName;
 	private String lastName;
 	private String street;
@@ -13,6 +15,8 @@ public class Address {
 	private String zipcode;
 	private String country;
 
+	public Address(){}
+	
 	public static class Builder {
 		private Address address = new Address();
 
