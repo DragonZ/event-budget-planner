@@ -358,7 +358,9 @@ public class BudgetEventPlanner implements EntryPoint {
 		// Add a handler to submit the informationprivate final UserServiceAsync userService = GWT.create(UserService.class);
 		submitButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (emailAdd.getText().isEmpty()||(!emailAdd.getText().contains("@"))||(!emailAdd.getText().contains("."))) {
+				if (emailAdd.getText().isEmpty()
+						//||(!emailAdd.getText().contains("@"))||(!emailAdd.getText().contains("."))
+						) {
 					errorSign.setText("Invalid username");
 				} 
 				else if (first_pw.getText().isEmpty()) {
