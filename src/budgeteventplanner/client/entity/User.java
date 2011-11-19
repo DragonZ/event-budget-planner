@@ -8,39 +8,44 @@ import com.googlecode.objectify.annotation.Entity;
 public class User {
 	@Id
 	private String email;
-	private String name;
-	private int role;
 	private String password;
+	private Integer role;
+	private String name;
 	private String company;
 	private String address;
 
-	public User() {}
-	
+	public final static Integer ROLE_ORGANIZER = 1;
+	public final static Integer ROLE_VENDOR = 2;
+
+	public User() {
+	}
+
 	public static class Builder {
-		private User user = new User();
+		private User user;
 
 		public Builder(User user) {
 			this.user = user;
 		}
 
-		public Builder(String email, String password, int role) {
+		public Builder(String email, String password, Integer role) {
+			this.user = new User();
 			this.user.email = email;
-			this.user.role = role;
 			this.user.password = password;
+			this.user.role = role;
 		}
 
-		public Builder SetCompany(String company) {
+		public Builder setName(String name) {
+			this.user.name = name;
+			return this;
+		}
+
+		public Builder setCompany(String company) {
 			this.user.company = company;
 			return this;
 		}
 
 		public Builder setAddress(String address) {
 			this.user.address = address;
-			return this;
-		}
-
-		public Builder name(String name) {
-			this.user.name = name;
 			return this;
 		}
 
