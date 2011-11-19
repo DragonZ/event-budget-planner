@@ -53,29 +53,41 @@ public class BudgetEventPlanner implements EntryPoint {
 		loginButton.setWidth("80px");
 		final Button signButton = new Button("Sign Up");
 		signButton.setWidth("80px");
-		final Button attendeeButton = new Button("Submit");
-		attendeeButton.setWidth("80px");
+
 		final TextBox nameField = new TextBox();
 		nameField.setText("");
 		nameField.setWidth("210px");
 		final PasswordTextBox pwField = new PasswordTextBox();
 		pwField.setText("");
 		pwField.setWidth("210px");
-//		final Button attendeePartButton = new Button("Attendee");
-//		attendeePartButton.setWidth("80px");
+		final Button attendeePartButton = new Button("Attendee");
+		attendeePartButton.setWidth("80px");
 		final TextBox attendeeField = new TextBox();
 		attendeeField.setText("");
 		attendeeField.setWidth("210px");
+		final Button attendeeButton = new Button("Submit");
+		attendeeButton.setWidth("80px");
+		final Button attendeeCancelButton = new Button("Cancel");
+		attendeeCancelButton.setWidth("80px");
+		//attendeeField.setHeight("210px");
 		
-//		final DialogBox attendeeBox = new DialogBox();
-//		attendeeBox.setText("Please input the registration code");
-//		attendeeBox.setAnimationEnabled(true);
-//		VerticalPanel attendeePanel = new VerticalPanel();
-//		attendeePanel.addStyleDependentName("attendeePanel");
-//		attendeePanel.add(attendeeField);
-//		attendeePanel.add(attendeeButton);
-//		attendeeBox.setWidget(attendeePanel);
-//		attendeeBox.setHeight("100px");
+		final DialogBox attendeeBox = new DialogBox();
+		attendeeBox.setText("Please input the registration code");
+		//attendeeBox.setAnimationEnabled(true);
+		VerticalPanel attendeePanel = new VerticalPanel();
+		HorizontalPanel attendeeHPanel = new HorizontalPanel();
+		attendeePanel.addStyleName("attendeePanel");
+		attendeeHPanel.addStyleName("attendeeHPanel");
+		attendeePanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		attendeePanel.add(attendeeField);
+		attendeeHPanel.add(attendeeButton);
+//		attendeeHPanel.add(new HTML("      "));
+		attendeeHPanel.add(attendeeCancelButton);
+		attendeePanel.add(attendeeHPanel);
+
+		attendeePanel.setSpacing(5);
+		attendeeBox.setWidget(attendeePanel);
+		//attendeeBox.setHeight("100px");
 		
 		final Label errorLabel = new Label();
 		
@@ -90,11 +102,11 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("pwFieldContainer").add(pwField);
 		RootPanel.get("loginButtonContainer").add(loginButton);
+		RootPanel.get("attendeePartButtonContainer").add(attendeePartButton);
 		RootPanel.get("signButtonContainer").add(signButton);
 //		RootPanel.get("attendeePartContainer").add(attendeePart);
-//		RootPanel.get("attendeePartButtonContainer").add(attendeePartButton);
-		RootPanel.get("attendeeFieldContainer").add(attendeeField);
-		RootPanel.get("attendeeButtonContainer").add(attendeeButton);
+//		RootPanel.get("attendeeFieldContainer").add(attendeeField);
+//		RootPanel.get("attendeeButtonContainer").add(attendeeButton);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
@@ -135,24 +147,39 @@ public class BudgetEventPlanner implements EntryPoint {
 		exceptionPanel.add(clearButton);
 		exceptionBox.setWidget(exceptionPanel);
 		
-//		attendeePartButton.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				loginButton.setEnabled(false);
-//				signButton.setEnabled(false);
-//				nameField.setText("");
-//				pwField.setText("");
-//				attendeeField.setText("");
-//				attendeeBox.show();
-//				attendeeBox.center();
-//				attendeeField.setFocus(true);
-//			}
-//		});
+		attendeePartButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				nameField.setText("");
+				pwField.setText("");
+				attendeeField.setText("");
+				attendeeBox.show();
+				attendeeBox.center();
+				attendeeField.setFocus(true);
+				loginButton.setEnabled(false);
+				signButton.setEnabled(false);
+				attendeePartButton.setEnabled(false);
+			}
+		});
+		
+		attendeeCancelButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				attendeeBox.hide();
+				loginButton.setEnabled(true);
+				signButton.setEnabled(true);
+				attendeePartButton.setEnabled(true);
+				nameField.setText("");
+				pwField.setText("");
+				attendeeField.setText("");
+				attendeeField.setFocus(true);
+			}
+		});
 		
 		clearButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				exceptionBox.hide();
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
+				attendeePartButton.setEnabled(true);
 				nameField.setText("");
 				pwField.setText("");
 				attendeeField.setText("");
@@ -166,6 +193,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				dialogBox.hide();
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
+				attendeePartButton.setEnabled(true);
 				nameField.setFocus(true);
 				if(nameField.getText().equals("XuXuan")||nameField.getText().equals("XuXuan2")||
 						nameField.getText().equals("XiaYuan")||nameField.getText().equals("ZhenLong")||
@@ -296,6 +324,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				emailAdd.setFocus(true);
 				loginButton.setEnabled(false);
 				signButton.setEnabled(false);
+				attendeePartButton.setEnabled(false);
 			}
 		});
 
@@ -407,6 +436,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				zipCode.setText("");
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
+				attendeePartButton.setEnabled(true);
 				nameField.setFocus(true);
 			}
 		});
@@ -417,6 +447,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				signedBox.hide();
 				loginButton.setEnabled(true);
 				signButton.setEnabled(true);
+				attendeePartButton.setEnabled(true);
 				nameField.setFocus(true);
 			}
 		});
@@ -464,6 +495,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				// 	Then, we send the input to the server.
 					loginButton.setEnabled(false);
 					signButton.setEnabled(false);
+					attendeePartButton.setEnabled(false);
 					textToServerLabel.setText(textToServer);
 					serverResponseLabel.setText("");
 
@@ -503,7 +535,7 @@ public class BudgetEventPlanner implements EntryPoint {
 				if(attendeeField.getText().isEmpty()){	
 				}
 				else{
-					try {
+
 						userService.attendeeLogin(attendeeField.getText(),
 							new AsyncCallback<Integer>() {
 								@Override
@@ -511,14 +543,16 @@ public class BudgetEventPlanner implements EntryPoint {
 									// Show the RPC error message to the user
 									exceptionBox.center();
 									clearButton.setFocus(true);
+									//System.out.print(caught);
 								}
 								
 								@Override
 								public void onSuccess(Integer attendeeResult) {
 									// TODO Auto-generated method stub
-//									attendeeBox.hide();
-//									loginButton.setEnabled(true);
-//									signButton.setEnabled(true);
+									attendeeBox.hide();
+									loginButton.setEnabled(true);
+									signButton.setEnabled(true);
+									attendeePartButton.setEnabled(true);
 									RootPanel.get("XuXuan2").setVisible(true);
 									RootPanel.get("main").setVisible(false);
 									nameField.setText("");
@@ -526,10 +560,7 @@ public class BudgetEventPlanner implements EntryPoint {
 									attendeeField.setText("");
 								}
 							});
-					} catch (NoSuchAlgorithmException e) {
-					// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+
 				} // end if
 			} // end onClick
 		}); // end AttendeeButton Handler
