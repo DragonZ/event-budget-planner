@@ -46,7 +46,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	
 	@Override
 	public Integer attendeeLogin(String registrationCode)
-			throws NoSuchAlgorithmException {
+	{
 		return 1;
 	}
 	
