@@ -3,7 +3,6 @@ package budgeteventplanner.client;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-import budgeteventplanner.client.entity.Organizer;
 import budgeteventplanner.client.entity.TestEntity;
 
 import com.google.gwt.core.client.EntryPoint;
