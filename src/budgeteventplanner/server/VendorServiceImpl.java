@@ -31,15 +31,24 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 	public List<Category> getExistingCategory(String VendorID)
 	{
 		List<Service> vendorSvcList = getServiceByID(VendorID);
-		List<Category> catList = new ArrayList<Category>();	
-		for(Service svc: vendorSvcList)
+		List<Category> catList = new ArrayList<Category>();
+		for(Service svc : vendorSvcList)
 		{
-			catList.add(getCategoryByID(svc.getServiceId()));
+			catList.add(getCategoryByID(svc.getCategoryId()));
 		}
-		// This might result in duplicates
 		
+		List<String> catIdList = new ArrayList<String>();
+		List<Category> newCatList = new ArrayList<Category>();
+		for(Category c : catList) 
+		{
+			if (!catIdList.contains(c.getCategoryId())) 
+			{
+				catIdList.add(c.getCategoryId());
+				newCatList.add(c);
+			}
+		}
 		
-		return catList;
+		return newCatList;
 	}
 	
 	@Override
@@ -132,7 +141,6 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 		Objectify ofy = ObjectifyService.begin();
 		ServiceRequest svcReq= ofy.query(ServiceRequest.class).filter("id", ServiceRequestID).get();
 		new ServiceRequest.Builder(svcReq).setStatus(ServiceRequest.IGNORED).build(); // Set status to ignored
-		
 		
 		
 	}
