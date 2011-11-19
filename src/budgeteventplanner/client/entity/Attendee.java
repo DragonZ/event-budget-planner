@@ -11,6 +11,7 @@ import com.googlecode.objectify.annotation.Entity;
 public class Attendee {
 	@Id
 	private String attendeeId;
+	private String eventId;
 	private String name;
 	private String email;
 	private String address;
@@ -24,9 +25,10 @@ public class Attendee {
 			this.attendee = attendee;
 		}
 
-		public Builder(String name, String email) {
+		public Builder(String eventId, String name, String email) {
 			this.attendee = new Attendee();
 			this.attendee.attendeeId = UUID.randomUUID();
+			this.attendee.eventId = eventId;
 			this.attendee.name = name;
 			this.attendee.email = email;
 		}
@@ -58,6 +60,10 @@ public class Attendee {
 
 	public String getAttendeeId() {
 		return attendeeId;
+	}
+
+	public String getEventId() {
+		return eventId;
 	}
 
 	public String getName() {
