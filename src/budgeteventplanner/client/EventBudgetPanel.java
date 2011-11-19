@@ -7,13 +7,18 @@
 
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import budgeteventplanner.client.entity.Category;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -31,6 +36,10 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 	public TabPanel t_panel; 
+	private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+	
+	
+	
 	@Override
 	public void onModuleLoad() {
 		// TODO Auto-generated method stub
@@ -173,9 +182,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		}
 		
 		event_right_v_panel.add(event_table);
-		//event_h_panel.setLeftWidget(new HTML("left"));
-		//event_h_panel.setRightWidget(event_right_v_panel);
-		//event_h_panel.setSplitPosition("20%");
 		Label l1=new Label("Left Place Holder");
 		l1.setWidth("100px");
 		event_h_panel.add(l1);
@@ -189,8 +195,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		});
 		
 		
-		
-		//HorizontalSplitPanel budget_h_panel=new HorizontalSplitPanel();
 		HorizontalPanel budget_h_panel=new HorizontalPanel();
 		budget_h_panel.setBorderWidth(1);
 		budget_h_panel.setSize("100%", "500px");
@@ -255,21 +259,10 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 			});
 		}
 		
-//		Grid g=new Grid(3,3);
-//		for (int i=0;i<3;i++)
-//		{
-//			for (int j=0;j<3;j++)
-//				{
-//					g.setText(i, j, ""+i+","+j+"");
-//					g.getCellFormatter().setWidth(i, j, "100px");
-//				}
-//		}
 		Button budget_add=new Button("Add");
 		budget_right_v_panel.add(budget_add);
 		budget_right_v_panel.add(budget_table);
-//		budget_h_panel.setLeftWidget(new Label("Left"));
-//		budget_h_panel.setRightWidget(budget_right_v_panel);
-//		budget_h_panel.setSplitPosition("20%");
+		
 		Label l2=new Label("Left Place Holder");
 		l2.setWidth("100px");
 		budget_h_panel.add(l2);
@@ -283,21 +276,19 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		});
 		
 		t_panel=new TabPanel();
-		//t_panel.setAnimationEnabled(true);
 		t_panel.add(event_h_panel,"Event");
 		t_panel.add(budget_h_panel,"Budget");
 		RootPanel.get("XiaYuan").add(t_panel);
 		t_panel.setSize("100%", "100%");
 		
 		
-		//check cookie to see which tab to select
 		t_panel.selectTab(0);
 		
 
 	}
 	public void item_pop_up(String eventId)
 	{
-final DialogBox d=new DialogBox();
+		final DialogBox d=new DialogBox();
 		
 		
 		VerticalPanel panel=new VerticalPanel();
@@ -307,10 +298,6 @@ final DialogBox d=new DialogBox();
 		
 		final FlexTable itemList=new FlexTable();
 		itemList.setWidth("100%");
-		//itemList.setWidget(0, 0, new HTML("<strong>Item ID</strong>"));
-		//itemList.getColumnFormatter().setWidth(0, "10%");
-		//itemList.setWidget(0, 1, new HTML("<strong>Item Name</strong>"));
-		//itemList.getColumnFormatter().setWidth(0, "10%");
 		itemList.setWidget(0, 0, new HTML("<strong>Item Category</strong>"));
 		itemList.getColumnFormatter().setWidth(0, "10%");
 		itemList.setWidget(0, 1, new HTML("<strong>Service</strong>"));
@@ -326,7 +313,6 @@ final DialogBox d=new DialogBox();
 		for (int row=1;row<=itemCount;row++)
 		{
 			itemList.setWidget(row, 0, new Label("Item Category from Server"+Integer.toString(row)));
-			//itemList.setWidget(row, 1, new Label("Item name from Server"+Integer.toString(row)));
 			itemList.setWidget(row, 1, new Label("Service from Server"+Integer.toString(row)));
 			
 			final Button view_item=new Button("View");
@@ -351,7 +337,6 @@ final DialogBox d=new DialogBox();
 		p.add(addNew);
 		p.add(update);
 		panel.add(p);
-		//panel.setWidth("800px");
 		d.add(panel);
 		d.setAnimationEnabled(true);
 		d.center();
@@ -361,13 +346,24 @@ final DialogBox d=new DialogBox();
 			public void onClick(ClickEvent event)
 			{
 				int row=itemList.getRowCount()+1;
+				
 				final ListBox category=new ListBox();
-				category.addItem("1");
-				category.addItem("2");
+				
+				categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>()
+				{
+					public void onFailure(Throwable caught)
+					{
+						
+					}
+					public void onSuccess(ArrayList<Category> result)
+					{
+						int size=result.size();
+						for (int i=0;i<size;i++)
+							category.addItem(result.get(i).getName());
+					}
+				});
 				itemList.setWidget(row, 0, category);
 				final ListBox service=new ListBox();
-				service.addItem("11");
-				service.addItem("12");
 				category.addChangeHandler(new ChangeHandler(){
 					public void onChange(ChangeEvent event)
 					{
@@ -444,9 +440,6 @@ final DialogBox d=new DialogBox();
 		table.getColumnFormatter().setWidth(0, "100px");
 		table.getColumnFormatter().setWidth(1, "150px");
 		
-//		table.setWidget(1, 0, new Label("Event Fee:"));
-//		final TextBox event_fee=new TextBox();
-//		table.setWidget(1, 1, event_fee);
 		
 		table.setWidget(1, 0, new Label("Start Date:"));
 		final DatePicker start_date=new DatePicker();
@@ -460,20 +453,6 @@ final DialogBox d=new DialogBox();
 		final TextArea location=new TextArea();
 		table.setWidget(3, 1, location);
 		
-//		table.setWidget(5, 0, new Label("Contact Email:"));
-//		final TextBox contact_email=new TextBox();
-//		table.setWidget(5, 1, contact_email);
-//		
-//		table.setWidget(6, 0, new Label("Category:"));
-//		final ListBox category=new ListBox();
-//		category.addItem("1");
-//		category.addItem("2");
-//		table.setWidget(6, 1, category);
-//		
-//		table.setWidget(7, 0, new Label("Event Agenda:"));
-//		final TextArea event_agenda=new TextArea();
-//		table.setWidget(7, 1, event_agenda);
-		
 		if (flag==1)
 		{
 			event_title.setText(event_table.getText(row, 1));
@@ -481,10 +460,8 @@ final DialogBox d=new DialogBox();
 			start_date.setValue(new Date(2011,11,11));
 			end_date.setValue(new Date(2011,11,13));
 			location.setText(event_table.getText(row, 4));
-			//contact_email.setText(t);
-			//category.setTabIndex(2);
-			//event_agenda.setText(t);
 		}
+		
 		//for debug purpose, since without initilizing value, it will throw exception
 		else if (flag==0)
 		{
@@ -494,9 +471,7 @@ final DialogBox d=new DialogBox();
 			start_date.setValue(new Date());
 			end_date.setValue(new Date());
 			location.setText(t);
-//			contact_email.setText(t);
-//			category.setTabIndex(2);
-//			event_agenda.setText(t);
+
 		}
 		
 		
@@ -544,42 +519,6 @@ final DialogBox d=new DialogBox();
 					event_table.setWidget(row_temp, 5, temp_mod);
 					final Button temp_del=new Button("Delete");
 					event_table.setWidget(row_temp, 6, temp_del);
-					
-					
-					
-//					temp_mod.addClickHandler(new ClickHandler(){
-//						public void onClick(ClickEvent event)
-//						{
-//							int r;
-//							int total_event=event_table.getRowCount();
-//							for (r=1;r<=total_event;r++)
-//							{
-//								if (event_table.getWidget(r, 5).equals(temp_mod))
-//									break;
-//							}
-//							event_pop_up(1,r,event_table);
-//						}
-//					});
-//					temp_del.addClickHandler(new ClickHandler(){
-//						public void onClick(ClickEvent event)
-//						{
-////							DialogBox d1=new DialogBox();
-////							Label l1 = new Label("1234");
-////							d1.add(l1);
-////							d1.show();
-//							int r;
-//							int total_temp=event_table.getRowCount();
-//							for (r=1;r<=total_temp;r++)
-//							{
-////								l1.setText(Integer.toString(total_temp));
-//								if (event_table.getWidget(r, 6).equals(temp_del))
-//									break;
-//							}
-//							//l1.setText(Integer.toString(5));
-//							event_table.removeRow(4);
-//							//l1.setText(Integer.toString(6));
-//						}
-//					});
 					
 				}
 				else if (flag==1)
@@ -727,7 +666,6 @@ final DialogBox d=new DialogBox();
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		
 		Button add_row=new Button("Add Entry");
-		//Button delete=new Button("Delete Selected");
 		
 		
 		
