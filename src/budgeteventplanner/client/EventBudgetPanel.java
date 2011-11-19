@@ -10,6 +10,8 @@ package budgeteventplanner.client;
 import java.util.Date;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -43,31 +45,31 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		final FlexTable event_table=new FlexTable();
 		event_table.setSize("1100px", "100%");
-		event_table.setText(0, 0, "Event ID");
+		event_table.setWidget(0, 0, new HTML("<strong>Event ID</strong>"));
 		event_table.getCellFormatter().setWidth(0, 0, "20%");
-		event_table.setText(0, 1, "Event Title");
+		event_table.setWidget(0, 1, new HTML("<strong>Event Title</strong>"));
 		event_table.getCellFormatter().setWidth(0, 1, "20%");
-		event_table.setText(0, 2, "Start Date");
+		event_table.setWidget(0, 2, new HTML("<strong>Start Date</strong>"));
 		event_table.getCellFormatter().setWidth(0, 2, "20%");
-		event_table.setText(0, 3, "End Date");
+		event_table.setWidget(0, 3, new HTML("<strong>End Date</strong>"));
 		event_table.getCellFormatter().setWidth(0, 3, "20%");
-		event_table.setText(0, 4, "Location");
+		event_table.setWidget(0, 4, new HTML("<strong>Location</strong>"));
 		event_table.getCellFormatter().setWidth(0, 4, "20%");
 		
 		
-		event_table.setText(0, 5, "Item");
+		event_table.setWidget(0, 5, new HTML("<strong>Item</strong>"));
 		event_table.getCellFormatter().setWidth(0, 5, "100%");
 		
-		event_table.setText(0, 6, "Modify");
+		event_table.setWidget(0, 6, new HTML("<strong>Modify</strong>"));
 		event_table.getCellFormatter().setWidth(0, 6, "100%");		
 		
-		event_table.setText(0, 7, "Attendee");
+		event_table.setWidget(0, 7, new HTML("<strong>Attendee</strong>"));
 		event_table.getCellFormatter().setWidth(0, 7, "30%");
 		
-		event_table.setText(0, 8, "Event Info");
+		event_table.setWidget(0, 8, new HTML("<strong>Event Info</strong>"));
 		event_table.getCellFormatter().setWidth(0, 8, "20%");
 
-		event_table.setText(0, 9, "Delete");
+		event_table.setWidget(0, 9, new HTML("<strong>Delete</strong>"));
 		event_table.getCellFormatter().setWidth(0, 9, "20%");
 		
 		
@@ -147,7 +149,11 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 						if (event_table.getWidget(row, 8).equals(view_info))
 							break;
 					String event_id=event_table.getText(row, 0);
-					view_info_pop_up(event_id);
+					String event_title=event_table.getText(row, 1);
+					String startDate=event_table.getText(row, 2);
+					String endDate=event_table.getText(row, 3);
+					String location=event_table.getText(row, 4);
+					view_info_pop_up(event_id, event_title, startDate, endDate, location);
 				}
 			});
 			
@@ -291,7 +297,130 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	}
 	public void item_pop_up(String eventId)
 	{
+final DialogBox d=new DialogBox();
 		
+		
+		VerticalPanel panel=new VerticalPanel();
+		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		Button close=new Button("Close");
+		panel.add(close);
+		
+		final FlexTable itemList=new FlexTable();
+		itemList.setWidth("100%");
+		//itemList.setWidget(0, 0, new HTML("<strong>Item ID</strong>"));
+		//itemList.getColumnFormatter().setWidth(0, "10%");
+		//itemList.setWidget(0, 1, new HTML("<strong>Item Name</strong>"));
+		//itemList.getColumnFormatter().setWidth(0, "10%");
+		itemList.setWidget(0, 0, new HTML("<strong>Item Category</strong>"));
+		itemList.getColumnFormatter().setWidth(0, "10%");
+		itemList.setWidget(0, 1, new HTML("<strong>Service</strong>"));
+		itemList.getColumnFormatter().setWidth(1, "10%");
+		itemList.setWidget(0, 2, new HTML("<strong>View Service Details</strong>"));
+		itemList.getColumnFormatter().setWidth(2, "10%");
+		itemList.setWidget(0, 3, new HTML("<strong>Due Date</strong>"));
+		itemList.getColumnFormatter().setWidth(3, "100px");
+		itemList.setWidget(0, 4, new HTML("<strong>Request Details</strong>"));
+		itemList.getColumnFormatter().setWidth(4, "200px");
+		
+		final int itemCount=3;
+		for (int row=1;row<=itemCount;row++)
+		{
+			itemList.setWidget(row, 0, new Label("Item Category from Server"+Integer.toString(row)));
+			//itemList.setWidget(row, 1, new Label("Item name from Server"+Integer.toString(row)));
+			itemList.setWidget(row, 1, new Label("Service from Server"+Integer.toString(row)));
+			
+			final Button view_item=new Button("View");
+			itemList.setWidget(row, 2, view_item);
+			view_item.addClickHandler(new ClickHandler(){
+				public void onClick(ClickEvent event)
+				{
+					
+				}
+			});
+			
+			
+			
+			
+			itemList.setWidget(row, 3, new Label("DueDate from Server"+Integer.toString(row)));
+			itemList.setWidget(row, 4, new Label("Request Details form Server"+Integer.toString(row)));
+		}
+		panel.add(itemList);
+		final Button addNew=new Button("Add New");
+		final Button update=new Button("Update");
+		HorizontalPanel p=new HorizontalPanel();
+		p.add(addNew);
+		p.add(update);
+		panel.add(p);
+		//panel.setWidth("800px");
+		d.add(panel);
+		d.setAnimationEnabled(true);
+		d.center();
+		d.show();
+		
+		addNew.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event)
+			{
+				int row=itemList.getRowCount()+1;
+				final ListBox category=new ListBox();
+				category.addItem("1");
+				category.addItem("2");
+				itemList.setWidget(row, 0, category);
+				final ListBox service=new ListBox();
+				service.addItem("11");
+				service.addItem("12");
+				category.addChangeHandler(new ChangeHandler(){
+					public void onChange(ChangeEvent event)
+					{
+						service.clear();
+						if (category.isItemSelected(0))
+						{
+							service.addItem("11");
+							service.addItem("12");
+						}
+						else if(category.isItemSelected(1))
+						{
+							service.addItem("21");
+							service.addItem("22");
+						}
+					}
+				});
+				
+				itemList.setWidget(row, 1, service);
+				
+				final Button view_item=new Button("View");
+				itemList.setWidget(row, 2, view_item);
+				view_item.addClickHandler(new ClickHandler(){
+					public void onClick(ClickEvent event)
+					{
+						
+					}
+				});
+				
+				final TextBox dueDate=new TextBox();
+				dueDate.setText("");
+				dueDate.setWidth("70px");
+				itemList.setWidget(row, 3, dueDate);
+				
+				final TextArea details=new TextArea();
+				details.setText("");
+				details.setWidth("100px");
+				itemList.setWidget(row, 4, details);
+			}
+		});
+		
+		update.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event)
+			{
+				d.hide();
+			}
+		});
+		
+		close.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event)
+			{
+				d.hide();
+			}
+		});
 	}
 	public void event_pop_up(int f,int r, FlexTable e)
 	{
@@ -519,7 +648,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		
 	}
-	public void view_info_pop_up(String eventId)
+	public void view_info_pop_up(String eventId, String eventTitle, String startDate, String endDate, String location)
 	{
 		final DialogBox d=new DialogBox();
 		
@@ -528,13 +657,13 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		panel.add(new HTML(panelTitle));
 		
 		//get event information by eventId
-		String eventTitle="eventTitle from server";
-		String startDate="startDate from server";
-		String endDate="endDate from server";
-		String location="location from server";
+//		String eventTitle=eventTable.getWidget(selectRow, 1).;
+//		String startDate="startDate from server";
+//		String endDate="endDate from server";
+//		String location="location from server";
 		
 		final FlexTable attendList=new FlexTable();
-		attendList.setWidth("400px");
+		attendList.setWidth("100%");
 		//attendList.setWidget(0, 0, new Label("Name"));
 		//attendList.getCellFormatter().setWidth(0, 0, "50%");
 		//attendList.setWidget(0, 1, new Label("Email"));
@@ -573,6 +702,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		
 		d.add(panel);
+		d.setAnimationEnabled(true);
 		d.center();
 		d.show();
 		
