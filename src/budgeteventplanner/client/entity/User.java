@@ -2,10 +2,13 @@ package budgeteventplanner.client.entity;
 
 import javax.persistence.Id;
 
+import budgeteventplanner.shared.UUID;
+
 import com.googlecode.objectify.annotation.Entity;
 
 @Entity
 public class User {
+	private String userId;
 	@Id
 	private String email;
 	private String password;
@@ -14,11 +17,11 @@ public class User {
 	private String company;
 	private String address;
 
+
 	public final static Integer ROLE_ORGANIZER = 1;
 	public final static Integer ROLE_VENDOR = 2;
 
-	public User() {
-	}
+	public User() {}
 
 	public static class Builder {
 		private User user;
@@ -29,6 +32,7 @@ public class User {
 
 		public Builder(String email, String password, Integer role) {
 			this.user = new User();
+			this.user.userId = UUID.randomUUID();
 			this.user.email = email;
 			this.user.password = password;
 			this.user.role = role;
@@ -53,7 +57,9 @@ public class User {
 			return this.user;
 		}
 	}
-
+	public String getUserId() {
+		return userId;
+	}
 	public String getEmail() {
 		return email;
 	}
