@@ -1,25 +1,36 @@
 package budgeteventplanner.client.entity;
 
-import budgeteventplanner.client.entity.Category;
+import javax.persistence.Id;
+
+import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetService Service = (new BudgetService).Builder(......).setId(id).build();
 @Entity
 public class Service {
 	@Id
 	private String serviceId;
-	
 	private String categoryId;
 	private String vendorId;
-	
 	private String name;
+	private Double price;
 	private String description;
 
+	public Service(){}
 	
 	public static class Builder {
 		private Service service = new Service();
 
+		public Builder(String categoryId, String vendorId, String name, Double price, String description) {
+			this.service = new Service();
+			this.service.serviceId = UUID.randomUUID();
+			this.service.categoryId = categoryId;
+			this.service.vendorId = vendorId;
+			this.service.name = name;
+			this.service.price = price;
+			this.service.description = description;
+		}
+		
 		public Builder(Service service) {
 			this.service = service;
 		}
@@ -29,48 +40,51 @@ public class Service {
 			return this;
 		}
 
-		public Builder setCategory(Category category) {
-			this.service.category = category;
+		public Builder setCategoryId(String categoryId) {
+			this.service.categoryId = categoryId;
 			return this;
 		}
 
+		public Builder setVendorId(String vendorId) {
+			this.service.vendorId = vendorId;
+			return this;
+		}
+		
 		public Builder setDescription(String description) {
 			this.service.description = description;
 			return this;
 		}
 		
-		public Builder setVendorID(String VendorID) {
-			this.service.VendorID = VendorID;
-			return this;
-		}
-		
-		public Builder setStatus(Integer status) {
-			this.service.status = status;
-			return this;
-		}
-
 		public Service build() {
 			return this.service;
 		}
 	}
 
+	public String getServiceId() {
+		return serviceId;
+	}
+
+
+	public String getCategoryId() {
+		return categoryId;
+	}
+
+
+	public String getVendorId() {
+		return vendorId;
+	}
+
+
 	public String getName() {
 		return name;
 	}
 
-	public Category getCategory() {
-		return category;
+	public Double getPrice() {
+		return price;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 	
-	public String getVendorID() {
-		return VendorID;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
 }
