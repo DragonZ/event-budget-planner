@@ -4,13 +4,18 @@
 package budgeteventplanner.client;
 
 	
+import java.util.ArrayList;
 import java.util.Date;
 
+import budgeteventplanner.client.entity.Category;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -32,6 +37,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  *
  */
 public class VendorHomePage implements EntryPoint {
+	
+	//server communication
+	private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
 
 	/* (non-Javadoc)
 	 * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -51,6 +59,8 @@ public class VendorHomePage implements EntryPoint {
 	FlexTable existingService;
 	HorizontalPanel addPanel;
 	ListBox category;
+	ArrayList<Category> allCategories;
+	//TODO
 	TextBox service;
 	TextArea description;
 	TextBox price;
@@ -116,6 +126,7 @@ public class VendorHomePage implements EntryPoint {
 			public void onClick(ClickEvent event)
 			{
 				String sentCategory = category.getItemText(category.getSelectedIndex());
+				//maybe we need the index not the category name
 				String sentText = service.getText();
 				String sentDescription = description.getText();
 				double sentPrice = Double.parseDouble(price.getText());
@@ -231,11 +242,29 @@ public class VendorHomePage implements EntryPoint {
 	
 	public void initializeCategory()
 	{
-		//get information from server
+		//ArrayList<Category> allCategories;
 		
-		for(int i = 0; i < 7; i++)
+		//get information from server
+		categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>()
+				{
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				new DialogBox()
+				.setText("Remote Procedure Call - Failure");
+			}
+			
+			@Override
+			public void onSuccess(ArrayList<Category> result)
+			{
+				allCategories = result;
+			}
+			
+				});
+		
+		for(int i = 0; i < allCategories.size(); i++)
 		{
-			category.addItem(Integer.toString(i));
+			category.addItem(allCategories.get(i).getName());
 		}
 	}
 	
