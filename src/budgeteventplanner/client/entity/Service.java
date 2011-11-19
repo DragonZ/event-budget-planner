@@ -7,11 +7,16 @@ import com.googlecode.objectify.annotation.Entity;
 //		BudgetService Service = (new BudgetService).Builder(......).setId(id).build();
 @Entity
 public class Service {
+	@Id
+	private String serviceId;
+	
+	private String categoryId;
+	private String vendorId;
+	
 	private String name;
-	private Category category;
 	private String description;
-	private String VendorID;
 
+	
 	public static class Builder {
 		private Service service = new Service();
 
@@ -38,6 +43,11 @@ public class Service {
 			this.service.VendorID = VendorID;
 			return this;
 		}
+		
+		public Builder setStatus(Integer status) {
+			this.service.status = status;
+			return this;
+		}
 
 		public Service build() {
 			return this.service;
@@ -58,5 +68,9 @@ public class Service {
 	
 	public String getVendorID() {
 		return VendorID;
+	}
+
+	public Integer getStatus() {
+		return status;
 	}
 }
