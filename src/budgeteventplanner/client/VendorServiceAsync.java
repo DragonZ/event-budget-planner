@@ -10,7 +10,6 @@ import budgeteventplanner.client.entity.ServiceRequest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface VendorServiceAsync {
-	void createVendor(String vendorName, String location, AsyncCallback<Void> callback) throws NoSuchAlgorithmException;
 	
 	//add a new sevice to a vendor’s service list
 	void addService(String categoryId, String vendorId, String name, Double price, String description, AsyncCallback<Void> callback);

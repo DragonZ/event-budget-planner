@@ -12,7 +12,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("vendor")
 public interface VendorService extends RemoteService {
-	void createVendor(String vendorName, String location) throws NoSuchAlgorithmException;
 	
 	//add a new sevice to a vendor’s service list
 	void addService(String categoryId, String vendorId, String name, Double price, String description);
