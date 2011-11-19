@@ -1,125 +1,104 @@
 package budgeteventplanner.client.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Id;
 
 import budgeteventplanner.shared.UUID;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.googlecode.objectify.annotation.Entity;
 
 //		BudgetAttendee Event = (new BudgetAttendee).Builder(......).setId(id).build();
 @Entity
-public class Event
-{
+public class Event {
 	@Id
-	private String eventID;
-	private String name;
+	private String eventId;
 	private String organizerId;
+	private String name;
 	private Date startTime;
 	private Date endTime;
 	private Address location;
-	private Integer visibility;
-	private List<Item> itemList;
-	private List<Attendee> attendeeList;
+	private Integer status;
 
-	public static class Builder
-	{
-		private Event event = new Event();
-		
+	public static final Integer ACTIVE = 0;
+	public static final Integer INACTIVE = 1;
+	public static final Integer TRASHED = 2;
+
+	public Event() {
+	}
+
+	public static class Builder {
+		private Event event;
+
 		public Builder(Event event) {
 			this.event = event;
 		}
 
-		public Builder(String name, String organizerId, Integer visibility)
-		{
-			this.event.name = name;
+		public Builder(String organizerId, String name, Integer status) {
+			this.event = new Event();
+			this.event.eventId = UUID.randomUUID();
 			this.event.organizerId = organizerId;
-			this.event.visibility = visibility;
-			this.event.eventID = UUID.randomUUID();
-			this.event.itemList = Lists.newArrayList();
-			this.event.attendeeList = Lists.newArrayList();
+			this.event.name = name;
+			this.event.status = INACTIVE;
 		}
-		
-		public Builder setStartTime (Date startTime)
-		{
-			this.event.startTime = startTime;
-			return this;
-		}
-		public Builder setEndTime (Date endTime)
-		{
-			this.event.endTime= endTime;
-			return this;
-		}
-		public Builder setLocation (Address location)
-		{
-			this.event.location= location;
-			return this;
-		}
-		
-		public Event build() 
-		{
-			return this.event;
-		}
-		
-		public Builder addItem(Item event)
-		{
-			this.event.itemList.add(event);
+
+		public Builder setName(String name) {
+			this.event.name = name;
 			return this;
 		}
 
-		public Builder addAttendee(Attendee attendee)
-		{
-			this.event.attendeeList.add(attendee);
+		public Builder setStartTime(Date startTime) {
+			this.event.startTime = startTime;
 			return this;
 		}
+
+		public Builder setEndTime(Date endTime) {
+			this.event.endTime = endTime;
+			return this;
+		}
+
+		public Builder setLocation(Address location) {
+			this.event.location = location;
+			return this;
+		}
+
+		public Builder setStatus(Integer status) {
+			this.event.status = status;
+			return this;
+		}
+
+		public Event build() {
+			return this.event;
+		}
 	}
-	
-	public List<Item> itemList()
-	{
-		return itemList;
+
+	public String getEventId() {
+		return eventId;
 	}
-	
-	public List<Attendee> attendeeList()
-	{
-		return attendeeList;
-	}
-	
-	public String eventID()
-	{
-		return eventID;
-	}
-	
-	public String name()
-	{
-		return name;
-	}
-	
-	public String organizer()
-	{
+
+	public String getOrganizerId() {
 		return organizerId;
 	}
-	
-	public Date startTime()
-	{
+
+	public String getName() {
+		return name;
+	}
+
+	public Date getStartTime() {
 		return startTime;
 	}
-	
-	public Date endTime()
-	{
+
+	public Date getEndTime() {
 		return endTime;
 	}
-	
-	public Address location()
-	{
+
+	public Address getLocation() {
 		return location;
 	}
-	
-	public Integer visibility()
-	{
-		return visibility;
+
+	public Integer getStatus() {
+		return status;
 	}
+	
 	
 }
