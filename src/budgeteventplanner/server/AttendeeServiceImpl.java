@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 import budgeteventplanner.client.AttendeeService;
 import budgeteventplanner.client.entity.Attendee;
-import budgeteventplanner.client.entity.TestEntity;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -21,13 +19,14 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 	}
 	
 	@Override
-	public void createAttendee(String firstName, String lastName, String email)
+	public String createAttendee(String firstName, String lastName, String email)
 			throws NoSuchAlgorithmException {
 		// TODO Auto-generated method stub
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee= new Attendee.Builder(firstName, lastName)
 		.build();
 		ofy.put(attendee);
+		return attendee.getAttendeeID();
 		
 	}
 	
@@ -54,7 +53,6 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 	{
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = ofy.query(Attendee.class).filter("id", attendeeID).get();
-		ArrayList<Attendee> entities = new ArrayList<Attendee>();
 
 		attendee = new Attendee.Builder(attendee).setName(lastName).setCompanyName(companyName).setJobtitle(jobTitle).build();
 		
