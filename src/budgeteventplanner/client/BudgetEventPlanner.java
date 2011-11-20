@@ -555,6 +555,7 @@ public class BudgetEventPlanner implements EntryPoint {
 									loginButton.setEnabled(true);
 									signButton.setEnabled(true);
 									attendeePartButton.setEnabled(true);
+									AttendeeRegistration.setAttendeeID(attendeeField.getText());
 									RootPanel.get("XuXuan2").setVisible(true);
 									RootPanel.get("main").setVisible(false);
 									nameField.setText("");
