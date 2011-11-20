@@ -12,6 +12,7 @@ import com.googlecode.objectify.ObjectifyService;
 public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
 	public BudgetServiceImpl() {
+		super();
 		ObjectifyService.register(Attendee.class);
 	}
 

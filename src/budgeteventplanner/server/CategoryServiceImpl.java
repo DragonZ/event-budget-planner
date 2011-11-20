@@ -15,9 +15,10 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 		CategoryService {
 
 	public CategoryServiceImpl() {
+		super();
 		ObjectifyService.register(Category.class);
 	}
-	
+
 	@Override
 	public void createCategory(String categoryName) {
 		Objectify ofy = ObjectifyService.begin();
@@ -29,10 +30,10 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 	public ArrayList<Category> getAllCategory() {
 		Objectify ofy = ObjectifyService.begin();
 		Query<Category> q = ofy.query(Category.class);
-		
+
 		ArrayList<Category> entities = new ArrayList<Category>();
 
-		//Loop the query results and add to the array
+		// Loop the query results and add to the array
 		for (Category fetched : q) {
 			entities.add(fetched);
 		}
@@ -42,9 +43,9 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String getCategoryName(String categoryId) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Category> q = ofy.query(Category.class).filter("categoryId", categoryId);
+		Query<Category> q = ofy.query(Category.class).filter("categoryId",
+				categoryId);
 		return q.get().getName();
 	}
-	
-	
+
 }

@@ -13,27 +13,29 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class DataServiceImpl extends RemoteServiceServlet implements
 		DataService {
+
 	public DataServiceImpl() {
+		super();
 		ObjectifyService.register(TestEntity.class);
 	}
 
 	@Override
 	public void putEntity(String name, String address, Integer limit) {
-		
+
 		Objectify ofy = ObjectifyService.begin();
-		TestEntity ent = new TestEntity.Builder(name).setAddress(address).setLimit(limit).build();
+		TestEntity ent = new TestEntity.Builder(name).setAddress(address)
+				.setLimit(limit).build();
 		ofy.put(ent);
 	}
 
 	@Override
 	public ArrayList<TestEntity> getEntityByName(String name) {
-		
+
 		Objectify ofy = ObjectifyService.begin();
-		Query<TestEntity> q = ofy.query(TestEntity.class).filter("name",
-				name);
+		Query<TestEntity> q = ofy.query(TestEntity.class).filter("name", name);
 		ArrayList<TestEntity> entities = new ArrayList<TestEntity>();
 
-		//Loop the query results and add to the array
+		// Loop the query results and add to the array
 		for (TestEntity fetched : q) {
 			entities.add(fetched);
 		}
@@ -42,13 +44,13 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public ArrayList<TestEntity> getEntityByLimit(Integer limit) {
-		
+
 		Objectify ofy = ObjectifyService.begin();
-		Query<TestEntity> q = ofy.query(TestEntity.class).filter("limit",
-				limit);
+		Query<TestEntity> q = ofy.query(TestEntity.class)
+				.filter("limit", limit);
 		ArrayList<TestEntity> entities = new ArrayList<TestEntity>();
 
-		//Loop the query results and add to the array
+		// Loop the query results and add to the array
 		for (TestEntity fetched : q) {
 			entities.add(fetched);
 		}

@@ -31,12 +31,11 @@ public class Attendee implements Serializable {
 			this.attendee = attendee;
 		}
 		
-		public Builder(Attendee attendee, String newEventId) 
+		public Builder(Attendee attendee, String eventId) 
 		{
 			this.attendee = attendee;
-			this.attendee.eventId = newEventId;
+			this.attendee.eventId = eventId;
 			this.attendee.attendeeId = UUID.randomUUID();
-
 		}
 		
 		public Builder(String eventId, String name, String email) {

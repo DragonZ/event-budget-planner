@@ -1,6 +1,5 @@
 package budgeteventplanner.server;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import budgeteventplanner.client.UserService;
@@ -20,7 +19,8 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void register(String email, String password, Integer role)
 			throws NoSuchAlgorithmException {
-		//String encrypted = MessageDigest.getInstance("SHA-1").digest(password.getBytes()).toString();
+		// String encrypted =
+		// MessageDigest.getInstance("SHA-1").digest(password.getBytes()).toString();
 		String encrypted = password;
 		Objectify ofy = ObjectifyService.begin();
 		User user = new User.Builder(email, encrypted, role).build();
@@ -30,12 +30,12 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public Integer login(String email, String password)
 			throws NoSuchAlgorithmException {
-		//String encrypted = MessageDigest.getInstance("SHA-1").digest(password.getBytes()).toString();
+		// String encrypted =
+		// MessageDigest.getInstance("SHA-1").digest(password.getBytes()).toString();
 		String encrypted = password;
 		Objectify ofy = ObjectifyService.begin();
 
-		User user = ofy.query(User.class).filter("email",
-				email).get();
+		User user = ofy.query(User.class).filter("email", email).get();
 
 		if (encrypted.equals(user.getPassword())) {
 			return user.getRole();
@@ -43,11 +43,10 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 			return -1;
 		}
 	}
-	
+
 	@Override
-	public Integer attendeeLogin(String registrationCode)
-	{
+	public Integer attendeeLogin(String registrationCode) {
 		return 1;
 	}
-	
+
 }

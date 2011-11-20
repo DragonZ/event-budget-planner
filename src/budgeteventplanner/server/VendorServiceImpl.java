@@ -1,4 +1,5 @@
 package budgeteventplanner.server;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +13,14 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Query;
 
 @SuppressWarnings("serial")
-public class VendorServiceImpl extends RemoteServiceServlet implements VendorService 
-{
-	public VendorServiceImpl() {}
-
+public class VendorServiceImpl extends RemoteServiceServlet implements
+		VendorService {
 	@Override
 	public void addService(String categoryId, String vendorId, String name,
 			Double price, String description) {
 		Objectify ofy = ObjectifyService.begin();
-		Service service= new Service.Builder(categoryId, vendorId, name, price, description).build();
+		Service service = new Service.Builder(categoryId, vendorId, name,
+				price, description).build();
 		ofy.put(service);
 	}
 
@@ -33,7 +33,8 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 	@Override
 	public List<Service> getServiceByVendorId(String vendorId) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Service> q = ofy.query(Service.class).filter("vendorId", vendorId);
+		Query<Service> q = ofy.query(Service.class)
+				.filter("vendorId", vendorId);
 		return q.list();
 	}
 
@@ -42,10 +43,12 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 			String status) {
 		Objectify ofy = ObjectifyService.begin();
 		List<ServiceRequest> result = new ArrayList<ServiceRequest>();
-		
-		Query<Service> queryService = ofy.query(Service.class).filter("vendorId", vendorId);
+
+		Query<Service> queryService = ofy.query(Service.class).filter(
+				"vendorId", vendorId);
 		for (Service s : queryService) {
-			Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("serviceId", s.getServiceId());
+			Query<ServiceRequest> queryServiceRequest = ofy.query(
+					ServiceRequest.class).filter("serviceId", s.getServiceId());
 			for (ServiceRequest request : queryServiceRequest) {
 				if (request.getStatus().equals(status)) {
 					result.add(request);
@@ -59,10 +62,11 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 	public void updateServiceRequestStatus(String serviceRequestId,
 			Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		ServiceRequest oldRequest = ofy.query(ServiceRequest.class).filter("serviceRequestId", serviceRequestId).get();
-		ServiceRequest newRequest = new ServiceRequest.Builder(oldRequest).setStatus(status).build();
+		ServiceRequest oldRequest = ofy.query(ServiceRequest.class)
+				.filter("serviceRequestId", serviceRequestId).get();
+		ServiceRequest newRequest = new ServiceRequest.Builder(oldRequest)
+				.setStatus(status).build();
 		ofy.put(newRequest);
 	}
-		
 
 }
