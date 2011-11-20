@@ -5,8 +5,10 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.client.entity.Service;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -41,9 +43,9 @@ public class VendorHomePage implements EntryPoint {
 	// server communication
 	private final CategoryServiceAsync categoryService = GWT
 			.create(CategoryService.class);
-	
-	private final CategoryServiceAsync categoryService = GWT
-	.create(CategoryService.class);
+
+	private final VendorServiceAsync vendorServiceProvider = GWT
+			.create(VendorService.class);
 
 	/*
 	 * (non-Javadoc)
@@ -76,6 +78,7 @@ public class VendorHomePage implements EntryPoint {
 	Hyperlink viewHyperlink[];
 
 	Hyperlink deleteHyperlink[];
+	String[] deleteServiceID;
 
 	@Override
 	public void onModuleLoad() {
@@ -127,47 +130,60 @@ public class VendorHomePage implements EntryPoint {
 		addService = new Button("ADD");
 		addService.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				//get userID from the cookie:
-				String userID = Cookies.getCookie("USERNAME");
-				
-				final String sentCategoryID;
-				//check the categoryID
+
+				// check the categoryID
 				categoryService
-				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						new DialogBox()
-								.setText("Remote Procedure Call - Failure");
-					}
+						.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								new DialogBox()
+										.setText("Remote Procedure Call - Failure");
+							}
 
-					@Override
-					public void onSuccess(ArrayList<Category> result) {
-						int sentCategory = category.getSelectedIndex();
-						
-						sentCategoryID = result.get(sentCategory).getCategoryId();
-						
-					}
+							@Override
+							public void onSuccess(ArrayList<Category> result) {
+								// get userID from the cookie:
+								String userID = Cookies.getCookie("USERNAME");
 
-				});
-				
-				
-				// maybe we need the index not the category name
-				String sentText = service.getText();
-				String sentDescription = description.getText();
-				double sentPrice = Double.parseDouble(price.getText());
+								int sentCategory = category.getSelectedIndex();
 
-				// add to server
-				
+								String sentCategoryID = result
+										.get(sentCategory).getCategoryId();
+
+								// maybe we need the index not the category name
+								String sentText = service.getText();
+								String sentDescription = description.getText();
+								double sentPrice = Double.parseDouble(price
+										.getText());
+
+								// add to server
+								vendorServiceProvider.addService(
+										sentCategoryID, userID, sentText,
+										sentPrice, sentDescription,
+										new AsyncCallback<Void>() {
+											@Override
+											public void onFailure(
+													Throwable caught) {
+												new DialogBox()
+														.setText("Remote Procedure Call - Failure");
+											}
+
+											@Override
+											public void onSuccess(Void result) {
+												new DialogBox()
+														.setText("Remote Procedure Call - Successful");
+
+											}
+
+										});
+
+							}
+
+						});
 
 				// refresh the table
+				refreshExistingService();
 
-				existingService.setWidget(6, 0, new Label(sentCategory));
-				deleteHyperlink[5] = new Hyperlink("delete", Integer
-						.toString(5));
-				existingService.setWidget(6, 1, new Label(sentText));
-				existingService.setWidget(6, 2, new Label(sentDescription));
-				existingService.setWidget(6, 3, new Label(price.getText()));
-				existingService.setWidget(6, 4, deleteHyperlink[5]);
 			}
 		});
 
@@ -202,6 +218,7 @@ public class VendorHomePage implements EntryPoint {
 
 	}
 
+	// TODO may need to be removed
 	public void initializeServiceTable() {
 		// get data from the service, list the existing services
 		existingService.getColumnFormatter().setWidth(0, "200px");
@@ -232,32 +249,112 @@ public class VendorHomePage implements EntryPoint {
 		existingService.setWidget(0, 2, new Label("Description"));
 		existingService.setWidget(0, 3, new Label("Price"));
 		existingService.setWidget(0, 4, new Label("Option"));
-		// List<Category> getExistingCategory(String VendorID);
 
-		Date today = new Date();
-		final Label[] a = new Label[11]; // TODO
-		for (int i = 0; i < 11; i++)
-			a[i] = new Label(today.toString());
+		String userID = Cookies.getCookie("USERNAME");
+		vendorServiceProvider.getServiceByVendorId(userID,
+				new AsyncCallback<List<Service>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO
+					}
 
-		deleteHyperlink = new Hyperlink[6];
-		for (int i = 0; i < 5; i++) {
-			existingService.setWidget(i + 1, 0, new Label(Integer.toString(i)));
-			deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
-			existingService.setWidget(i + 1, 1, new Label(
-					"lol idk the service name"));
-			existingService.setWidget(i + 1, 2, a[i]);
-			existingService.setWidget(i + 1, 3, new Label("10"));
-			existingService.setWidget(i + 1, 4, deleteHyperlink[i]);
+					public void onSuccess(List<Service> result) {
+						deleteHyperlink = new Hyperlink[result.size()];
+						deleteServiceID = new String[result.size()];
 
-			// listener add
-			deleteHyperlink[i].addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					// void deleteExistingService(String ServiceID, String
-					// VendorID);
-					refreshExistingService();
-				}
-			});
-		}
+						for (int i = 0; i < result.size(); i++) {
+							deleteServiceID[i] = result.get(i).getServiceId();
+						}
+
+						for (int i = 0; i < result.size(); i++) {
+							existingService.setWidget(i + 1, 0, new Label(
+									result.get(i).getCategoryId()));// TODO
+																	// category
+																	// name
+
+							deleteHyperlink[i] = new Hyperlink("delete",
+									Integer.toString(i));
+							existingService.setWidget(i + 1, 1, new Label(
+									result.get(i).getName()));
+							existingService.setWidget(i + 1, 2, new Label(
+									result.get(i).getDescription()));
+							existingService.setWidget(i + 1, 3, new Label(
+									result.get(i).getPrice().toString()));
+							existingService.setWidget(i + 1, 4,
+									deleteHyperlink[i]);
+
+							// listener add
+							deleteHyperlink[i]
+									.addClickHandler(new ClickHandler() {
+										public void onClick(ClickEvent event) {
+											// void deleteExistingService(String
+											// ServiceID, String
+											// VendorID);
+											int i;
+											for (i = 0; i < existingService
+													.getRowCount(); i++) {
+												if (event
+														.getSource()
+														.equals(existingService
+																.getWidget(i, 4))) {
+													break;
+												}
+											}// do we need this loop? one
+												// listener only detect
+												// one hyper;ink
+
+											// move to accepted folder
+											// remove from pending folder
+											// communication to server, inform
+											// the event manager
+											// re-get the list and refresh
+											// events.removeRow(i);
+											// TODO deleteServiceID[i - 1]
+											vendorServiceProvider
+													.deleteService(
+															deleteServiceID[i - 1],
+															new AsyncCallback<Void>() {
+																@Override
+																public void onFailure(
+																		Throwable caught) {
+																	// TODO
+																}
+
+																@Override
+																public void onSuccess(
+																		Void result) {
+																	// TODO
+																}
+															});
+
+											refreshExistingService();
+											RootPanel.get("ZhenLong")
+													.setVisible(false);
+											RootPanel.get("ZhenLong")
+													.setVisible(true);
+										}
+									});
+						}
+					}
+				});
+
+		/*
+		 * Date today = new Date(); final Label[] a = new Label[11]; // TODO for
+		 * (int i = 0; i < 11; i++) a[i] = new Label(today.toString());
+		 * 
+		 * deleteHyperlink = new Hyperlink[6]; for (int i = 0; i < 5; i++) {
+		 * existingService.setWidget(i + 1, 0, new Label(Integer.toString(i)));
+		 * deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
+		 * existingService.setWidget(i + 1, 1, new Label(
+		 * "lol idk the service name")); existingService.setWidget(i + 1, 2,
+		 * a[i]); existingService.setWidget(i + 1, 3, new Label("10"));
+		 * existingService.setWidget(i + 1, 4, deleteHyperlink[i]);
+		 * 
+		 * // listener add deleteHyperlink[i].addClickHandler(new ClickHandler()
+		 * { public void onClick(ClickEvent event) { // void
+		 * deleteExistingService(String ServiceID, String // VendorID);
+		 * refreshExistingService(); } }); }
+		 */
 	}
 
 	public void initializeCategory() {
@@ -283,6 +380,7 @@ public class VendorHomePage implements EntryPoint {
 
 	}
 
+	@SuppressWarnings("hiding")
 	public class treeHandler<TreeItem> implements SelectionHandler<TreeItem> {
 		@SuppressWarnings("deprecation")
 		public void onSelection(SelectionEvent<TreeItem> event) {
