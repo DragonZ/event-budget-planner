@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -40,6 +41,9 @@ public class VendorHomePage implements EntryPoint {
 	// server communication
 	private final CategoryServiceAsync categoryService = GWT
 			.create(CategoryService.class);
+	
+	private final CategoryServiceAsync categoryService = GWT
+	.create(CategoryService.class);
 
 	/*
 	 * (non-Javadoc)
@@ -123,14 +127,37 @@ public class VendorHomePage implements EntryPoint {
 		addService = new Button("ADD");
 		addService.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				String sentCategory = category.getItemText(category
-						.getSelectedIndex());
+				//get userID from the cookie:
+				String userID = Cookies.getCookie("USERNAME");
+				
+				final String sentCategoryID;
+				//check the categoryID
+				categoryService
+				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						new DialogBox()
+								.setText("Remote Procedure Call - Failure");
+					}
+
+					@Override
+					public void onSuccess(ArrayList<Category> result) {
+						int sentCategory = category.getSelectedIndex();
+						
+						sentCategoryID = result.get(sentCategory).getCategoryId();
+						
+					}
+
+				});
+				
+				
 				// maybe we need the index not the category name
 				String sentText = service.getText();
 				String sentDescription = description.getText();
 				double sentPrice = Double.parseDouble(price.getText());
 
 				// add to server
+				
 
 				// refresh the table
 
