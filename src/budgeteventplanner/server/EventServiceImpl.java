@@ -1,9 +1,11 @@
 package budgeteventplanner.server;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import budgeteventplanner.client.EventService;
+import budgeteventplanner.client.entity.Attendee;
 import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
@@ -34,7 +36,13 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
 			Date startTime, Date endTime, String address, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		Event oldEvent = ofy.query(Event.class).filter("eventId", eventId).get();
-		Event newEvent = new Event.Builder(oldEvent).setName(name).setStartTime(startTime).setEndTime(endTime).setAddress(address).setStatus(status).build();
+		Event newEvent = new Event.Builder(oldEvent)
+		.setName(name)
+		.setStartTime(startTime)
+		.setEndTime(endTime)
+		.setAddress(address)
+		.setStatus(status)
+		.build();
 		ofy.put(newEvent);
 	}
 
@@ -66,4 +74,21 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
 		Query<Service> q = ofy.query(Service.class).filter("categoryId", categoryId);
 		return q.list();
 	}
+
+	@Override
+	public void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList) {
+		Objectify ofy = ObjectifyService.begin();
+		for(String attendeeId : attendeeIdList)
+		{
+			Attendee thisAttendee = ofy.query(Attendee.class).filter("attendeeId", attendeeId).get();
+			if(thisAttendee.getAttendeeId() != eventId)
+			{
+				Attendee newAttendee = new Attendee.Builder(thisAttendee, eventId).build();
+				ofy.put(newAttendee);
+			}
+
+		}
+	}
+	
+	
 }

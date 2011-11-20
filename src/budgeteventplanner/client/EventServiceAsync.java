@@ -1,5 +1,6 @@
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface EventServiceAsync {
 	void addServiceRequest(String serviceId, String eventId, String name, Date dueDate, AsyncCallback<Void> callback);
 	void getServiceRequestsByEventId(String eventId, AsyncCallback<List<ServiceRequest> > callback);
 	void getServicesByCategoryId(String categoryId, AsyncCallback<List<Service>> callback);
+	void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList, AsyncCallback<Void> callback);
 }

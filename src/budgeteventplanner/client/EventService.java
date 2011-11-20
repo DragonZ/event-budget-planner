@@ -1,5 +1,6 @@
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,4 +19,5 @@ public interface EventService extends RemoteService {
 	void addServiceRequest(String serviceId, String eventId, String name, Date dueDate);
 	List<ServiceRequest> getServiceRequestsByEventId(String eventId);
 	List<Service> getServicesByCategoryId(String categoryId);
+	void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList);
 }
