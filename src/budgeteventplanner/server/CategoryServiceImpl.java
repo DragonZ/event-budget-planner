@@ -38,6 +38,13 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 		}
 		return entities;
 	}
+
+	@Override
+	public String getCategoryName(String categoryId) {
+		Objectify ofy = ObjectifyService.begin();
+		Query<Category> q = ofy.query(Category.class).filter("categoryId", categoryId);
+		return q.get().getName();
+	}
 	
 	
 }

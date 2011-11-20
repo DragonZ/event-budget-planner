@@ -11,4 +11,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface CategoryService extends RemoteService {
 	void createCategory(String categoryName);
 	ArrayList<Category> getAllCategory();
+	String getCategoryName(String categoryId);
 }
