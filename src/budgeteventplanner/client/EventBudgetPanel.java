@@ -9,8 +9,10 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.client.entity.Event;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -36,13 +38,17 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 	public TabPanel t_panel; 
-	private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+	public String organizerId;
 	
+	private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+	private final EventServiceAsync eventService = GWT.create(EventService.class);
 	
 	
 	@Override
 	public void onModuleLoad() {
 		// TODO Auto-generated method stub
+		
+		organizerId = "YuanXia";
 		
 		//HorizontalSplitPanel event_h_panel=new HorizontalSplitPanel();
 		HorizontalPanel event_h_panel=new HorizontalPanel();
@@ -81,105 +87,216 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		event_table.setWidget(0, 9, new HTML("<strong>Delete</strong>"));
 		event_table.getCellFormatter().setWidth(0, 9, "20%");
 		
-		
-		int row_count=3;
-		for (int i=1;i<=row_count;i++)
-		{
-			event_table.setWidget(i,0, new Label("ID from Server"+Integer.toString(i)));
-			event_table.setWidget(i,1, new Label("Name from Server"+Integer.toString(i)));
-			event_table.setWidget(i,2, new Label("Start date from Server"+Integer.toString(i)));
-			event_table.setWidget(i,3, new Label("End date from Server"+Integer.toString(i)));
-			event_table.setWidget(i,4, new Label("Location from Server"+Integer.toString(i)));
-			
-			final Button itemMod=new Button("Item Modify");
-			itemMod.setWidth("100px");
-			event_table.setWidget(i, 5, itemMod);
-			
-			final Button event_mod=new Button("Event Modify");
-			event_mod.setWidth("100px");
-			event_table.setWidget(i, 6, event_mod);
-			
-			final Button attend_list=new Button("Attendee Modify");
-			attend_list.setWidth("120px");
-			event_table.setWidget(i, 7, attend_list);
-			
-			final Button view_info=new Button("View All");
-			view_info.setWidth("100px");
-			event_table.setWidget(i, 8, view_info);
+		eventService.getEventsByOrganizerId(organizerId, new AsyncCallback<List<Event>>() {
+			public void onFailure(Throwable caught)
+			{
+				
+			}
+			public void onSuccess(List<Event> result)
+			{
+				int i=0;
+				for (Event e : result)
+				{
+					i++;
+					event_table.setWidget(i, 0, new Label(e.getEventId()));
+					event_table.setWidget(i, 1, new Label(e.getName()));
+					event_table.setWidget(i, 2, new Label(e.getStartTime().toString()));
+					event_table.setWidget(i, 3, new Label(e.getEndTime().toString()));
+					event_table.setWidget(i, 4, new Label(e.getAddress()));
+					
+					final Button itemMod=new Button("Item Modify");
+					itemMod.setWidth("100px");
+					event_table.setWidget(i, 5, itemMod);
+					
+					final Button event_mod=new Button("Event Modify");
+					event_mod.setWidth("100px");
+					event_table.setWidget(i, 6, event_mod);
+					
+					final Button attend_list=new Button("Attendee Modify");
+					attend_list.setWidth("120px");
+					event_table.setWidget(i, 7, attend_list);
+					
+					final Button view_info=new Button("View All");
+					view_info.setWidth("100px");
+					event_table.setWidget(i, 8, view_info);
 
-			final Button event_del=new Button("Delete");
-			event_table.setWidget(i, 9, event_del);
-			
-			itemMod.addClickHandler(new ClickHandler(){
-				public void onClick(ClickEvent event)
-				{
-					int row;
-					int total_event=event_table.getRowCount();
-					for (row=1;row<=total_event;row++)
-					{
-						if (event_table.getWidget(row, 5).equals(itemMod))
-							break;
-					}
-					String event_id=event_table.getText(row, 0);
-					item_pop_up(event_id);
+					final Button event_del=new Button("Delete");
+					event_table.setWidget(i, 9, event_del);
+					
+					itemMod.addClickHandler(new ClickHandler(){
+						public void onClick(ClickEvent event)
+						{
+							int row;
+							int total_event=event_table.getRowCount();
+							for (row=1;row<=total_event;row++)
+							{
+								if (event_table.getWidget(row, 5).equals(itemMod))
+									break;
+							}
+							String event_id=event_table.getText(row, 0);
+							item_pop_up(event_id);
+						}
+					});
+					event_mod.addClickHandler(new ClickHandler(){
+						public void onClick(ClickEvent event)
+						{
+							int row;
+							int total_event=event_table.getRowCount();
+							for (row=1;row<=total_event;row++)
+							{
+								if (event_table.getWidget(row, 6).equals(event_mod))
+									break;
+							}
+							event_pop_up(1,row,event_table);
+						}
+					});
+					attend_list.addClickHandler(new ClickHandler(){
+						public void onClick(ClickEvent event)
+						{
+							int row;
+							int total_event=event_table.getRowCount();
+							for (row=1;row<=total_event;row++)
+								if (event_table.getWidget(row, 7).equals(attend_list))
+									break;
+							String event_id=event_table.getText(row, 0);					
+							attendee_pop_up(event_id);
+						}
+					});
+					view_info.addClickHandler(new ClickHandler(){
+						public void onClick(ClickEvent event)
+						{
+							int row;
+							int total_event=event_table.getRowCount();
+							for (row=1;row<=total_event;row++)
+								if (event_table.getWidget(row, 8).equals(view_info))
+									break;
+							String event_id=event_table.getText(row, 0);
+							String event_title=event_table.getText(row, 1);
+							String startDate=event_table.getText(row, 2);
+							String endDate=event_table.getText(row, 3);
+							String location=event_table.getText(row, 4);
+							view_info_pop_up(event_id, event_title, startDate, endDate, location);
+						}
+					});
+					
+					event_del.addClickHandler(new ClickHandler(){
+						public void onClick(ClickEvent event)
+						{
+							int row;
+							int total=event_table.getRowCount();
+							for (row=1;row<=total;row++)
+							{
+								if (event_table.getWidget(row, 9).equals(event_del))
+									break;
+							}
+							event_table.removeRow(row);
+						}
+					});
+					
 				}
-			});
-			event_mod.addClickHandler(new ClickHandler(){
-				public void onClick(ClickEvent event)
-				{
-					int row;
-					int total_event=event_table.getRowCount();
-					for (row=1;row<=total_event;row++)
-					{
-						if (event_table.getWidget(row, 6).equals(event_mod))
-							break;
-					}
-					event_pop_up(1,row,event_table);
-				}
-			});
-			attend_list.addClickHandler(new ClickHandler(){
-				public void onClick(ClickEvent event)
-				{
-					int row;
-					int total_event=event_table.getRowCount();
-					for (row=1;row<=total_event;row++)
-						if (event_table.getWidget(row, 7).equals(attend_list))
-							break;
-					String event_id=event_table.getText(row, 0);					
-					attendee_pop_up(event_id);
-				}
-			});
-			view_info.addClickHandler(new ClickHandler(){
-				public void onClick(ClickEvent event)
-				{
-					int row;
-					int total_event=event_table.getRowCount();
-					for (row=1;row<=total_event;row++)
-						if (event_table.getWidget(row, 8).equals(view_info))
-							break;
-					String event_id=event_table.getText(row, 0);
-					String event_title=event_table.getText(row, 1);
-					String startDate=event_table.getText(row, 2);
-					String endDate=event_table.getText(row, 3);
-					String location=event_table.getText(row, 4);
-					view_info_pop_up(event_id, event_title, startDate, endDate, location);
-				}
-			});
-			
-			event_del.addClickHandler(new ClickHandler(){
-				public void onClick(ClickEvent event)
-				{
-					int row;
-					int total=event_table.getRowCount();
-					for (row=1;row<=total;row++)
-					{
-						if (event_table.getWidget(row, 9).equals(event_del))
-							break;
-					}
-					event_table.removeRow(row);
-				}
-			});
-		}
+			}
+		});
+		
+		
+		
+//		int row_count=3;
+//		for (int i=1;i<=row_count;i++)
+//		{
+//			event_table.setWidget(i,0, new Label("ID from Server"+Integer.toString(i)));
+//			event_table.setWidget(i,1, new Label("Name from Server"+Integer.toString(i)));
+//			event_table.setWidget(i,2, new Label("Start date from Server"+Integer.toString(i)));
+//			event_table.setWidget(i,3, new Label("End date from Server"+Integer.toString(i)));
+//			event_table.setWidget(i,4, new Label("Location from Server"+Integer.toString(i)));
+//			
+//			final Button itemMod=new Button("Item Modify");
+//			itemMod.setWidth("100px");
+//			event_table.setWidget(i, 5, itemMod);
+//			
+//			final Button event_mod=new Button("Event Modify");
+//			event_mod.setWidth("100px");
+//			event_table.setWidget(i, 6, event_mod);
+//			
+//			final Button attend_list=new Button("Attendee Modify");
+//			attend_list.setWidth("120px");
+//			event_table.setWidget(i, 7, attend_list);
+//			
+//			final Button view_info=new Button("View All");
+//			view_info.setWidth("100px");
+//			event_table.setWidget(i, 8, view_info);
+//
+//			final Button event_del=new Button("Delete");
+//			event_table.setWidget(i, 9, event_del);
+//			
+//			itemMod.addClickHandler(new ClickHandler(){
+//				public void onClick(ClickEvent event)
+//				{
+//					int row;
+//					int total_event=event_table.getRowCount();
+//					for (row=1;row<=total_event;row++)
+//					{
+//						if (event_table.getWidget(row, 5).equals(itemMod))
+//							break;
+//					}
+//					String event_id=event_table.getText(row, 0);
+//					item_pop_up(event_id);
+//				}
+//			});
+//			event_mod.addClickHandler(new ClickHandler(){
+//				public void onClick(ClickEvent event)
+//				{
+//					int row;
+//					int total_event=event_table.getRowCount();
+//					for (row=1;row<=total_event;row++)
+//					{
+//						if (event_table.getWidget(row, 6).equals(event_mod))
+//							break;
+//					}
+//					event_pop_up(1,row,event_table);
+//				}
+//			});
+//			attend_list.addClickHandler(new ClickHandler(){
+//				public void onClick(ClickEvent event)
+//				{
+//					int row;
+//					int total_event=event_table.getRowCount();
+//					for (row=1;row<=total_event;row++)
+//						if (event_table.getWidget(row, 7).equals(attend_list))
+//							break;
+//					String event_id=event_table.getText(row, 0);					
+//					attendee_pop_up(event_id);
+//				}
+//			});
+//			view_info.addClickHandler(new ClickHandler(){
+//				public void onClick(ClickEvent event)
+//				{
+//					int row;
+//					int total_event=event_table.getRowCount();
+//					for (row=1;row<=total_event;row++)
+//						if (event_table.getWidget(row, 8).equals(view_info))
+//							break;
+//					String event_id=event_table.getText(row, 0);
+//					String event_title=event_table.getText(row, 1);
+//					String startDate=event_table.getText(row, 2);
+//					String endDate=event_table.getText(row, 3);
+//					String location=event_table.getText(row, 4);
+//					view_info_pop_up(event_id, event_title, startDate, endDate, location);
+//				}
+//			});
+//			
+//			event_del.addClickHandler(new ClickHandler(){
+//				public void onClick(ClickEvent event)
+//				{
+//					int row;
+//					int total=event_table.getRowCount();
+//					for (row=1;row<=total;row++)
+//					{
+//						if (event_table.getWidget(row, 9).equals(event_del))
+//							break;
+//					}
+//					event_table.removeRow(row);
+//				}
+//			});
+//		}
 		
 		event_right_v_panel.add(event_table);
 		Label l1=new Label("Left Place Holder");
@@ -308,6 +425,10 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		itemList.getColumnFormatter().setWidth(3, "100px");
 		itemList.setWidget(0, 4, new HTML("<strong>Request Details</strong>"));
 		itemList.getColumnFormatter().setWidth(4, "200px");
+		
+		
+		
+		
 		
 		final int itemCount=3;
 		for (int row=1;row<=itemCount;row++)
@@ -507,28 +628,48 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 				d.hide();
 				if (flag==0)
 				{
-					final int row_temp=event_table.getRowCount()+1;
-					event_table.setWidget(row_temp, 0, new Label("New ID generated by Server"));
-					event_table.setWidget(row_temp, 1, new Label(event_title.getText()));
-					event_table.setWidget(row_temp, 2, new Label(start_date.getValue().toString()));
-					event_table.setWidget(row_temp, 3, new Label(end_date.getValue().toString()));
-					event_table.setWidget(row_temp, 4, new Label(location.getText()));
+//					final int row_temp=event_table.getRowCount()+1;
+//					event_table.setWidget(row_temp, 0, new Label("New ID generated by Server"));
+//					event_table.setWidget(row_temp, 1, new Label(event_title.getText()));
+//					event_table.setWidget(row_temp, 2, new Label(start_date.getValue().toString()));
+//					event_table.setWidget(row_temp, 3, new Label(end_date.getValue().toString()));
+//					event_table.setWidget(row_temp, 4, new Label(location.getText()));
+					
+					eventService.createEvent(organizerId, event_title.getText(), start_date.getValue(), end_date.getValue(), location.getText(), new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught)
+						{
+							
+						}
+						public void onSuccess(Void result)
+						{
+							
+						}
+					});
 					
 					
-					final Button temp_mod=new Button("Modify");
-					event_table.setWidget(row_temp, 5, temp_mod);
-					final Button temp_del=new Button("Delete");
-					event_table.setWidget(row_temp, 6, temp_del);
+//					final Button temp_mod=new Button("Modify");
+//					event_table.setWidget(row_temp, 5, temp_mod);
+//					final Button temp_del=new Button("Delete");
+//					event_table.setWidget(row_temp, 6, temp_del);
 					
 				}
 				else if (flag==1)
 				{
-					final int row_temp=row;
-					//event_table.setWidget(row_temp, 0, new Label("New ID generated by Server"));
-					event_table.setWidget(row_temp, 1, new Label(event_title.getText()));
-					event_table.setWidget(row_temp, 2, new Label(start_date.getValue().toString()));
-					event_table.setWidget(row_temp, 3, new Label(end_date.getValue().toString()));
-					event_table.setWidget(row_temp, 4, new Label(location.getText()));
+//					final int row_temp=row;
+//					//event_table.setWidget(row_temp, 0, new Label("New ID generated by Server"));
+//					event_table.setWidget(row_temp, 1, new Label(event_title.getText()));
+//					event_table.setWidget(row_temp, 2, new Label(start_date.getValue().toString()));
+//					event_table.setWidget(row_temp, 3, new Label(end_date.getValue().toString()));
+//					event_table.setWidget(row_temp, 4, new Label(location.getText()));
+					
+					eventService.updateEventByEventId(event_id, event_title.getText(), start_date.getValue(), end_date.getValue(), location.getText(), 1, new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught)
+						{}
+						public void onSuccess(Void result)
+						{
+							
+						}
+					});
 					
 				}
 				RootPanel.get("XiaYuan").clear();
