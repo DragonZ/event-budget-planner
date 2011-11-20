@@ -6,9 +6,9 @@ import java.util.List;
 import budgeteventplanner.client.VendorService;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
-import budgeteventplanner.client.entity.User;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Query;
@@ -16,10 +16,10 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class VendorServiceImpl extends RemoteServiceServlet implements
 		VendorService {
-	
 	public VendorServiceImpl() {
 		ObjectifyService.register(Service.class);
 	}
+	
 	@Override
 	public void addService(String categoryId, String vendorId, String name,
 			Double price, String description) {
@@ -32,7 +32,7 @@ public class VendorServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void deleteService(String serviceId) {
 		Objectify ofy = ObjectifyService.begin();
-		ofy.delete(serviceId);
+		ofy.delete(new Key<Service>(Service.class, serviceId));
 	}
 
 	@Override
@@ -67,8 +67,7 @@ public class VendorServiceImpl extends RemoteServiceServlet implements
 	public void updateServiceRequestStatus(String serviceRequestId,
 			Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		ServiceRequest oldRequest = ofy.query(ServiceRequest.class)
-				.filter("serviceRequestId", serviceRequestId).get();
+		ServiceRequest oldRequest = ofy.get(new Key<ServiceRequest>(ServiceRequest.class, serviceRequestId));
 		ServiceRequest newRequest = new ServiceRequest.Builder(oldRequest)
 				.setStatus(status).build();
 		ofy.put(newRequest);

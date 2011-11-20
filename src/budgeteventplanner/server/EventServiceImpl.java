@@ -11,6 +11,7 @@ import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Query;
@@ -36,8 +37,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 	public void updateEventByEventId(String eventId, String name,
 			Date startTime, Date endTime, String address, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		Event oldEvent = ofy.query(Event.class).filter("eventId", eventId)
-				.get();
+		Event oldEvent = ofy.get(new Key<Event>(Event.class, eventId));
 		Event newEvent = new Event.Builder(oldEvent).setName(name)
 				.setStartTime(startTime).setEndTime(endTime)
 				.setAddress(address).setStatus(status).build();
@@ -82,10 +82,8 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 			ArrayList<String> attendeeIdList) {
 		Objectify ofy = ObjectifyService.begin();
 		for (String attendeeId : attendeeIdList) {
-			Attendee thisAttendee = ofy.query(Attendee.class)
-					.filter("attendeeId", attendeeId).get();
-			Attendee newAttendee = new Attendee.Builder(thisAttendee, eventId)
-					.build();
+			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+			Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId).build();
 			ofy.put(newAttendee);
 		}
 	}

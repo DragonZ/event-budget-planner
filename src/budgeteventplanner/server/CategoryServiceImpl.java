@@ -6,6 +6,7 @@ import budgeteventplanner.client.CategoryService;
 import budgeteventplanner.client.entity.Category;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Query;
@@ -43,9 +44,8 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String getCategoryName(String categoryId) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Category> q = ofy.query(Category.class).filter("categoryId",
-				categoryId);
-		return q.get().getName();
+		Category category = ofy.get(new Key<Category>(Category.class, categoryId));
+		return category.getName();
 	}
 
 }
