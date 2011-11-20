@@ -6,6 +6,7 @@ import java.util.List;
 import budgeteventplanner.client.VendorService;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.client.entity.User;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;
@@ -15,6 +16,10 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class VendorServiceImpl extends RemoteServiceServlet implements
 		VendorService {
+	
+	public VendorServiceImpl() {
+		ObjectifyService.register(Service.class);
+	}
 	@Override
 	public void addService(String categoryId, String vendorId, String name,
 			Double price, String description) {
