@@ -162,6 +162,8 @@ public class AttendeeRegistration implements EntryPoint {
 								stateBox.setText("");
 								zipBox.setText("");
 								phoneBox.setText("");
+								RootPanel.get("XuXuan").setVisible(false);
+								RootPanel.get("main").setVisible(true);
 							}
 
 						}
