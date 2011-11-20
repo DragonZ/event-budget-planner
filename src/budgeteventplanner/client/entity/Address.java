@@ -14,7 +14,8 @@ public class Address implements Serializable{
 	private String state;
 	private String zipcode;
 	private String country;
-
+	private String rawAddress;
+	
 	public Address(){}
 	
 	public static class Builder {
@@ -24,6 +25,10 @@ public class Address implements Serializable{
 			this.address = address;
 		}
 
+		public Builder(String rawAddress) {
+			this.address.rawAddress = rawAddress;
+		}
+		
 		public Builder(String firstName, String lastName) {
 			this.address.firstName = firstName;
 			this.address.lastName = lastName;
@@ -94,6 +99,10 @@ public class Address implements Serializable{
 	public String toString() {
 		return firstName + " " + lastName + " " + street + " " + city + " "
 				+ state + " " + zipcode + " " + country;
+	}
+
+	public String getRawAddress() {
+		return rawAddress;
 	}
 
 }
