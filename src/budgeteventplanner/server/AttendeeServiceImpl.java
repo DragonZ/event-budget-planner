@@ -96,9 +96,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 			msg.setText(msgBody);
 			Transport.send(msg);
 		} catch (AddressException e) {
-
 		} catch (MessagingException e) {
-
 		} catch (UnsupportedEncodingException e) {
 
 		}
