@@ -1,6 +1,5 @@
 package budgeteventplanner.client;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import budgeteventplanner.client.entity.TestEntity;
@@ -22,9 +21,9 @@ public class DatabaseTestPage implements EntryPoint {
 
 	private final DataServiceAsync dataService = GWT.create(DataService.class);
 
-	private final UserServiceAsync userService = GWT.create(UserService.class);
+	//private final UserServiceAsync userService = GWT.create(UserService.class);
 	
-	private final EventServiceAsync eventService = GWT.create(EventService.class);
+	//private final EventServiceAsync eventService = GWT.create(EventService.class);
 
 	@Override
 	public void onModuleLoad() {

@@ -36,7 +36,6 @@ public class AttendeeManager implements EntryPoint {
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	@SuppressWarnings("unused")
 	private final static AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
 	private final static EventServiceAsync eventService = GWT
