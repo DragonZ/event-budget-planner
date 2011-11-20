@@ -17,6 +17,7 @@ import budgeteventplanner.client.entity.Attendee;
 import budgeteventplanner.client.entity.Event;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Query;
@@ -68,8 +69,8 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 			String email, String jobTitle, String companyName, String address,
 			String phoneNumber) {
 		Objectify ofy = ObjectifyService.begin();
-		Attendee attendee = ofy.query(Attendee.class)
-				.filter("attendeeId", attendeeId).get();
+		
+		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
 		Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name)
 				.setEmail(email).setJobTitle(jobTitle)
 				.setCompanyName(companyName).setAddress(address)
