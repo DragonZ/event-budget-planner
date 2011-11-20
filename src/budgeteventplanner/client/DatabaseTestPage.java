@@ -141,11 +141,9 @@ public class DatabaseTestPage implements EntryPoint {
 		DBGetHandler dbgethandler = new DBGetHandler();
 		getButton.addClickHandler(dbgethandler);
 
-
-
+		/*
 		
-		
-		//registyer component
+		//register component
 		final Button registerButton = new Button("Register");
 		final Button loginButton = new Button("Login");
 		final TextBox dbemail = new TextBox();
