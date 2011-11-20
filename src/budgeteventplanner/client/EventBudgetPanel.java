@@ -561,7 +561,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public void attendee_pop_up(String event_id) {
 		// set cookie for organizer id and event id
 		
-		
+		AttendeeManager.edittingAttendees(event_id, "YuanXia");
 		RootPanel.get("XiaYuan").setVisible(false);
 		RootPanel.get("XuXuan").setVisible(true);
 
