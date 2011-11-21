@@ -93,9 +93,12 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 		for (String attendeeId : attendeeIdList) {
 			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class,
 					attendeeId));
-			Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId)
-					.build();
-			ofy.put(newAttendee);
+			if(!oldAttendee.getEventId().equals(eventId))
+			{
+				Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId)
+				.build();
+				ofy.put(newAttendee);
+			}
 		}
 	}
 
