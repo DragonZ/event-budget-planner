@@ -54,7 +54,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<Event> getEventsByOrganizerIdAndStatus(String organizerId,
-			String status) {
+			Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		Query<Event> q = ofy.query(Event.class)
 				.filter("organizerId", organizerId).filter("status", status);
