@@ -45,7 +45,7 @@ public class VendorServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<ServiceRequest> getServiceRequestByStatus(String vendorId,
-			String status) {
+			Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		List<ServiceRequest> result = new ArrayList<ServiceRequest>();
 
