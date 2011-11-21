@@ -76,6 +76,7 @@ public class VendorHomePage implements EntryPoint {
 	Hyperlink ignoreHyperlink[];
 	Hyperlink viewHyperlink[];
 	ArrayList<String> serviceRequestID;
+	ArrayList<String> categoryList;
 
 	Hyperlink deleteHyperlink[];
 	String[] deleteServiceID;
@@ -308,17 +309,17 @@ public class VendorHomePage implements EntryPoint {
 					public void onSuccess(List<Service> result) {
 						deleteHyperlink = new Hyperlink[result.size()];
 						deleteServiceID = new String[result.size()];
+						categoryList = new ArrayList<String>();
 
 						for (int i = 0; i < result.size(); i++) {
 							deleteServiceID[i] = result.get(i).getServiceId();
+							categoryList.add(new String(categoryFromidToname(result.get(i)
+									.getCategoryId())));
 						}
 
 						for (int i = 0; i < result.size(); i++) {
 
-							String tmp = categoryFromidToname(result.get(i)
-									.getCategoryId());
-
-							existingService.setWidget(i + 1, 0, new Label(tmp));
+							existingService.setWidget(i + 1, 0, new Label(categoryList.get(i)));
 							// category
 							// name
 
