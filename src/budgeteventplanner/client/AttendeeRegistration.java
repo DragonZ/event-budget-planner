@@ -110,6 +110,8 @@ public class AttendeeRegistration implements EntryPoint {
 				dialogBox.hide();
 				submit.setEnabled(true);
 				submit.setFocus(true);
+				RootPanel.get("XuXuan2").setVisible(false);
+				RootPanel.get("main").setVisible(true);
 			}
 		});
 		// emailBox.setFocus(true);
@@ -153,8 +155,8 @@ public class AttendeeRegistration implements EntryPoint {
 								stateBox.setText("");
 								zipBox.setText("");
 								phoneBox.setText("");
-								RootPanel.get("XuXuan2").setVisible(false);
-								RootPanel.get("main").setVisible(true);
+								//RootPanel.get("XuXuan2").setVisible(false);
+								//RootPanel.get("main").setVisible(true);
 							}
 
 						}
