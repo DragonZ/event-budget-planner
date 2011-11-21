@@ -233,6 +233,14 @@ public class AttendeeRegistration implements EntryPoint {
 			closeButton.setFocus(true);
 			return false;
 		}
+		if (phoneBox.getText().length()!=10) {
+			((HTML) dialogVPanel.getWidget(0))
+					.setHTML("<b>Be sure input ten digits phone number</b>");
+			dialogBox.center();
+			closeButton.setFocus(true);
+			return false;
+		}
+		
 
 		return true;
 	}
