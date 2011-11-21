@@ -25,7 +25,8 @@ public class Event implements Serializable {
 	public static final Integer INACTIVE = 1;
 	public static final Integer TRASHED = 2;
 
-	public Event() {}
+	public Event() {
+	}
 
 	public static class Builder {
 		private Event event;
@@ -34,7 +35,8 @@ public class Event implements Serializable {
 			this.event = event;
 		}
 
-		public Builder(String organizerId, String name, Date startTime, Date endTime, String address) {
+		public Builder(String organizerId, String name, Date startTime,
+				Date endTime, String address) {
 			this.event = new Event();
 			this.event.eventId = UUID.randomUUID();
 			this.event.organizerId = organizerId;
@@ -42,7 +44,7 @@ public class Event implements Serializable {
 			this.event.startTime = startTime;
 			this.event.endTime = endTime;
 			this.event.address = address;
-			this.event.status = INACTIVE;
+			this.event.status = ACTIVE;
 		}
 
 		public Builder setName(String name) {
@@ -102,6 +104,5 @@ public class Event implements Serializable {
 	public Integer getStatus() {
 		return status;
 	}
-	
-	
+
 }

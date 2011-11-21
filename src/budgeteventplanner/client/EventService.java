@@ -13,11 +13,27 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("event")
 public interface EventService extends RemoteService {
-	void createEvent(String organizerId, String name, Date startTime, Date endTime, String address);
-	void updateEventByEventId(String eventId, String name, Date startTime, Date endTime, String address, Integer status);
+	void createEvent(String organizerId, String name, Date startTime,
+			Date endTime, String address);
+
+	void updateEventByEventId(String eventId, String name, Date startTime,
+			Date endTime, String address, Integer status);
+
 	List<Event> getEventsByOrganizerId(String organizerId);
-	void addServiceRequest(String serviceId, String eventId, String name, Date dueDate);
+
+	List<Event> getEventsByOrganizerIdAndStatus(String organizerId,
+			String status);
+
+	void addServiceRequest(String serviceId, String eventId, String name,
+			Date dueDate);
+
 	List<ServiceRequest> getServiceRequestsByEventId(String eventId);
+
 	List<Service> getServicesByCategoryId(String categoryId);
+
 	void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList);
+
+	void changeEventStatusByEventId(String eventId, Integer status);
+
+	void deleteEventByEventId(String eventId);
 }

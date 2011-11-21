@@ -53,6 +53,15 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
+	public List<Event> getEventsByOrganizerIdAndStatus(String organizerId,
+			String status) {
+		Objectify ofy = ObjectifyService.begin();
+		Query<Event> q = ofy.query(Event.class)
+				.filter("organizerId", organizerId).filter("status", status);
+		return q.list();
+	}
+
+	@Override
 	public void addServiceRequest(String serviceId, String eventId,
 			String name, Date dueDate) {
 		Objectify ofy = ObjectifyService.begin();
@@ -82,9 +91,26 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 			ArrayList<String> attendeeIdList) {
 		Objectify ofy = ObjectifyService.begin();
 		for (String attendeeId : attendeeIdList) {
-			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
-			Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId).build();
+			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class,
+					attendeeId));
+			Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId)
+					.build();
 			ofy.put(newAttendee);
 		}
 	}
+
+	@Override
+	public void changeEventStatusByEventId(String eventId, Integer status) {
+		Objectify ofy = ObjectifyService.begin();
+		Event oldEvent = ofy.get(new Key<Event>(Event.class, eventId));
+		Event newEvent = new Event.Builder(oldEvent).setStatus(status).build();
+		ofy.put(newEvent);
+	}
+
+	@Override
+	public void deleteEventByEventId(String eventId) {
+		Objectify ofy = ObjectifyService.begin();
+		ofy.delete(new Key<Event>(Event.class, eventId));
+	}
+
 }
