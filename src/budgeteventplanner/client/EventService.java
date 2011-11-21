@@ -22,7 +22,7 @@ public interface EventService extends RemoteService {
 	List<Event> getEventsByOrganizerId(String organizerId);
 
 	List<Event> getEventsByOrganizerIdAndStatus(String organizerId,
-			String status);
+			Integer status);
 
 	void addServiceRequest(String serviceId, String eventId, String name,
 			Date dueDate);

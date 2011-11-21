@@ -191,7 +191,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
 
-		eventService.getEventsByOrganizerIdAndStatus(organizerId,"1",
+		eventService.getEventsByOrganizerIdAndStatus(organizerId,Event.ACTIVE,
 				new AsyncCallback<List<Event>>() {
 					public void onFailure(Throwable caught) {
 
@@ -304,7 +304,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 									}
 									event_table.removeRow(row);
 									String eventId = event_table.getText(row, 0);
-									eventService.changeEventStatusByEventId(eventId, 0, new AsyncCallback<Void>() {
+									eventService.changeEventStatusByEventId(eventId, Event.INACTIVE, new AsyncCallback<Void>() {
 										public void onFailure(Throwable caught)
 										{
 											
@@ -563,7 +563,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 					// event_table.setWidget(row_temp, 4, new
 					// Label(location.getText()));
 
-					eventService.updateEventByEventId(event_id, event_title.getText(), start_date.getValue(), end_date.getValue(), location.getText(), 1,
+					eventService.updateEventByEventId(event_id, event_title.getText(), start_date.getValue(), end_date.getValue(), location.getText(), Event.ACTIVE,
 							new AsyncCallback<Void>() {
 								public void onFailure(Throwable caught) {
 								}

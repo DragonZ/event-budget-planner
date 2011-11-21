@@ -21,7 +21,7 @@ public interface EventServiceAsync {
 	void getEventsByOrganizerId(String organizerId,
 			AsyncCallback<List<Event>> callback);
 
-	void getEventsByOrganizerIdAndStatus(String organizerId, String status,
+	void getEventsByOrganizerIdAndStatus(String organizerId, Integer status,
 			AsyncCallback<List<Event>> callback);
 
 	void addServiceRequest(String serviceId, String eventId, String name,
