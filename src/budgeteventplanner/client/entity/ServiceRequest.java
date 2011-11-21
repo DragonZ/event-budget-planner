@@ -31,6 +31,7 @@ public class ServiceRequest implements Serializable{
 
 		public Builder(String serviceId, String eventId, String name,
 				Date dueDate) {
+			request = new ServiceRequest();
 			this.request.requestId = UUID.randomUUID();
 			this.request.serviceId = serviceId;
 			this.request.eventId = eventId;

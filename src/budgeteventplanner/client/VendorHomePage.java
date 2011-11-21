@@ -424,7 +424,7 @@ public class VendorHomePage implements EntryPoint {
 
 			if (tmp == pendingEvent) {
 				vendorServiceProvider.getServiceRequestByStatus(userID,
-						"PENDING", new AsyncCallback<List<ServiceRequest>>() {
+						ServiceRequest.PENDING, new AsyncCallback<List<ServiceRequest>>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -626,7 +626,7 @@ public class VendorHomePage implements EntryPoint {
 
 			else if (tmp == acceptedEvent) {
 				vendorServiceProvider.getServiceRequestByStatus(userID,
-						"ACCEPT", new AsyncCallback<List<ServiceRequest>>() {
+						ServiceRequest.ACCEPTED, new AsyncCallback<List<ServiceRequest>>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -724,7 +724,7 @@ public class VendorHomePage implements EntryPoint {
 			} else if (tmp == ignoredEvent) {
 				
 				vendorServiceProvider.getServiceRequestByStatus(userID,
-						"IGNORE", new AsyncCallback<List<ServiceRequest>>() {
+						ServiceRequest.IGNORED, new AsyncCallback<List<ServiceRequest>>() {
 
 							@Override
 							public void onFailure(Throwable caught) {

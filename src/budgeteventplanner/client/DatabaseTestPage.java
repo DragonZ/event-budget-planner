@@ -1,6 +1,7 @@
 package budgeteventplanner.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import budgeteventplanner.client.entity.TestEntity;
 
@@ -23,7 +24,7 @@ public class DatabaseTestPage implements EntryPoint {
 
 	//private final UserServiceAsync userService = GWT.create(UserService.class);
 	
-	//private final EventServiceAsync eventService = GWT.create(EventService.class);
+	private final EventServiceAsync eventService = GWT.create(EventService.class);
 
 	@Override
 	public void onModuleLoad() {
@@ -67,11 +68,10 @@ public class DatabaseTestPage implements EntryPoint {
 
 		class DBPutHandler implements ClickHandler {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(ClickEvent event) {
-				dataService.putEntity(dbname.getText(), dbaddress.getText(),
-						Integer.parseInt(dblimit.getText()),
-						new AsyncCallback<Void>() {
+				eventService.addServiceRequest("5ADD1AFE-0E73-4923-B9C3-78A3130EFDC7", "XXX", "food for today", new Date(2011, 11, 23), new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
