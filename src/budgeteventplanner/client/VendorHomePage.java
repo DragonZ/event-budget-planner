@@ -4,11 +4,11 @@
 package budgeteventplanner.client;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
+import budgeteventplanner.client.entity.ServiceRequest;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -16,7 +16,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -76,9 +75,11 @@ public class VendorHomePage implements EntryPoint {
 	Hyperlink acceptHyperlink[];
 	Hyperlink ignoreHyperlink[];
 	Hyperlink viewHyperlink[];
+	ArrayList<String> serviceRequestID;
 
 	Hyperlink deleteHyperlink[];
 	String[] deleteServiceID;
+	String categoryName;
 
 	@Override
 	public void onModuleLoad() {
@@ -114,6 +115,8 @@ public class VendorHomePage implements EntryPoint {
 		// initializeServiceTable(); //new method to initialize the service
 		// table
 		refreshExistingService();
+		refreshExistingService();
+		refreshExistingService();
 
 		vendorPage.add(eventFolders, DockPanel.WEST);
 		vendorPage.add(events, DockPanel.EAST);
@@ -143,7 +146,9 @@ public class VendorHomePage implements EntryPoint {
 							@Override
 							public void onSuccess(ArrayList<Category> result) {
 								// get userID from the cookie:
-								String userID = Cookies.getCookie("USERNAME");
+								// String userID =
+								// Cookies.getCookie("USERNAME");
+								String userID = "lzhen";
 
 								int sentCategory = category.getSelectedIndex();
 
@@ -170,8 +175,15 @@ public class VendorHomePage implements EntryPoint {
 
 											@Override
 											public void onSuccess(Void result) {
-												new DialogBox()
-														.setText("Remote Procedure Call - Successful");
+												RootPanel.get("ZhenLong")
+														.setVisible(false);
+												refreshExistingService();
+												service.setText("");
+												description.setText("");
+												price.setText("");
+												RootPanel.get("ZhenLong")
+														.setVisible(true);
+												// TODO
 
 											}
 
@@ -182,7 +194,22 @@ public class VendorHomePage implements EntryPoint {
 						});
 
 				// refresh the table
-				refreshExistingService();
+
+				// RootPanel.get("ZhenLong").setVisible(false);
+
+				// int oldRows = existingService
+				// .getRowCount();
+				// int newRows = oldRows + 1;
+				// while(oldRows != newRows)
+				// {
+				// refreshExistingService();
+				// oldRows = existingService
+				// .getRowCount();
+				// }
+
+				// RootPanel.get("ZhenLong").setVisible(true);
+
+				// TODO refresh
 
 			}
 		});
@@ -235,6 +262,24 @@ public class VendorHomePage implements EntryPoint {
 		refreshExistingService();
 	}
 
+	private String categoryFromidToname(String categoryID) {
+		categoryService.getCategoryName(categoryID,
+				new AsyncCallback<String>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						new DialogBox()
+								.setText("Remote Procedure Call - Failure");
+					}
+
+					@Override
+					public void onSuccess(String result) {
+						categoryName = result;
+
+					}
+				});
+		return categoryName;
+	}
+
 	@SuppressWarnings("deprecation")
 	public void refreshExistingService() {
 		existingService.clear();
@@ -250,7 +295,9 @@ public class VendorHomePage implements EntryPoint {
 		existingService.setWidget(0, 3, new Label("Price"));
 		existingService.setWidget(0, 4, new Label("Option"));
 
-		String userID = Cookies.getCookie("USERNAME");
+		// String userID = Cookies.getCookie("USERNAME");
+		String userID = "lzhen";
+
 		vendorServiceProvider.getServiceByVendorId(userID,
 				new AsyncCallback<List<Service>>() {
 					@Override
@@ -267,10 +314,13 @@ public class VendorHomePage implements EntryPoint {
 						}
 
 						for (int i = 0; i < result.size(); i++) {
-							existingService.setWidget(i + 1, 0, new Label(
-									result.get(i).getCategoryId()));// TODO
-																	// category
-																	// name
+
+							String tmp = categoryFromidToname(result.get(i)
+									.getCategoryId());
+
+							existingService.setWidget(i + 1, 0, new Label(tmp));
+							// category
+							// name
 
 							deleteHyperlink[i] = new Hyperlink("delete",
 									Integer.toString(i));
@@ -287,9 +337,6 @@ public class VendorHomePage implements EntryPoint {
 							deleteHyperlink[i]
 									.addClickHandler(new ClickHandler() {
 										public void onClick(ClickEvent event) {
-											// void deleteExistingService(String
-											// ServiceID, String
-											// VendorID);
 											int i;
 											for (i = 0; i < existingService
 													.getRowCount(); i++) {
@@ -299,16 +346,8 @@ public class VendorHomePage implements EntryPoint {
 																.getWidget(i, 4))) {
 													break;
 												}
-											}// do we need this loop? one
-												// listener only detect
-												// one hyper;ink
+											}
 
-											// move to accepted folder
-											// remove from pending folder
-											// communication to server, inform
-											// the event manager
-											// re-get the list and refresh
-											// events.removeRow(i);
 											// TODO deleteServiceID[i - 1]
 											vendorServiceProvider
 													.deleteService(
@@ -323,38 +362,31 @@ public class VendorHomePage implements EntryPoint {
 																@Override
 																public void onSuccess(
 																		Void result) {
-																	// TODO
+																	RootPanel
+																			.get("ZhenLong")
+																			.setVisible(
+																					false);
+																	refreshExistingService();// TODO
+																	RootPanel
+																			.get("ZhenLong")
+																			.setVisible(
+																					true);
 																}
 															});
 
-											refreshExistingService();
-											RootPanel.get("ZhenLong")
-													.setVisible(false);
-											RootPanel.get("ZhenLong")
-													.setVisible(true);
+											// RootPanel.get("ZhenLong")
+											// .setVisible(false);
+
+											// refreshExistingService();
+
+											// RootPanel.get("ZhenLong")
+											// .setVisible(true);
 										}
 									});
 						}
 					}
 				});
 
-		/*
-		 * Date today = new Date(); final Label[] a = new Label[11]; // TODO for
-		 * (int i = 0; i < 11; i++) a[i] = new Label(today.toString());
-		 * 
-		 * deleteHyperlink = new Hyperlink[6]; for (int i = 0; i < 5; i++) {
-		 * existingService.setWidget(i + 1, 0, new Label(Integer.toString(i)));
-		 * deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
-		 * existingService.setWidget(i + 1, 1, new Label(
-		 * "lol idk the service name")); existingService.setWidget(i + 1, 2,
-		 * a[i]); existingService.setWidget(i + 1, 3, new Label("10"));
-		 * existingService.setWidget(i + 1, 4, deleteHyperlink[i]);
-		 * 
-		 * // listener add deleteHyperlink[i].addClickHandler(new ClickHandler()
-		 * { public void onClick(ClickEvent event) { // void
-		 * deleteExistingService(String ServiceID, String // VendorID);
-		 * refreshExistingService(); } }); }
-		 */
 	}
 
 	public void initializeCategory() {
@@ -385,347 +417,520 @@ public class VendorHomePage implements EntryPoint {
 		@SuppressWarnings("deprecation")
 		public void onSelection(SelectionEvent<TreeItem> event) {
 			Object tmp = event.getSelectedItem();
+			// TODO cookie userID
+			String userID = "lzhen";
+			// TODO all status should be integer
+
 			if (tmp == pendingEvent) {
-				events.clear();
-				// 3 hyberlinks: view/accept/ignore
-				// read from sever the number of entries
-				acceptHyperlink = new Hyperlink[11];
-				ignoreHyperlink = new Hyperlink[11];
-				viewHyperlink = new Hyperlink[11];
+				vendorServiceProvider.getServiceRequestByStatus(userID,
+						"PENDING", new AsyncCallback<List<ServiceRequest>>() {
 
-				// ----------------
-				vendorPage.setBorderWidth(1);
-				// border display
+							@Override
+							public void onFailure(Throwable caught) {
 
-				Date today = new Date();
-				// Event name
-
-				// prints Tue Dec 18 12:01:26 GMT-500 2007 in the default
-				// locale.
-				// GWT.log(today.toString(), null);
-				final Label[] a = new Label[11]; // TODO
-				for (int i = 0; i < 11; i++)
-					a[i] = new Label(today.toString());
-
-				// a[0].setWidth("300px");
-				events.setWidget(0, 0, new Label("Events"));
-				events.setWidget(0, 3, new Label("Options"));
-				// events.setText(0, 2, "Events");
-				// events.setText(0, 3, "Events");
-				for (int i = 0; i < 11; i++) {
-					events.setWidget(i + 1, 0, a[i]);
-					events.getCellFormatter().setWidth(i, 0, "90%");
-					viewHyperlink[i] = new Hyperlink("View",
-							Integer.toString(i));
-					ignoreHyperlink[i] = new Hyperlink("Ignore",
-							Integer.toString(i));
-					acceptHyperlink[i] = new Hyperlink("Accept",
-							Integer.toString(i));
-					events.setWidget(i + 1, 1, viewHyperlink[i]);
-					events.setWidget(i + 1, 2, acceptHyperlink[i]);
-					events.setWidget(i + 1, 3, ignoreHyperlink[i]);
-
-					// listener add
-					viewHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < viewHyperlink.length; i++) {
-								if (event.getSource() == viewHyperlink[i]) {
-									break;
-								}
 							}
 
-							// pop up the current event info
-							final DialogBox currentEvent = new DialogBox();
-							// .setWidget(a[i]);
-							currentEvent.setAnimationEnabled(true);
-							final Button closeButton = new Button("Close");
-							closeButton.getElement().setId("closeButton");
-							// final Label textToServerLabel = new Label();
-							// final HTML serverResponseLabel = new HTML();
-							VerticalPanel dialogVPanel = new VerticalPanel();
-							dialogVPanel.addStyleName("dialogVPanel");
-							dialogVPanel.add(new Label(a[i].getText()));
-							// dialogVPanel.add(textToServerLabel);
-							// dialogVPanel.add(new
-							// HTML("<br><b>Server replies:</b>"));
-							// dialogVPanel.add(serverResponseLabel);
-							dialogVPanel
-									.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-							dialogVPanel.add(closeButton);
-							currentEvent.setWidget(dialogVPanel);
+							@Override
+							public void onSuccess(List<ServiceRequest> result) {
+								events.clear();
+								// 3 hyberlinks: view/accept/ignore
+								// read from sever the number of entries
 
-							// Add a handler to close the DialogBox
-							closeButton.addClickHandler(new ClickHandler() {
-								public void onClick(ClickEvent event) {
-									currentEvent.hide();
-									// sendButton.setEnabled(true);
-									// sendButton.setFocus(true);
+								acceptHyperlink = new Hyperlink[result.size()];
+								ignoreHyperlink = new Hyperlink[result.size()];
+								viewHyperlink = new Hyperlink[result.size()];
+								serviceRequestID = new ArrayList<String>();
+
+								vendorPage.setBorderWidth(1);
+								// border display
+
+								for (int i = 0; i < result.size(); i++) {
+									serviceRequestID.add(result.get(i)
+											.getRequestId());
 								}
-							});
 
-							currentEvent.center();
+								events.setWidget(0, 0, new Label("Events"));
+								events.setWidget(0, 3, new Label("Options"));
+								for (int i = 0; i < result.size(); i++) {
+									events.setWidget(i + 1, 0, new Label(result
+											.get(i).getName()));
+									events.getCellFormatter().setWidth(i, 0,
+											"90%");
+									viewHyperlink[i] = new Hyperlink("View",
+											Integer.toString(i));
+									ignoreHyperlink[i] = new Hyperlink(
+											"Ignore", Integer.toString(i));
+									acceptHyperlink[i] = new Hyperlink(
+											"Accept", Integer.toString(i));
+									events.setWidget(i + 1, 1, viewHyperlink[i]);
+									events.setWidget(i + 1, 2,
+											acceptHyperlink[i]);
+									events.setWidget(i + 1, 3,
+											ignoreHyperlink[i]);
 
-						}
-					}); // view listener
+									final String requestName = result.get(i)
+											.getName();
+									final String requestDate = result.get(i)
+											.getDueDate().toString();
+									// listener add
+									viewHyperlink[i]
+											.addClickHandler(new ClickHandler() {
+												public void onClick(
+														ClickEvent event) {
+													int i;
+													for (i = 0; i < viewHyperlink.length; i++) {
+														if (event.getSource() == viewHyperlink[i]) {
+															break;
+														}
+													}
 
-					acceptHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < events.getRowCount(); i++) {
-								if (event.getSource().equals(
-										events.getWidget(i, 2))) {
-									break;
-								}
-							}// do we need this loop? one listener only detect
-								// one hyper;ink
+													// pop up the current event
+													// info
+													final DialogBox currentEvent = new DialogBox();
 
-							// move to accepted folder
-							// remove from pending folder
-							// communication to server, inform the event manager
-							// re-get the list and refresh
-							events.removeRow(i);
-						}
-					}); // accept listener
+													currentEvent
+															.setAnimationEnabled(true);
+													final Button closeButton = new Button(
+															"Close");
+													closeButton
+															.getElement()
+															.setId("closeButton");
 
-					ignoreHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < events.getRowCount(); i++) {
-								if (event.getSource().equals(
-										events.getWidget(i, 3))) {
-									break;
-								}
-							}// do we need this loop? one listener only detect
-								// one hyper;ink
+													VerticalPanel dialogVPanel = new VerticalPanel();
+													dialogVPanel
+															.addStyleName("dialogVPanel");
 
-							// move to accepted folder
-							// remove from pending folder
-							// communication to server, inform the event manager
-							// re-get the list and refresh
-							events.removeRow(i);
-						}
-					});
+													dialogVPanel.add(new Label(
+															requestName));
+													dialogVPanel.add(new Label(
+															requestDate));
+													// TODO display request
+													// detail info
+													dialogVPanel
+															.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+													dialogVPanel
+															.add(closeButton);
+													currentEvent
+															.setWidget(dialogVPanel);
 
-				}
-				// hyberlinks listeners
-				// ----------------
-			} else if (tmp == acceptedEvent) {
-				events.clear();
-				// 2 buttons: view/ignore
-				// 3 hyberlinks: view/accept/ignore
-				// read from sever the number of entries
-				// acceptHyperlink = new Hyperlink[3];
-				ignoreHyperlink = new Hyperlink[3];
-				viewHyperlink = new Hyperlink[3];
+													// Add a handler to close
+													// the DialogBox
+													closeButton
+															.addClickHandler(new ClickHandler() {
+																public void onClick(
+																		ClickEvent event) {
+																	currentEvent
+																			.hide();
+																}
+															});
 
-				// ----------------
-				vendorPage.setBorderWidth(1);
-				// border display
+													currentEvent.center();
 
-				Date today = new Date();
-				// Event name
+												}
+											}); // view listener
 
-				// prints Tue Dec 18 12:01:26 GMT-500 2007 in the default
-				// locale.
-				// GWT.log(today.toString(), null);
-				final Label[] a = new Label[3];
-				for (int i = 0; i < 3; i++)
-					a[i] = new Label(today.toString());
+									acceptHyperlink[i]
+											.addClickHandler(new ClickHandler() {
+												public void onClick(
+														ClickEvent event) {
+													int i;
+													for (i = 0; i < events
+															.getRowCount(); i++) {
+														if (event
+																.getSource()
+																.equals(events
+																		.getWidget(
+																				i,
+																				2))) {
+															break;
+														}
+													}
+													// remove from pending
+													// folder
+													// communication to server,
+													vendorServiceProvider
+															.updateServiceRequestStatus(
+																	serviceRequestID
+																			.get(i - 1),
+																	1,
+																	new AsyncCallback<Void>() {
+																		@Override
+																		public void onFailure(
+																				Throwable caught) {
+																			// TODO
+																		}
 
-				events.setWidget(0, 0, new Label("Events"));
-				events.setWidget(0, 2, new Label("Options"));
-				// events.setText(0, 2, "Events");
-				// events.setText(0, 3, "Events");
-				for (int i = 0; i < 3; i++) {
-					events.setWidget(i + 1, 0, a[i]);
-					events.getCellFormatter().setWidth(i, 0, "90%");
-					viewHyperlink[i] = new Hyperlink("View",
-							Integer.toString(i));
-					ignoreHyperlink[i] = new Hyperlink("Ignore",
-							Integer.toString(i));
-					// acceptHyperlink[i] = new Hyperlink("Accept", "");
-					events.setWidget(i + 1, 1, viewHyperlink[i]);
-					// events.setWidget(i+1, 2, acceptHyperlink[i]);
-					events.setWidget(i + 1, 2, ignoreHyperlink[i]);
+																		@Override
+																		public void onSuccess(
+																				Void result) {
+																			// TODO
+																		}
+																	});
 
-					// listener add
-					viewHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < viewHyperlink.length; i++) {
-								if (event.getSource() == viewHyperlink[i]) {
-									break;
+													events.removeRow(i);
+													serviceRequestID
+															.remove(i - 1);
+												}
+											}); // accept listener
+
+									ignoreHyperlink[i]
+											.addClickHandler(new ClickHandler() {
+												public void onClick(
+														ClickEvent event) {
+													int i;
+													for (i = 0; i < events
+															.getRowCount(); i++) {
+														if (event
+																.getSource()
+																.equals(events
+																		.getWidget(
+																				i,
+																				3))) {
+															break;
+														}
+													}
+													// remove from pending
+													// folder
+													// communication to server,
+													vendorServiceProvider
+															.updateServiceRequestStatus(
+																	serviceRequestID
+																			.get(i - 1),
+																	2,
+																	new AsyncCallback<Void>() {
+																		@Override
+																		public void onFailure(
+																				Throwable caught) {
+																			// TODO
+																		}
+
+																		@Override
+																		public void onSuccess(
+																				Void result) {
+																			// TODO
+																		}
+																	});
+
+													events.removeRow(i);
+													serviceRequestID
+															.remove(i - 1);
+
+												}
+											});
+
 								}
 							}
+						});
+			}// end of pending service request
 
-							// pop up the current event info
-							final DialogBox currentEvent = new DialogBox();
-							// .setWidget(a[i]);
-							currentEvent.setAnimationEnabled(true);
-							final Button closeButton = new Button("Close");
-							closeButton.getElement().setId("closeButton");
-							// final Label textToServerLabel = new Label();
-							// final HTML serverResponseLabel = new HTML();
-							VerticalPanel dialogVPanel = new VerticalPanel();
-							dialogVPanel.addStyleName("dialogVPanel");
-							dialogVPanel.add(new Label(a[i].getText()));
-							// dialogVPanel.add(textToServerLabel);
-							// dialogVPanel.add(new
-							// HTML("<br><b>Server replies:</b>"));
-							// dialogVPanel.add(serverResponseLabel);
-							dialogVPanel
-									.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-							dialogVPanel.add(closeButton);
-							currentEvent.setWidget(dialogVPanel);
+			else if (tmp == acceptedEvent) {
+				vendorServiceProvider.getServiceRequestByStatus(userID,
+						"ACCEPT", new AsyncCallback<List<ServiceRequest>>() {
 
-							// Add a handler to close the DialogBox
-							closeButton.addClickHandler(new ClickHandler() {
-								public void onClick(ClickEvent event) {
-									currentEvent.hide();
-									// sendButton.setEnabled(true);
-									// sendButton.setFocus(true);
+							@Override
+							public void onFailure(Throwable caught) {
+
+							}
+
+							@Override
+							public void onSuccess(List<ServiceRequest> result) {
+
+								events.clear();
+								// 2 buttons: view(/ignore)
+								// ignoreHyperlink = new Hyperlink[3];
+								viewHyperlink = new Hyperlink[result.size()];
+
+								vendorPage.setBorderWidth(1);
+								// border display
+
+								events.setWidget(0, 0, new Label("Events"));
+								events.setWidget(0, 3, new Label("Options"));
+								for (int i = 0; i < result.size(); i++) {
+									events.setWidget(i + 1, 0, new Label(result
+											.get(i).getName()));
+									events.getCellFormatter().setWidth(i, 0,
+											"90%");
+									viewHyperlink[i] = new Hyperlink("View",
+											Integer.toString(i));
+									events.setWidget(i + 1, 1, viewHyperlink[i]);
+
+									
+									final String requestName = result.get(i)
+											.getName();
+									final String requestDate = result.get(i)
+											.getDueDate().toString();
+									// listener add
+									viewHyperlink[i]
+											.addClickHandler(new ClickHandler() {
+												public void onClick(
+														ClickEvent event) {
+													int i;
+													for (i = 0; i < viewHyperlink.length; i++) {
+														if (event.getSource() == viewHyperlink[i]) {
+															break;
+														}
+													}
+
+													// pop up the current event
+													// info
+													final DialogBox currentEvent = new DialogBox();
+
+													currentEvent
+															.setAnimationEnabled(true);
+													final Button closeButton = new Button(
+															"Close");
+													closeButton
+															.getElement()
+															.setId("closeButton");
+
+													VerticalPanel dialogVPanel = new VerticalPanel();
+													dialogVPanel
+															.addStyleName("dialogVPanel");
+
+													dialogVPanel.add(new Label(
+															requestName));
+													dialogVPanel.add(new Label(
+															requestDate));
+													// TODO display request
+													// detail info
+													dialogVPanel
+															.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+													dialogVPanel
+															.add(closeButton);
+													currentEvent
+															.setWidget(dialogVPanel);
+
+													// Add a handler to close
+													// the DialogBox
+													closeButton
+															.addClickHandler(new ClickHandler() {
+																public void onClick(
+																		ClickEvent event) {
+																	currentEvent
+																			.hide();
+																}
+															});
+
+													currentEvent.center();
+
+												}
+											}); // view listener
 								}
-							});
 
-							currentEvent.center();
+							}
+						});
 
-						}
-					}); // view listener
-
-					ignoreHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < events.getRowCount(); i++) {
-								if (event.getSource().equals(
-										events.getWidget(i, 2))) {
-									break;
-								}
-							}// do we need this loop? one listener only detect
-								// one hyper;ink
-
-							// move to accepted folder
-							// remove from pending folder
-							// communication to server, inform the event manager
-							// re-get the list and refresh
-							events.removeRow(i);
-						}
-					});
-
-				}
-				// hyberlinks listeners
-				// ---------------
 			} else if (tmp == ignoredEvent) {
-				// 2 buttons: view/accept
-				events.clear();
-				// 2 buttons: view/ignore
-				// 3 hyberlinks: view/accept/ignore
-				// read from sever the number of entries
-				acceptHyperlink = new Hyperlink[30];
-				// ignoreHyperlink = new Hyperlink[3];
-				viewHyperlink = new Hyperlink[30];
+				
+				vendorServiceProvider.getServiceRequestByStatus(userID,
+						"IGNORE", new AsyncCallback<List<ServiceRequest>>() {
 
-				// ----------------
-				vendorPage.setBorderWidth(1);
-				// border display
+							@Override
+							public void onFailure(Throwable caught) {
 
-				Date today = new Date();
-				// Event name
-
-				// prints Tue Dec 18 12:01:26 GMT-500 2007 in the default
-				// locale.
-				// GWT.log(today.toString(), null);
-				final Label[] a = new Label[30];
-				for (int i = 0; i < 30; i++)
-					a[i] = new Label(today.toString());
-
-				events.setWidget(0, 0, new Label("Events"));
-				events.setWidget(0, 2, new Label("Options"));
-				// events.setText(0, 2, "Events");
-				// events.setText(0, 3, "Events");
-				for (int i = 0; i < 30; i++) {
-					events.setWidget(i + 1, 0, a[i]);
-					events.getCellFormatter().setWidth(i, 0, "90%");
-					viewHyperlink[i] = new Hyperlink("View",
-							Integer.toString(i));
-					// ignoreHyperlink[i] = new Hyperlink("ignore", "");
-					acceptHyperlink[i] = new Hyperlink("Accept",
-							Integer.toString(i));
-					events.setWidget(i + 1, 1, viewHyperlink[i]);
-					events.setWidget(i + 1, 2, acceptHyperlink[i]);
-					// events.setWidget(i+1, 3, ignoreHyperlink[i]);
-
-					// listener add
-					viewHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < viewHyperlink.length; i++) {
-								if (event.getSource() == viewHyperlink[i]) {
-									break;
-								}
 							}
 
-							// pop up the current event info
-							final DialogBox currentEvent = new DialogBox();
-							// .setWidget(a[i]);
-							currentEvent.setAnimationEnabled(true);
-							final Button closeButton = new Button("Close");
-							closeButton.getElement().setId("closeButton");
-							// final Label textToServerLabel = new Label();
-							// final HTML serverResponseLabel = new HTML();
-							VerticalPanel dialogVPanel = new VerticalPanel();
-							dialogVPanel.addStyleName("dialogVPanel");
-							dialogVPanel.add(new Label(a[i].getText()));
-							// dialogVPanel.add(textToServerLabel);
-							// dialogVPanel.add(new
-							// HTML("<br><b>Server replies:</b>"));
-							// dialogVPanel.add(serverResponseLabel);
-							dialogVPanel
-									.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-							dialogVPanel.add(closeButton);
-							currentEvent.setWidget(dialogVPanel);
+							@Override
+							public void onSuccess(List<ServiceRequest> result) {
 
-							// Add a handler to close the DialogBox
-							closeButton.addClickHandler(new ClickHandler() {
-								public void onClick(ClickEvent event) {
-									currentEvent.hide();
-									// sendButton.setEnabled(true);
-									// sendButton.setFocus(true);
+								events.clear();
+								// 2 buttons: view(/accept)
+								// ignoreHyperlink = new Hyperlink[3];
+								viewHyperlink = new Hyperlink[result.size()];
+
+								vendorPage.setBorderWidth(1);
+								// border display
+
+								events.setWidget(0, 0, new Label("Events"));
+								events.setWidget(0, 3, new Label("Options"));
+								for (int i = 0; i < result.size(); i++) {
+									events.setWidget(i + 1, 0, new Label(result
+											.get(i).getName()));
+									events.getCellFormatter().setWidth(i, 0,
+											"90%");
+									viewHyperlink[i] = new Hyperlink("View",
+											Integer.toString(i));
+									events.setWidget(i + 1, 1, viewHyperlink[i]);
+
+									
+									final String requestName = result.get(i)
+											.getName();
+									final String requestDate = result.get(i)
+											.getDueDate().toString();
+									// listener add
+									viewHyperlink[i]
+											.addClickHandler(new ClickHandler() {
+												public void onClick(
+														ClickEvent event) {
+													int i;
+													for (i = 0; i < viewHyperlink.length; i++) {
+														if (event.getSource() == viewHyperlink[i]) {
+															break;
+														}
+													}
+
+													// pop up the current event
+													// info
+													final DialogBox currentEvent = new DialogBox();
+
+													currentEvent
+															.setAnimationEnabled(true);
+													final Button closeButton = new Button(
+															"Close");
+													closeButton
+															.getElement()
+															.setId("closeButton");
+
+													VerticalPanel dialogVPanel = new VerticalPanel();
+													dialogVPanel
+															.addStyleName("dialogVPanel");
+
+													dialogVPanel.add(new Label(
+															requestName));
+													dialogVPanel.add(new Label(
+															requestDate));
+													// TODO display request
+													// detail info
+													dialogVPanel
+															.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+													dialogVPanel
+															.add(closeButton);
+													currentEvent
+															.setWidget(dialogVPanel);
+
+													// Add a handler to close
+													// the DialogBox
+													closeButton
+															.addClickHandler(new ClickHandler() {
+																public void onClick(
+																		ClickEvent event) {
+																	currentEvent
+																			.hide();
+																}
+															});
+
+													currentEvent.center();
+
+												}
+											}); // view listener
 								}
-							});
 
-							currentEvent.center();
-
-						}
-					}); // view listener
-
-					acceptHyperlink[i].addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							int i;
-							for (i = 0; i < events.getRowCount(); i++) {
-								if (event.getSource().equals(
-										events.getWidget(i, 2))) {
-									break;
-								}
-							}// do we need this loop? one listener only detect
-								// one hyper;ink
-
-							// move to accepted folder
-							// remove from pending folder
-							// communication to server, inform the event manager
-							// re-get the list and refresh
-							events.removeRow(i);
-						}
-					}); // accept listener
-
-				}
-				// hyberlinks listeners
-				// ----------------
+							}
+						});
+				
+				
+				
+//				// 2 buttons: view/accept
+//				events.clear();
+//				// 2 buttons: view/ignore
+//				// 3 hyberlinks: view/accept/ignore
+//				// read from sever the number of entries
+//				acceptHyperlink = new Hyperlink[30];
+//				// ignoreHyperlink = new Hyperlink[3];
+//				viewHyperlink = new Hyperlink[30];
+//
+//				// ----------------
+//				vendorPage.setBorderWidth(1);
+//				// border display
+//
+//				Date today = new Date();
+//				// Event name
+//
+//				// prints Tue Dec 18 12:01:26 GMT-500 2007 in the default
+//				// locale.
+//				// GWT.log(today.toString(), null);
+//				final Label[] a = new Label[30];
+//				for (int i = 0; i < 30; i++)
+//					a[i] = new Label(today.toString());
+//
+//				events.setWidget(0, 0, new Label("Events"));
+//				events.setWidget(0, 2, new Label("Options"));
+//				// events.setText(0, 2, "Events");
+//				// events.setText(0, 3, "Events");
+//				for (int i = 0; i < 30; i++) {
+//					events.setWidget(i + 1, 0, a[i]);
+//					events.getCellFormatter().setWidth(i, 0, "90%");
+//					viewHyperlink[i] = new Hyperlink("View",
+//							Integer.toString(i));
+//					// ignoreHyperlink[i] = new Hyperlink("ignore", "");
+//					acceptHyperlink[i] = new Hyperlink("Accept",
+//							Integer.toString(i));
+//					events.setWidget(i + 1, 1, viewHyperlink[i]);
+//					events.setWidget(i + 1, 2, acceptHyperlink[i]);
+//					// events.setWidget(i+1, 3, ignoreHyperlink[i]);
+//
+//					// listener add
+//					viewHyperlink[i].addClickHandler(new ClickHandler() {
+//						public void onClick(ClickEvent event) {
+//							int i;
+//							for (i = 0; i < viewHyperlink.length; i++) {
+//								if (event.getSource() == viewHyperlink[i]) {
+//									break;
+//								}
+//							}
+//
+//							// pop up the current event info
+//							final DialogBox currentEvent = new DialogBox();
+//							// .setWidget(a[i]);
+//							currentEvent.setAnimationEnabled(true);
+//							final Button closeButton = new Button("Close");
+//							closeButton.getElement().setId("closeButton");
+//							// final Label textToServerLabel = new Label();
+//							// final HTML serverResponseLabel = new HTML();
+//							VerticalPanel dialogVPanel = new VerticalPanel();
+//							dialogVPanel.addStyleName("dialogVPanel");
+//							dialogVPanel.add(new Label(a[i].getText()));
+//							// dialogVPanel.add(textToServerLabel);
+//							// dialogVPanel.add(new
+//							// HTML("<br><b>Server replies:</b>"));
+//							// dialogVPanel.add(serverResponseLabel);
+//							dialogVPanel
+//									.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+//							dialogVPanel.add(closeButton);
+//							currentEvent.setWidget(dialogVPanel);
+//
+//							// Add a handler to close the DialogBox
+//							closeButton.addClickHandler(new ClickHandler() {
+//								public void onClick(ClickEvent event) {
+//									currentEvent.hide();
+//									// sendButton.setEnabled(true);
+//									// sendButton.setFocus(true);
+//								}
+//							});
+//
+//							currentEvent.center();
+//
+//						}
+//					}); // view listener
+//
+//					acceptHyperlink[i].addClickHandler(new ClickHandler() {
+//						public void onClick(ClickEvent event) {
+//							int i;
+//							for (i = 0; i < events.getRowCount(); i++) {
+//								if (event.getSource().equals(
+//										events.getWidget(i, 2))) {
+//									break;
+//								}
+//							}// do we need this loop? one listener only detect
+//								// one hyper;ink
+//
+//							// move to accepted folder
+//							// remove from pending folder
+//							// communication to server, inform the event manager
+//							// re-get the list and refresh
+//							events.removeRow(i);
+//						}
+//					}); // accept listener
+//
+//				}
+//				// hyberlinks listeners
+//				// ----------------
 			}
 		}
 	}
 
-	public void tableRefresh() {
+	public void requestTableRefresh(int status) {
+		//TODO
 		;// receive data from server and refresh the entire table
 	}
 
