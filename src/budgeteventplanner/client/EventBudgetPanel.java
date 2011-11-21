@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import budgeteventplanner.client.entity.Attendee;
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Event;
 
@@ -43,6 +44,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 			.create(CategoryService.class);
 	private final EventServiceAsync eventService = GWT
 			.create(EventService.class);
+	private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
 
 	@Override
 	public void onModuleLoad() {
@@ -71,8 +73,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		event_table.setWidget(0, 4, new HTML("<strong>Location</strong>"));
 		event_table.getCellFormatter().setWidth(0, 4, "20%");
 
-		event_table.setWidget(0, 5, new HTML("<strong>Item</strong>"));
-		event_table.getCellFormatter().setWidth(0, 5, "100%");
+		//event_table.setWidget(0, 5, new HTML("<strong>Item</strong>"));
+		//event_table.getCellFormatter().setWidth(0, 5, "100%");
 
 		event_table.setWidget(0, 6, new HTML("<strong>Modify</strong>"));
 		event_table.getCellFormatter().setWidth(0, 6, "100%");
@@ -189,7 +191,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
 
-		eventService.getEventsByOrganizerId(organizerId,
+		eventService.getEventsByOrganizerIdAndStatus(organizerId,"1",
 				new AsyncCallback<List<Event>>() {
 					public void onFailure(Throwable caught) {
 
@@ -209,9 +211,9 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 							event_table.setWidget(i, 4,
 									new Label(e.getAddress()));
 
-							final Button itemMod = new Button("Item Modify");
-							itemMod.setWidth("100px");
-							event_table.setWidget(i, 5, itemMod);
+							//final Button itemMod = new Button("Item Modify");
+							//itemMod.setWidth("100px");
+							//event_table.setWidget(i, 5, itemMod);
 
 							final Button event_mod = new Button("Event Modify");
 							event_mod.setWidth("100px");
@@ -229,20 +231,20 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 							final Button event_del = new Button("Delete");
 							event_table.setWidget(i, 9, event_del);
 
-							itemMod.addClickHandler(new ClickHandler() {
-								public void onClick(ClickEvent event) {
-									int row;
-									int total_event = event_table.getRowCount();
-									for (row = 1; row <= total_event; row++) {
-										if (event_table.getWidget(row, 5)
-												.equals(itemMod))
-											break;
-									}
-									String event_id = event_table.getText(row,
-											0);
-									item_pop_up(event_id);
-								}
-							});
+//							itemMod.addClickHandler(new ClickHandler() {
+//								public void onClick(ClickEvent event) {
+//									int row;
+//									int total_event = event_table.getRowCount();
+//									for (row = 1; row <= total_event; row++) {
+//										if (event_table.getWidget(row, 5)
+//												.equals(itemMod))
+//											break;
+//									}
+//									String event_id = event_table.getText(row,
+//											0);
+//									item_pop_up(event_id);
+//								}
+//							});
 							event_mod.addClickHandler(new ClickHandler() {
 								public void onClick(ClickEvent event) {
 									int row;
@@ -301,6 +303,17 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 											break;
 									}
 									event_table.removeRow(row);
+									String eventId = event_table.getText(row, 0);
+									eventService.changeEventStatusByEventId(eventId, 0, new AsyncCallback<Void>() {
+										public void onFailure(Throwable caught)
+										{
+											
+										}
+										public void onSuccess(Void reslt)
+										{
+											
+										}
+									});
 								}
 							});
 
@@ -332,6 +345,17 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		itemList.setWidget(0, 4, new HTML("<strong>Request Details</strong>"));
 		itemList.getColumnFormatter().setWidth(4, "200px");
 
+		categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+			public void onFailure(Throwable caught)
+			{
+				
+			}
+			public void onSuccess(ArrayList<Category> result)
+			{
+				
+			}
+		});
+		
 		final int itemCount = 3;
 		for (int row = 1; row <= itemCount; row++) {
 			itemList.setWidget(row, 0, new Label("Item Category from Server"
@@ -517,7 +541,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 								}
 
 								public void onSuccess(Void result) {
-									//EventTableRefresh(event_table);
+									EventTableRefresh(event_table);
 								}
 							});
 
@@ -545,7 +569,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 								}
 
 								public void onSuccess(Void result) {
-									//EventTableRefresh(event_table);
+									EventTableRefresh(event_table);
 								}
 							});
 
@@ -589,13 +613,23 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		// attendList.getCellFormatter().setWidth(0, 1, "50%");
 
 		// get all attendee by eventId
-		int attendCount = 3;
-		for (int i = 0; i <= attendCount; i++) {
-			attendList.setWidget(i, 0, new Label("Attendee Name from server"
-					+ Integer.toString(i)));
-			attendList.setWidget(i, 1, new Label("Attendee Email from server"
-					+ Integer.toString(i)));
-		}
+		attendeeService.getAttendeeListByEventId(eventId, new AsyncCallback<ArrayList<Attendee>>() {
+			public void onFailure(Throwable caught)
+			{
+				
+			}
+			public void onSuccess(ArrayList<Attendee> result)
+			{
+				int i=-1;
+				for (Attendee a : result)
+				{
+					i++;
+					attendList.setWidget(i, 0, new Label(a.getName()));
+					attendList.setWidget(i, 1, new Label(a.getEmail()));
+				}
+			}
+		});
+	
 		attendList.setBorderWidth(1);
 
 		FlexTable table = new FlexTable();
