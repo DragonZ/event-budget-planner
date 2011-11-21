@@ -302,7 +302,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 												.equals(event_del))
 											break;
 									}
-									event_table.removeRow(row);
+									final int r = row;
 									String eventId = event_table.getText(row, 0);
 									eventService.changeEventStatusByEventId(eventId, Event.INACTIVE, new AsyncCallback<Void>() {
 										public void onFailure(Throwable caught)
@@ -311,7 +311,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 										}
 										public void onSuccess(Void reslt)
 										{
-											
+											event_table.removeRow(r);
 										}
 									});
 								}
