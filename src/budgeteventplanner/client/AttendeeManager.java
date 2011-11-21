@@ -115,15 +115,16 @@ public class AttendeeManager implements EntryPoint {
 //	}
 //used by creating or editing event
 	public static void edittingAttendees(final String eventID, String OrganizerID){
-		attendeeService.getAttendeeListByEventId(OrganizerID, new AsyncCallback<ArrayList<Attendee>>(){
+		attendeeService.getAttendeeListByOrganizerId(OrganizerID, new AsyncCallback<ArrayList<Attendee>>(){
 			public void onFailure(Throwable caught){}
 			public	void onSuccess(ArrayList<Attendee> attendeeList){
+				//infoBox.setText("number:"+attendeeList.size());
 				for (int i = 0; i < attendeeList.size(); i++) {
-			    	System.out.println("Name:"+attendeeList.get(i).getName());
+			    	//System.out.println("Name:"+attendeeList.get(i).getName());
 			    	checkableAttendees.add(new CheckBox(attendeeList.get(i).getName()));
 				final String info=attendeeList.get(i).toString();
 				final String id=attendeeList.get(i).getAttendeeId();
-				root.addItem(attendees.get(i));
+				root.addItem(checkableAttendees.get(i));
 				
 				//checkableAttendees.get(1).setChecked(false);
 				checkableAttendees.get(i).addClickHandler(new ClickHandler(){
@@ -156,7 +157,7 @@ public class AttendeeManager implements EntryPoint {
 					@Override
 					public void onSuccess(Void result) {
 						// TODO Auto-generated method stub
-						RootPanel.get("XuXuan2").setVisible(false);
+						RootPanel.get("XuXuan").setVisible(false);
 						RootPanel.get("XiaYuan").setVisible(true);
 					}
 					
