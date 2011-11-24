@@ -1,3 +1,5 @@
+// can cancel their attending anytime.
+// in event view page the canceled attendee needs another color.
 package budgeteventplanner.client;
 
 import com.google.gwt.core.client.EntryPoint;
