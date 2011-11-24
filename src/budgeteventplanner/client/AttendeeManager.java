@@ -1,5 +1,28 @@
 /*
  * Needs to clean the root h panel ... ... clean everthing for next time use.
+ *  add new attendee manully. and send info back
+ *  remove attendee and sent info back
+ *   1, need organizorAttendeeList and eventAttendeeList, readyToMoveList, readyToCreateList, readyToSendNotifyList
+ *   2, while loading, needs to load 2tree. orga and event attendeeList
+ *   3,button addToCurrentEvent: add currentorganizorAttendee to eventattendeeList 
+ *   	 show out in the tree
+ *   	add to readyToCreateListe
+ *   4, button rmove from CurrentEvent: rm from the current Tree
+ *   									rm from eventAttendeeList
+ *   									if already exist in readyToCreateList then rm in that list
+ *  									else add in readyToRemoveList
+ *  5 create new attendee manuly for this event,
+ *  									1, create attendee 
+ *  									2, get attendee's info and insert in organizorAttendeeList eventAttendeeList
+ *  									3, show out in both Tree
+ *  									4, insert in readyToSendNotifyList
+ *  6,apply change: 1,rm Removelist,and send email.
+ *  				2, create attendee and send email
+ *  				3,send email to readyToSendNotify
+ *  				4, jump back.
+ *  7, organizer send email: 1, create box
+ *  						 2, send handler, send email to checked attendee in eventlist
+ *   									
  */
 
 package budgeteventplanner.client;
