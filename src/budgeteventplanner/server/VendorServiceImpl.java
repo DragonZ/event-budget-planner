@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import budgeteventplanner.client.VendorService;
+import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 
+import com.google.appengine.repackaged.com.google.common.base.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -36,11 +38,17 @@ public class VendorServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public List<Service> getServiceByVendorId(String vendorId) {
+	public List<Pair<String, Service>> getServiceByVendorId(String vendorId) {
 		Objectify ofy = ObjectifyService.begin();
+		ArrayList<Pair<String, Service>> list = new ArrayList<Pair<String, Service>>();
+		
 		Query<Service> q = ofy.query(Service.class)
 				.filter("vendorId", vendorId);
-		return q.list();
+		for (Service service : q) {
+			String categoryName = ofy.get(new Key<Category>(Category.class, service.getCategoryId())).getName(); 
+			list.add(new Pair<String, Service>(categoryName, service));
+		}
+		return list;
 	}
 
 	@Override
