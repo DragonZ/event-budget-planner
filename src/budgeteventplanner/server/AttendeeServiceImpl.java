@@ -67,16 +67,17 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void updateAttendeeInfo(String attendeeId, String name,
 			String email, String jobTitle, String companyName, String address,
-			String phoneNumber) {
+			String phoneNumber, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		
-		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+
+		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
+				attendeeId));
 		Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name)
 				.setEmail(email).setJobTitle(jobTitle)
 				.setCompanyName(companyName).setAddress(address)
-				.setPhoneNumber(phoneNumber).build();
+				.setPhoneNumber(phoneNumber).setStatus(status).build();
 		ofy.put(updatedAttendee);
-		sendEmail(updatedAttendee);
+		sendEmail(updatedAttendee, status);
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		return 1;
 	}
 
-	private void sendEmail(Attendee attendee) {
+	private void sendEmail(Attendee attendee, Integer status) {
 		Session session = Session.getDefaultInstance(new Properties(), null);
 		String msgBody = "Dear " + attendee.getName()
 				+ ":\n\nYour submission is accepted!" + attendee.toString()
@@ -103,5 +104,33 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		} catch (UnsupportedEncodingException e) {
 
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private void sendCustomizedEmail(Attendee attendee, String subject, String msgBody) {
+		Session session = Session.getDefaultInstance(new Properties(), null);
+		msgBody = "Dear " + attendee.getName() + 
+				msgBody + "\n\n\n Team XYZs";
+
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress("yezhuen@gmail.com", "XYZs"));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					attendee.getEmail(), attendee.getName()));
+			msg.setSubject(subject);
+			msg.setText(msgBody);
+			Transport.send(msg);
+		} catch (AddressException e) {
+		} catch (MessagingException e) {
+		} catch (UnsupportedEncodingException e) {
+
+		}
+	}
+
+	@Override
+	public Attendee getAttendee(String attendeeId) {
+		Objectify ofy = ObjectifyService.begin();
+		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+		return attendee;
 	}
 }

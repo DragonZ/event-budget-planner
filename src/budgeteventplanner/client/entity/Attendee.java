@@ -20,6 +20,11 @@ public class Attendee implements Serializable {
 	private String jobTitle;
 	private String companyName;
 	private String phoneNumber;
+	private Integer status;
+	
+	public final static Integer YES = 0;
+	public final static Integer NO = 1;
+	public final static Integer MAYBE = 2;
 
 	public Attendee() {
 	}
@@ -76,6 +81,11 @@ public class Attendee implements Serializable {
 			return this;
 		}
 
+		public Builder setStatus(Integer status) {
+			this.attendee.status = status;
+			return this;
+		}
+		
 		public Attendee build() {
 			return this.attendee;
 		}
@@ -111,6 +121,10 @@ public class Attendee implements Serializable {
 
 	public String getPhoneNumber() {
 		return phoneNumber;
+	}
+	
+	public Integer getStatus() {
+		return status;
 	}
 
 	public String toString() {
