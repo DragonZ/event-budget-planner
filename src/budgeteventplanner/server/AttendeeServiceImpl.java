@@ -106,21 +106,28 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 
 		}
 	}
-	
+
+	public void sendEmail(String attendeeId, Integer status) {
+		Objectify ofy = ObjectifyService.begin();
+		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
+				attendeeId));
+		sendEmail(attendee, status);
+	}
+
 	public void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		for (String attendeeId : attendeeIdList) {
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
-					attendeeId));			
+					attendeeId));
 			sendEmail(attendee, status);
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void sendCustomizedEmail(Attendee attendee, String subject, String msgBody) {
+	private void sendCustomizedEmail(Attendee attendee, String subject,
+			String msgBody) {
 		Session session = Session.getDefaultInstance(new Properties(), null);
-		msgBody = "Dear " + attendee.getName() + 
-				msgBody + "\n\n\n Team XYZs";
+		msgBody = "Dear " + attendee.getName() + msgBody + "\n\n\n Team XYZs";
 
 		try {
 			Message msg = new MimeMessage(session);
@@ -140,7 +147,8 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public Attendee getAttendeeByAttendeeId(String attendeeId) {
 		Objectify ofy = ObjectifyService.begin();
-		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
+				attendeeId));
 		return attendee;
 	}
 
@@ -151,7 +159,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, id));
 			ofy.delete(attendee);
 		}
-		
+
 	}
-	
+
 }

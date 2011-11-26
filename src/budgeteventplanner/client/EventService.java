@@ -25,7 +25,7 @@ public interface EventService extends RemoteService {
 			Integer status);
 
 	void addServiceRequest(String serviceId, String eventId, String name,
-			Date dueDate);
+			Integer quantity, Date dueDate);
 
 	List<ServiceRequest> getServiceRequestsByEventId(String eventId);
 

@@ -25,7 +25,7 @@ public interface EventServiceAsync {
 			AsyncCallback<List<Event>> callback);
 
 	void addServiceRequest(String serviceId, String eventId, String name,
-			Date dueDate, AsyncCallback<Void> callback);
+			Integer quantity, Date dueDate, AsyncCallback<Void> callback);
 
 	void getServiceRequestsByEventId(String eventId,
 			AsyncCallback<List<ServiceRequest>> callback);

@@ -64,10 +64,10 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void addServiceRequest(String serviceId, String eventId,
-			String name, Date dueDate) {
+			String name, Integer quantity, Date dueDate) {
 		Objectify ofy = ObjectifyService.begin();
 		ServiceRequest request = new ServiceRequest.Builder(serviceId, eventId,
-				name, dueDate).build();
+				name, quantity, dueDate).build();
 		ofy.put(request);
 	}
 

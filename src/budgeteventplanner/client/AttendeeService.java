@@ -16,4 +16,6 @@ public interface AttendeeService extends RemoteService {
 	Integer attendeeLogin(String registrationCode);
 	Attendee getAttendeeByAttendeeId(String attendeeId);
 	void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList);
+	void sendEmail(String attendeeId, Integer status);
+	void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status);
 }
