@@ -1,5 +1,16 @@
+//<<<<<<< .mine
+/*
+ *
+ needs to make sure that the phone number is not letter
+ * clear everything after jump
+ * enter the information that already have in the data base after the attendee reenter the registration code.
+ * 
+ */
+
+//=======
 // can cancel their attending anytime.
 // in event view page the canceled attendee needs another color.
+//>>>>>>> .r187
 package budgeteventplanner.client;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -11,6 +22,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -51,7 +63,8 @@ public class AttendeeRegistration implements EntryPoint {
 	final Button closeButton = new Button("Close");
 	VerticalPanel dialogVPanel = new VerticalPanel();
 	private static String attendeeID = null;
-
+	final ListBox status = new ListBox();
+	Label statusLabel=new Label("Are You Going To Attendee:");
 	/**
 	 * This is the entry point method.
 	 */
@@ -59,9 +72,12 @@ public class AttendeeRegistration implements EntryPoint {
 	public void onModuleLoad() {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
-
-		RootPanel.get("email").add(emailLabel);
-		RootPanel.get("emailBox").add(emailBox);
+		//status 0 yes 1 no 2 maybe
+		status.addItem("yes");
+		status.addItem("no");
+		status.addItem("maybe");
+		RootPanel.get("status").add(statusLabel);
+		RootPanel.get("statusBox").add(status);
 
 		RootPanel.get("firstName").add(firstNameLabel);
 		RootPanel.get("firstNameBox").add(firstNameBox);
@@ -97,6 +113,7 @@ public class AttendeeRegistration implements EntryPoint {
 		RootPanel.get("phoneBox").add(phoneBox);
 
 		RootPanel.get("submit").add(submit);
+
 		// dialog box
 
 		dialogVPanel.addStyleName("dialogVPanel");
@@ -134,7 +151,7 @@ public class AttendeeRegistration implements EntryPoint {
 						address1Box.getText() + "\n" + address2Box.getText()
 								+ "\n" + cityBox.getText() + "\n"
 								+ stateBox.getText() + "\n" + zipBox.getText(),
-						phoneBox.getText(),1, new AsyncCallback<Void>() {
+						phoneBox.getText(),status.getSelectedIndex(), new AsyncCallback<Void>() {
 							public void onFailure(Throwable caught) {
 							}
 
@@ -157,6 +174,7 @@ public class AttendeeRegistration implements EntryPoint {
 								stateBox.setText("");
 								zipBox.setText("");
 								phoneBox.setText("");
+								status.setItemSelected(0, true);
 								//RootPanel.get("XuXuan2").setVisible(false);
 								//RootPanel.get("main").setVisible(true);
 							}
@@ -174,6 +192,7 @@ public class AttendeeRegistration implements EntryPoint {
 	// used by BudgetEventPlanner UI to set the current attendeeID
 	public static void setAttendeeID(String attendeeIDc) {
 		attendeeID = attendeeIDc;
+		
 	}
 
 	// check if the form is legal
