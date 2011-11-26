@@ -32,12 +32,12 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public String createAttendee(String eventId, String name, String email) {
+	public Attendee createAttendee(String eventId, String name, String email) {
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = new Attendee.Builder(eventId, name, email).build();
 		ofy.put(attendee);
 
-		return attendee.getAttendeeId();
+		return attendee;
 	}
 
 	@Override
