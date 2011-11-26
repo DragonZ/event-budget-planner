@@ -1,36 +1,51 @@
 package budgeteventplanner.client.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+
+import javax.persistence.Id;
 
 import budgeteventplanner.shared.UUID;
 
 import com.googlecode.objectify.annotation.Entity;
 
-//		BudgetItem item = (new BudgetItem).Builder(......).setId(id).build();
+@SuppressWarnings("serial")
 @Entity
-public class Budget {
-	private String budgetID;
-	private Category category;
+public class Budget implements Serializable {
+	@Id
+	private String budgetId;
+	private String eventId;
 	private String name;
-	private List<BudgetItem> budget_item_list;
-	private long eventID;
-	private long limit;
+	private Double limit;
+
+	public Budget() {
+	}
 
 	public static class Builder {
-		private Budget budget = new Budget();
+		private Budget budget;
 
 		public Builder(Budget budget) {
 			this.budget = budget;
 		}
 
-		public Builder(String name) {
+		public Builder(String eventId, String name) {
+			this.budget = new Budget();
+			this.budget.budgetId = UUID.randomUUID();
+			this.budget.eventId = eventId;
 			this.budget.name = name;
-			this.budget.budgetID = UUID.randomUUID();
 		}
 
-		public Builder set_budget_item_list(ArrayList<BudgetItem> list) {
-			this.budget.budget_item_list = list;
+		public Builder setEventId(String eventId) {
+			this.budget.eventId = eventId;
+			return this;
+		}
+
+		public Builder setName(String name) {
+			this.budget.name = name;
+			return this;
+		}
+
+		public Builder setLimit(Double limit) {
+			this.budget.limit = limit;
 			return this;
 		}
 
@@ -39,27 +54,19 @@ public class Budget {
 		}
 	}
 
-	public String getBudgetID() {
-		return budgetID;
+	public String getBudgetId() {
+		return budgetId;
 	}
 
-	public Category getCategory() {
-		return category;
+	public String getEventId() {
+		return eventId;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public List<BudgetItem> getBudget_item_list() {
-		return budget_item_list;
-	}
-
-	public long getEventID() {
-		return eventID;
-	}
-
-	public long getLimit() {
+	public Double getLimit() {
 		return limit;
 	}
 }

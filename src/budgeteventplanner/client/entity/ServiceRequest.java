@@ -11,12 +11,13 @@ import com.googlecode.objectify.annotation.Entity;
 
 @SuppressWarnings("serial")
 @Entity
-public class ServiceRequest implements Serializable{
+public class ServiceRequest implements Serializable {
 	@Id
 	private String requestId;
 	private String serviceId;
 	private String eventId;
 	private String name;
+	private Integer quantity;
 	private Date dueDate;
 	private Integer status;
 
@@ -24,18 +25,20 @@ public class ServiceRequest implements Serializable{
 	public static final Integer ACCEPTED = 1;
 	public static final Integer IGNORED = 2;
 
-	public ServiceRequest() {}
+	public ServiceRequest() {
+	}
 
 	public static class Builder {
 		private ServiceRequest request;
 
 		public Builder(String serviceId, String eventId, String name,
-				Date dueDate) {
+				Integer quantity, Date dueDate) {
 			request = new ServiceRequest();
 			this.request.requestId = UUID.randomUUID();
 			this.request.serviceId = serviceId;
 			this.request.eventId = eventId;
 			this.request.name = name;
+			this.request.quantity = quantity;
 			this.request.dueDate = dueDate;
 			this.request.status = PENDING;
 		}
@@ -83,6 +86,10 @@ public class ServiceRequest implements Serializable{
 
 	public String getName() {
 		return name;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
 	}
 
 	public Date getDueDate() {

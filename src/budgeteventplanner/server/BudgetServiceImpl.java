@@ -1,25 +1,78 @@
 package budgeteventplanner.server;
 
-import budgeteventplanner.client.BudgetService;
-import budgeteventplanner.client.entity.Attendee;
-import budgeteventplanner.client.entity.Budget;
+import java.util.ArrayList;
 
+import budgeteventplanner.client.BudgetService;
+import budgeteventplanner.client.entity.Budget;
+import budgeteventplanner.client.entity.BudgetItem;
+import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.client.entity.Service;
+import budgeteventplanner.client.entity.ServiceRequest;
+
+import com.google.appengine.repackaged.com.google.common.base.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Query;
 
 @SuppressWarnings("serial")
 public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
 	public BudgetServiceImpl() {
 		super();
-		ObjectifyService.register(Attendee.class);
+		ObjectifyService.register(Budget.class);
+		ObjectifyService.register(BudgetItem.class);
 	}
 
 	@Override
-	public void createBudget(String budegetName) {
+	public Budget createBudget(String eventId, String name) {
 		Objectify ofy = ObjectifyService.begin();
-		Budget attendee = new Budget.Builder(budegetName).build();
-		ofy.put(attendee);
+		Budget budget = new Budget.Builder(eventId, name).build();
+		ofy.put(budget);
+		return budget;
+	}
+
+	@Override
+	public BudgetItem addBudgetItemToBudget(String categoryId, String budgetId,
+			Double limit) {
+		Objectify ofy = ObjectifyService.begin();
+		Query<BudgetItem> q = ofy.query(BudgetItem.class).filter("budgetId", budgetId).filter("categoryId", categoryId);
+		BudgetItem budgetItem;
+		
+		if (q.count() > 0) {
+			budgetItem = new BudgetItem.Builder(q.get()).setLimit(limit).build();
+		} else {
+			budgetItem = new BudgetItem.Builder(budgetId, categoryId, limit).build();
+		}
+		
+		ofy.put(budgetItem);
+		return budgetItem;
+	}
+
+	@Override
+	public Double getTotalByEventId(String eventId) {
+		Double total = 0.0;
+		Objectify ofy = ObjectifyService.begin();
+		Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("eventId", eventId);
+		for (ServiceRequest request : queryServiceRequest) {
+			Double price = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getPrice();
+			total += price * request.getQuantity();
+		}
+		return total;
+	}
+
+	@Override
+	public ArrayList<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
+		ArrayList<Pair<String, Double>> list = new ArrayList<Pair<String, Double>>();
+		Objectify ofy = ObjectifyService.begin();
+		Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("eventId", eventId);
+		for (ServiceRequest request : queryServiceRequest) {
+			String categoryId = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getCategoryId();
+			String categoryName = ofy.get(new Key<Category>(Category.class, categoryId)).getName();
+			Double price = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getPrice();
+			list.add(new Pair<String, Double>(categoryName, price));
+		}
+		return list;
 	}
 }
