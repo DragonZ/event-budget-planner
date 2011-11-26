@@ -12,5 +12,6 @@ public interface AttendeeServiceAsync {
 	void getAttendeeListByEventId(String eventId, AsyncCallback<ArrayList<Attendee>> attendeeList);
 	void updateAttendeeInfo(String attendeeId, String name, String email, String jobTitle, String companyName, String address, String phoneNum, Integer status, AsyncCallback<Void> feedback);
 	void attendeeLogin(String registrationCode, AsyncCallback<Integer> status);
-	void getAttendee(String attendeeId, AsyncCallback<Attendee> attendee);
+	void getAttendeeByAttendeeId(String attendeeId, AsyncCallback<Attendee> attendee);
+	void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList, AsyncCallback<Void> attendee);
 }

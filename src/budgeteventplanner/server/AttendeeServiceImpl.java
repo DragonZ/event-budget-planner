@@ -128,9 +128,20 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Attendee getAttendee(String attendeeId) {
+	public Attendee getAttendeeByAttendeeId(String attendeeId) {
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
 		return attendee;
 	}
+
+	@Override
+	public void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList) {
+		Objectify ofy = ObjectifyService.begin();
+		for (String id : attendeeIdList) {
+			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, id));
+			ofy.delete(attendee);
+		}
+		
+	}
+	
 }
