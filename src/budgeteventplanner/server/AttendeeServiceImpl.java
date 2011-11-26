@@ -29,6 +29,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 	public AttendeeServiceImpl() {
 		super();
 		ObjectifyService.register(Attendee.class);
+		ObjectifyService.register(Event.class);
 	}
 
 	@Override
@@ -103,6 +104,15 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		} catch (MessagingException e) {
 		} catch (UnsupportedEncodingException e) {
 
+		}
+	}
+	
+	public void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status) {
+		Objectify ofy = ObjectifyService.begin();
+		for (String attendeeId : attendeeIdList) {
+			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
+					attendeeId));			
+			sendEmail(attendee, status);
 		}
 	}
 
