@@ -13,6 +13,8 @@
 //>>>>>>> .r187
 package budgeteventplanner.client;
 
+import budgeteventplanner.client.entity.Attendee;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,32 +34,32 @@ public class AttendeeRegistration implements EntryPoint {
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	private final AttendeeServiceAsync attendeeService = GWT
+	final static AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
 	final Label emailLabel = new Label("*Email:");
-	final TextBox emailBox = new TextBox();
+	final static TextBox emailBox = new TextBox();
 	final Label firstNameLabel = new Label("*First Name:");
-	final TextBox firstNameBox = new TextBox();
+	final static TextBox firstNameBox = new TextBox();
 	final Label midNameLabel = new Label("Mid Name:");
 	final TextBox midNameBox = new TextBox();
 	final Label lastNameLabel = new Label("*Last Name:");
 	final TextBox lastNameBox = new TextBox();
 	final Label jobTitleLabel = new Label("Job Title:");
-	final TextBox jobTitleBox = new TextBox();
+	final static TextBox jobTitleBox = new TextBox();
 	final Label companyLabel = new Label("Company:");
-	final TextBox companyBox = new TextBox();
+	final static TextBox companyBox = new TextBox();
 	final Label address1Label = new Label("*Address 1:");
-	final TextBox address1Box = new TextBox();
+	final static TextBox address1Box = new TextBox();
 	final Label address2Label = new Label("Address 2:");
-	final TextBox address2Box = new TextBox();
+	final static TextBox address2Box = new TextBox();
 	final Label cityLabel = new Label("*City:");
-	final TextBox cityBox = new TextBox();
+	final static TextBox cityBox = new TextBox();
 	final Label stateLabel = new Label("*State:");
-	final TextBox stateBox = new TextBox();
+	final static TextBox stateBox = new TextBox();
 	final Label zipLabel = new Label("*Zip:");
-	final TextBox zipBox = new TextBox();
+	final static TextBox zipBox = new TextBox();
 	final Label phoneLabel = new Label("*Phone Number:");
-	final TextBox phoneBox = new TextBox();
+	final static TextBox phoneBox = new TextBox();
 	final Button submit = new Button("submit");
 	final DialogBox dialogBox = new DialogBox();
 	final Button closeButton = new Button("Close");
@@ -192,6 +194,26 @@ public class AttendeeRegistration implements EntryPoint {
 	// used by BudgetEventPlanner UI to set the current attendeeID
 	public static void setAttendeeID(String attendeeIDc) {
 		attendeeID = attendeeIDc;
+		//Attendee newAttendee = new Attendee();
+		attendeeService.getAttendeeByAttendeeId(attendeeID, new AsyncCallback<Attendee>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+			
+			@Override
+			public void onSuccess(Attendee attendeeResult) {
+				emailBox.setText(attendeeResult.getEmail());
+				firstNameBox.setText(attendeeResult.getName());
+				jobTitleBox.setText(attendeeResult.getJobTitle());
+				companyBox.setText(attendeeResult.getCompanyName());
+				address1Box.setText(attendeeResult.getAddress().split("\n")[0]);
+				address2Box.setText(attendeeResult.getAddress().split("\n")[1]);
+				cityBox.setText(attendeeResult.getAddress().split("\n")[2]);
+				stateBox.setText(attendeeResult.getAddress().split("\n")[3]);
+				zipBox.setText(attendeeResult.getAddress().split("\n")[4]);
+				phoneBox.setText(attendeeResult.getPhoneNumber());
+			}
+		});
 		
 	}
 
