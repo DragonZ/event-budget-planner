@@ -16,4 +16,7 @@ public interface AttendeeServiceAsync {
 	void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList, AsyncCallback<Void> callback);
 	void sendEmail(String attendeeId, Integer status, AsyncCallback<Void> callback);
 	void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status, AsyncCallback<Void> callback);
+	void sendEmailBatchByOrganizer(ArrayList<String> attendeeIdList,Integer status,AsyncCallback<Void> callback);
+	void sendCustomizedEmail(Attendee attendee, String subject,String msgBody,AsyncCallback<Void> callback);
+	void sendCustomizedEmail(String attendeeId, String subject,String msgBody,AsyncCallback<Void> callback);
 }

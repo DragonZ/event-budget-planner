@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import budgeteventplanner.client.entity.Attendee;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -18,4 +19,7 @@ public interface AttendeeService extends RemoteService {
 	void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList);
 	void sendEmail(String attendeeId, Integer status);
 	void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status);
+	void sendEmailBatchByOrganizer(ArrayList<String> attendeeIdList,Integer status);
+	void sendCustomizedEmail(Attendee attendee, String subject,String msgBody);
+	void sendCustomizedEmail(String attendeeId, String subject,String msgBody);
 }
