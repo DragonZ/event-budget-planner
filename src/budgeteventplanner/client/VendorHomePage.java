@@ -5,6 +5,8 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
@@ -46,6 +48,8 @@ public class VendorHomePage implements EntryPoint {
 	private final VendorServiceAsync vendorServiceProvider = GWT
 			.create(VendorService.class);
 
+	private static final Logger log = Logger.getLogger(VendorHomePage.class.getName());
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,10 +80,11 @@ public class VendorHomePage implements EntryPoint {
 	Hyperlink ignoreHyperlink[];
 	Hyperlink viewHyperlink[];
 	ArrayList<String> serviceRequestID;
-	ArrayList<String> categoryList;
+	//ArrayList<String> categoryList;
 
 	Hyperlink deleteHyperlink[];
 	String[] deleteServiceID;
+	String[] displayCategoryID;
 	String categoryName;
 
 	@Override
@@ -298,39 +303,43 @@ public class VendorHomePage implements EntryPoint {
 
 		// String userID = Cookies.getCookie("USERNAME");
 		String userID = "lzhen";
-
+		//DialogBox a = new DialogBox();
+		//a.setText("Remote Procedure Call - Failure");
+		//a.show();
 		vendorServiceProvider.getServiceByVendorId(userID,
-				new AsyncCallback<List<Service>>() {
+				new AsyncCallback<List<Entry<String,Service>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO
 					}
 
-					public void onSuccess(List<Service> result) {
+					public void onSuccess(List<Entry<String,Service>> result) {
 						deleteHyperlink = new Hyperlink[result.size()];
 						deleteServiceID = new String[result.size()];
-						categoryList = new ArrayList<String>();
+						displayCategoryID = new String[result.size()];
+						//categoryList = new ArrayList<String>();
 
 						for (int i = 0; i < result.size(); i++) {
-							deleteServiceID[i] = result.get(i).getServiceId();
-							categoryList.add(new String(categoryFromidToname(result.get(i)
-									.getCategoryId())));
+							deleteServiceID[i] = result.get(i).getValue().getServiceId();
+							displayCategoryID[i] = result.get(i).getValue().getCategoryId();
+							//categoryList.add(new String(categoryFromidToname(result.get(i)
+									//.getCategoryId())));
 						}
 
 						for (int i = 0; i < result.size(); i++) {
 
-							existingService.setWidget(i + 1, 0, new Label(categoryList.get(i)));
+							existingService.setWidget(i + 1, 0, new Label(result.get(i).getKey()));
 							// category
 							// name
 
 							deleteHyperlink[i] = new Hyperlink("delete",
 									Integer.toString(i));
 							existingService.setWidget(i + 1, 1, new Label(
-									result.get(i).getName()));
+									result.get(i).getValue().getName()));
 							existingService.setWidget(i + 1, 2, new Label(
-									result.get(i).getDescription()));
+									result.get(i).getValue().getDescription()));
 							existingService.setWidget(i + 1, 3, new Label(
-									result.get(i).getPrice().toString()));
+									result.get(i).getValue().getPrice().toString()));
 							existingService.setWidget(i + 1, 4,
 									deleteHyperlink[i]);
 
@@ -345,7 +354,7 @@ public class VendorHomePage implements EntryPoint {
 														.getSource()
 														.equals(existingService
 																.getWidget(i, 4))) {
-													break;
+													break; 
 												}
 											}
 
@@ -387,6 +396,17 @@ public class VendorHomePage implements EntryPoint {
 						}
 					}
 				});
+		
+		//a.setText(displayCategoryID[2]);
+		//a.show();
+		//initialize category column here
+//		log.warning(deleteServiceID[5]);
+//		for(int i = 0; i < displayCategoryID.length; i++)
+//		{
+//			new DialogBox()
+//			.setText("Remote Procedure Call - Failure");
+//			existingService.setWidget(i + 1, 0, new Label(categoryFromidToname(displayCategoryID[i])));
+//		}
 
 	}
 
