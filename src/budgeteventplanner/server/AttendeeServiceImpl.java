@@ -114,6 +114,31 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		sendEmail(attendee, status);
 	}
 
+	public void sendEmailBatchByOrganizer(ArrayList<String> attendeeIdList,Integer status){
+		Objectify ofy = ObjectifyService.begin();
+		
+			
+		for (String attendeeId : attendeeIdList) {
+			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
+					attendeeId));
+
+			if(status == -1) //-1 means deleted by organizer
+			{
+				String subject="You Have been Removed From Event";
+				String msgBody="You Have been Removed From Event.";
+			sendCustomizedEmail( attendee,  subject,
+					 msgBody);
+			}
+			if(status == 1) //1 means send inviting letter
+			{
+				String subject="You are invited to a new Event";
+				String msgBody="Your Registration code is:"+attendee.getAttendeeId()+"\n Please go to purduebep.appspot.com for registration";
+			sendCustomizedEmail( attendee,  subject,
+					 msgBody);
+			}
+		}
+		
+	}
 	public void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		for (String attendeeId : attendeeIdList) {
@@ -123,11 +148,31 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void sendCustomizedEmail(Attendee attendee, String subject,
+
+	public void sendCustomizedEmail(String attendeeId, String subject,
 			String msgBody) {
+		Attendee attendee=getAttendeeByAttendeeId(attendeeId);
 		Session session = Session.getDefaultInstance(new Properties(), null);
 		msgBody = "Dear " + attendee.getName() + msgBody + "\n\n\n Team XYZs";
+
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress("yezhuen@gmail.com", "XYZs"));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					attendee.getEmail(), attendee.getName()));
+			msg.setSubject(subject);
+			msg.setText(msgBody);
+			Transport.send(msg);
+		} catch (AddressException e) {
+		} catch (MessagingException e) {
+		} catch (UnsupportedEncodingException e) {
+
+		}
+	}
+	public void sendCustomizedEmail(Attendee attendee, String subject,
+			String msgBody) {
+		Session session = Session.getDefaultInstance(new Properties(), null);
+		msgBody = "Dear " + attendee.getName() + "\n"+msgBody + "\n\n\n Team XYZs";
 
 		try {
 			Message msg = new MimeMessage(session);
