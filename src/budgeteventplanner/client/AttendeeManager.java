@@ -61,6 +61,8 @@ public class AttendeeManager implements EntryPoint {
 	private final static EventServiceAsync eventService = GWT
 	.create(EventService.class);
 	final static TextArea infoBox = new TextArea();
+	final static TextArea emailContentBox = new TextArea();
+	static Button sendEmail=new Button("Send");//To attendees in This Event
 	//eventAttendeeList and organizerattendeeList will only store attendee's name
 	static ArrayList<CheckBox> eventAttendeeList= new ArrayList<CheckBox>();// = new Label[5];
 	static ArrayList<CheckBox> organizerAttendeeList= new ArrayList<CheckBox>();
@@ -82,8 +84,8 @@ public class AttendeeManager implements EntryPoint {
 	static TreeItem eventAttendeeTreeItem = new TreeItem("Attendees in This Event");
 	static TreeItem organizerAttendeeTreeItem = new TreeItem("Attendees You had used before");
 	static Button submit=new Button("Apply all changes");
-	static Button addToEvent=new Button("Add checked attendees to current event");
-	static Button removeFromEvent=new Button("Remove checked attendees from current event");
+	static Button addToEvent=new Button("Add");//checked attendees to current event
+	static Button removeFromEvent=new Button("Remove");// checked attendees from current event
 	static Tree eventAttendeeTree = new Tree();
 	static Tree organizerAttendeeTree=new Tree();
 	 Label nameLabel = new Label("*Name:");
@@ -91,6 +93,7 @@ public class AttendeeManager implements EntryPoint {
 	 Label emailLable = new Label("*Email:");
 	 static TextBox emailBox = new TextBox();
 	static Button inputAttendee=new Button("Create Attendee");
+
 	//static TreeItem rootCheckable =new TreeItem(new CheckBox("Attendees"));
 //	static VerticalPanel dialogVPanel = new VerticalPanel();
 	//final static DialogBox wusuowei = new DialogBox();
@@ -104,32 +107,83 @@ public class AttendeeManager implements EntryPoint {
 //		wusuowei.setWidget(dialogVPanel);
 	
 		
-		
+		 VerticalPanel vPanelm=new VerticalPanel();
 		hPanel.setSpacing(50);
-		RootPanel.get("attendees").add(hPanel);
+		RootPanel.get("attendees").add(vPanelm);
 		hPanel.setSize("100%", "100%");
 		infoBox.setSize("200px", "300px");
 		infoBox.setReadOnly(true);
 		infoBox.setText("info of eventAttendeeList will appear here");
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
 		organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
-		hPanel.add(organizerAttendeeTree);
-		hPanel.add(eventAttendeeTree);
+		 VerticalPanel vPanelo=new VerticalPanel();
+		 vPanelo.add(organizerAttendeeTree);
+		 vPanelo.add(addToEvent);
+		hPanel.add(vPanelo);
+		
 		hPanel.add(infoBox);
-		vPanel.add(submit);
-		vPanel.add(addToEvent);
-		vPanel.add(removeFromEvent);
-		vPanel.add(nameLabel);
-		vPanel.add(nameBox);
-		vPanel.add(emailLable);
-		vPanel.add(emailBox);
-		vPanel.add(inputAttendee);
-		hPanel.add(vPanel);
+		 VerticalPanel vPanele=new VerticalPanel();
+		 vPanele.add(eventAttendeeTree);
+		 vPanele.add(removeFromEvent);
+		//hPanel.add(eventAttendeeTree);
+		 hPanel.add(vPanele);
+
+		 vPanelm.add(hPanel);
+
+		 HorizontalPanel hPanell = new HorizontalPanel();
+		 vPanelm.add(hPanell);
+		 
+		 VerticalPanel vPanelEmail=new VerticalPanel();
+		 hPanell.add(vPanelEmail);
+		 vPanelEmail.add(emailContentBox);
+		 vPanelEmail.add(sendEmail);
+		 
+		 VerticalPanel vPanelInputAttendee=new VerticalPanel();
+		 hPanell.add(vPanelInputAttendee);
+		 vPanelInputAttendee.add(nameLabel);
+		 vPanelInputAttendee.add(nameBox);
+		 vPanelInputAttendee.add(emailLable);
+		 vPanelInputAttendee.add(emailBox);
+		 vPanelInputAttendee.add(inputAttendee);
+		 
+		 hPanell.add(submit);
+		//vPanel.add(addToEvent);
+		//vPanel.add(removeFromEvent);
+		
+//		vPanel.add(nameLabel);
+//		vPanel.add(nameBox);
+//		vPanel.add(emailLable);
+//		vPanel.add(emailBox);
+//		vPanel.add(inputAttendee);
+		//vPanel.add(emailContentBox);
+		//vPanel.add(sendEmail);
+		//hPanel.add(vPanel);
 		//Cookies.setCookie("Event_id", "aw3iryfwerioghoawiguaweigu");
 		//Cookies.getCookie("Event_id");
+		sendEmail.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				for(String attendeeId:readyToRemoveIdList)
+				attendeeService.sendCustomizedEmail(attendeeId, "An Letter About your Event", emailContentBox.getText(), new AsyncCallback<Void>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						
+					}});
+			}});
 		edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","YuanXia");
 		// showAttendees("ddd");
 		// TreeItem eventAttendeeTree =new TreeItem();
+		
 		
 
 	}
@@ -413,6 +467,19 @@ public class AttendeeManager implements EntryPoint {
 					}
 					
 				});
+				attendeeService.sendEmailBatchByOrganizer(attendeeList,1,new AsyncCallback<Void>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						
+					}});
 				//remove readyToRemoveIdList
 				attendeeService.deleteAttendeeByAttendeeIdList(readyToRemoveIdList,new AsyncCallback<Void>(){
 
@@ -427,9 +494,21 @@ public class AttendeeManager implements EntryPoint {
 						// TODO Auto-generated method stub
 						
 					}});
-				
+				attendeeService.sendEmailBatchByOrganizer(readyToRemoveIdList,-1,new AsyncCallback<Void>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						
+					}});
 				//Start Send email to notify attendees.
-				attendeeService.sendEmailBatch(readyToSendNotifyList,1,new AsyncCallback<Void>(){
+				attendeeService.sendEmailBatchByOrganizer(readyToSendNotifyList,1,new AsyncCallback<Void>(){
 
 					@Override
 					public void onFailure(Throwable caught) {
