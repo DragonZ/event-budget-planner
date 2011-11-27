@@ -26,6 +26,13 @@
  *  manuly add attendee and send email to notify.
  *  after add not manul still need to send notify.
  *  delete the attendee and send email to notify.
+ *  
+ *  
+ *  
+ *  Delete the attendee from organizer after deleting from event
+ *  need to a method get eventIdList(String organizerid)
+ *  from server how to find the eventinfo from attendeeID
+ *  for those attendee don't wannt to attend, just show in red.
  */
 
 package budgeteventplanner.client;
@@ -41,6 +48,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -63,6 +72,7 @@ public class AttendeeManager implements EntryPoint {
 	final static TextArea infoBox = new TextArea();
 	final static TextArea emailContentBox = new TextArea();
 	static Button sendEmail=new Button("Send");//To attendees in This Event
+	static Button sendEmailPop =  new Button("Send Email");
 	//eventAttendeeList and organizerattendeeList will only store attendee's name
 	static ArrayList<CheckBox> eventAttendeeList= new ArrayList<CheckBox>();// = new Label[5];
 	static ArrayList<CheckBox> organizerAttendeeList= new ArrayList<CheckBox>();
@@ -90,10 +100,13 @@ public class AttendeeManager implements EntryPoint {
 	static Tree organizerAttendeeTree=new Tree();
 	 Label nameLabel = new Label("*Name:");
 	 static TextBox nameBox = new TextBox();
-	 Label emailLable = new Label("*Email:");
+	 Label emailLabel = new Label("*Email:");
 	 static TextBox emailBox = new TextBox();
 	static Button inputAttendee=new Button("Create Attendee");
-
+	static Button inputAttendeePop=new Button("Create Attendee");
+	  DialogBox sendEmailBox = new DialogBox();
+	   static DialogBox inputAttendeeBox = new DialogBox();
+	   
 	//static TreeItem rootCheckable =new TreeItem(new CheckBox("Attendees"));
 //	static VerticalPanel dialogVPanel = new VerticalPanel();
 	//final static DialogBox wusuowei = new DialogBox();
@@ -107,57 +120,133 @@ public class AttendeeManager implements EntryPoint {
 //		wusuowei.setWidget(dialogVPanel);
 	
 		
-		 VerticalPanel vPanelm=new VerticalPanel();
+		 VerticalPanel vPanelmain=new VerticalPanel();
 		hPanel.setSpacing(50);
-		RootPanel.get("attendees").add(vPanelm);
+		RootPanel.get("attendees").add(vPanelmain);
 		hPanel.setSize("100%", "100%");
-		infoBox.setSize("200px", "300px");
+		infoBox.setSize("300px", "300px");
 		infoBox.setReadOnly(true);
 		infoBox.setText("info of eventAttendeeList will appear here");
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
 		organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
-		 VerticalPanel vPanelo=new VerticalPanel();
-		 vPanelo.add(organizerAttendeeTree);
-		 vPanelo.add(addToEvent);
-		hPanel.add(vPanelo);
 		
-		hPanel.add(infoBox);
-		 VerticalPanel vPanele=new VerticalPanel();
-		 vPanele.add(eventAttendeeTree);
-		 vPanele.add(removeFromEvent);
+		 VerticalPanel vPanelorganizer=new VerticalPanel();
+		 vPanelorganizer.add(addToEvent);
+		 vPanelorganizer.add(organizerAttendeeTree);
+	
+		hPanel.add(vPanelorganizer);
+		
+		 VerticalPanel vPanelInfoBox=new VerticalPanel();
+		 HorizontalPanel hPanelInfoBox = new HorizontalPanel();
+		 vPanelInfoBox.add(infoBox);
+		 vPanelInfoBox.add(hPanelInfoBox);
+		 hPanel.add(vPanelInfoBox);
+		 hPanelInfoBox.add(sendEmailPop);
+		 hPanelInfoBox.add(inputAttendeePop);
+		 hPanelInfoBox.add(submit);
+		 
+		 
+		 VerticalPanel vPanelEvent=new VerticalPanel();
+		 vPanelEvent.add(removeFromEvent);
+		 vPanelEvent.add(eventAttendeeTree);
 		//hPanel.add(eventAttendeeTree);
-		 hPanel.add(vPanele);
+		 hPanel.add(vPanelEvent);
 
-		 vPanelm.add(hPanel);
+		 vPanelmain.add(hPanel);
+		 
+		 
 
-		 HorizontalPanel hPanell = new HorizontalPanel();
-		 vPanelm.add(hPanell);
+		 sendEmailBox.setText("Send Email");
+		 VerticalPanel sendEmailVPanel = new VerticalPanel();
+		// sendEmailVPanel.setSize("100%", "100%");
+		 //sendEmailVPanel.setSpacing(5);
+		 emailContentBox.setSize("300px", "100px");
+		 sendEmailVPanel.add(emailContentBox);
+		 HorizontalPanel sendEmailHPanel = new HorizontalPanel();
+		 sendEmailHPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+		 sendEmailHPanel.add(sendEmail);
+		 Button cancelSendEmailButton=new Button("cancel");
+		 sendEmailHPanel.add(cancelSendEmailButton);
+		 sendEmailHPanel.setSpacing(3);
+		 sendEmailVPanel.add(sendEmailHPanel);
+		 sendEmailBox.setWidget(sendEmailVPanel);
+		// vPanelmain.add(sendEmailVPanel);
+		
+		 
+		 inputAttendeeBox.setText("InPut Attendee Manuly");
+		 VerticalPanel inputAttendeeVPanel = new VerticalPanel();
+		 nameLabel.setWidth("200px");
+		 nameBox.setWidth("200px");
+		 emailLabel.setWidth("200px");
+		 emailBox.setWidth("200px");
+		 inputAttendeeVPanel.add(nameLabel);
+		 inputAttendeeVPanel.add(nameBox);
+		 inputAttendeeVPanel.add(emailLabel);
+		 inputAttendeeVPanel.add(emailBox);
+		 HorizontalPanel inputAttendeeHPanel = new HorizontalPanel();
+		 inputAttendeeHPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+		 inputAttendeeHPanel.add(inputAttendee);
+		 Button cancelInputAttendeeButton=new Button("cancel");
+		 inputAttendeeHPanel.add(cancelInputAttendeeButton);
+		 inputAttendeeVPanel.add(inputAttendeeHPanel);
+		 inputAttendeeHPanel.setSpacing(3);
+		 inputAttendeeBox.setWidget(inputAttendeeVPanel);
+		 
+		 
+		 cancelSendEmailButton.addClickHandler(new ClickHandler(){
+
+				@Override
+				public void onClick(ClickEvent event) {
+					sendEmailBox.hide();
+					sendEmail.setFocus(false);
+				}});
+		 
+		 cancelInputAttendeeButton.addClickHandler(new ClickHandler(){
+
+				@Override
+				public void onClick(ClickEvent event) {
+					inputAttendeeBox.hide();
+					inputAttendee.setFocus(false);
+				}});
+		 
+		 sendEmailPop.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				emailContentBox.setText("");
+				sendEmailBox.show();
+				sendEmailBox.center();
+				sendEmail.setFocus(true);
+			}});
+		 inputAttendeePop.addClickHandler(new ClickHandler(){
+
+				@Override
+				public void onClick(ClickEvent event) {
+					nameBox.setText("");
+					emailBox.setText("");
+					inputAttendeeBox.show();
+					inputAttendeeBox.center();
+					inputAttendee.setFocus(true);
+				}});
+////////////////////////////////////////////
+		 /*HorizontalPanel hPanell = new HorizontalPanel();
+		// vPanelmain.add(hPanell);
 		 
 		 VerticalPanel vPanelEmail=new VerticalPanel();
 		 hPanell.add(vPanelEmail);
 		 vPanelEmail.add(emailContentBox);
-		 vPanelEmail.add(sendEmail);
+		// vPanelEmail.add(sendEmail);
 		 
 		 VerticalPanel vPanelInputAttendee=new VerticalPanel();
 		 hPanell.add(vPanelInputAttendee);
 		 vPanelInputAttendee.add(nameLabel);
 		 vPanelInputAttendee.add(nameBox);
-		 vPanelInputAttendee.add(emailLable);
-		 vPanelInputAttendee.add(emailBox);
-		 vPanelInputAttendee.add(inputAttendee);
+		 vPanelInputAttendee.add(emailLabel);
+		 vPanelInputAttendee.add(emailBox);*/
+		// vPanelInputAttendee.add(inputAttendee);
 		 
-		 hPanell.add(submit);
-		//vPanel.add(addToEvent);
-		//vPanel.add(removeFromEvent);
-		
-//		vPanel.add(nameLabel);
-//		vPanel.add(nameBox);
-//		vPanel.add(emailLable);
-//		vPanel.add(emailBox);
-//		vPanel.add(inputAttendee);
-		//vPanel.add(emailContentBox);
-		//vPanel.add(sendEmail);
-		//hPanel.add(vPanel);
+		 //hPanell.add(submit);
+
 		//Cookies.setCookie("Event_id", "aw3iryfwerioghoawiguaweigu");
 		//Cookies.getCookie("Event_id");
 		sendEmail.addClickHandler(new ClickHandler(){
@@ -171,13 +260,15 @@ public class AttendeeManager implements EntryPoint {
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-						
+						sendEmailBox.hide();
+						sendEmail.setFocus(false);
 					}
 
 					@Override
 					public void onSuccess(Void result) {
 						// TODO Auto-generated method stub
-						
+						sendEmailBox.hide();
+						sendEmail.setFocus(false);
 					}});
 			}});
 		edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","YuanXia");
@@ -387,7 +478,7 @@ public class AttendeeManager implements EntryPoint {
 							@Override
 							public void onClick(ClickEvent event) {
 								// TODO Auto-generated method stub
-								infoBox.setText("attendee's info needed");
+								infoBox.setText(result.toString());
 								if(((CheckBox) event.getSource()).isChecked())
 								{
 									
@@ -434,6 +525,8 @@ public class AttendeeManager implements EntryPoint {
 						
 					
 					}});
+				inputAttendeeBox.hide();
+				inputAttendee.setFocus(false);
 				
 			}});
 		submit.addClickHandler(new ClickHandler(){
