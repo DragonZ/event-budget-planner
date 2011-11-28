@@ -13,6 +13,8 @@ import java.util.List;
 import budgeteventplanner.client.entity.Attendee;
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Event;
+import budgeteventplanner.client.entity.Service;
+import budgeteventplanner.client.entity.ServiceRequest;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -515,7 +517,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	}
 	public void item_pop_up(String eventId) {
 		final DialogBox d = new DialogBox();
-
+		//d.setSize("300px", "100%");
 		VerticalPanel panel = new VerticalPanel();
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		Button close = new Button("Close");
@@ -523,118 +525,109 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 		final FlexTable itemList = new FlexTable();
 		itemList.setWidth("100%");
-		itemList.setWidget(0, 0, new HTML("<strong>Item Category</strong>"));
+		itemList.setWidget(0, 0, new HTML("<strong>Category</strong>"));
 		itemList.getColumnFormatter().setWidth(0, "10%");
 		itemList.setWidget(0, 1, new HTML("<strong>Service</strong>"));
 		itemList.getColumnFormatter().setWidth(1, "10%");
-		itemList.setWidget(0, 2, new HTML(
-				"<strong>View Service Details</strong>"));
-		itemList.getColumnFormatter().setWidth(2, "10%");
-		itemList.setWidget(0, 3, new HTML("<strong>Due Date</strong>"));
-		itemList.getColumnFormatter().setWidth(3, "100px");
-		itemList.setWidget(0, 4, new HTML("<strong>Request Details</strong>"));
-		itemList.getColumnFormatter().setWidth(4, "200px");
-
-		categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
-			public void onFailure(Throwable caught)
-			{
-				
-			}
-			public void onSuccess(ArrayList<Category> result)
-			{
-				
-			}
-		});
+//		itemList.setWidget(0, 2, new HTML("<strong>View Service Details</strong>"));
+//		itemList.getColumnFormatter().setWidth(2, "10%");
+		itemList.setWidget(0, 4, new HTML("<strong>Due Date</strong>"));
+		itemList.getColumnFormatter().setWidth(4, "20%");
+		itemList.setWidget(0, 3, new HTML("<strong>Quantity</strong>"));
+		itemList.getColumnFormatter().setWidth(3, "20%");
+		itemList.setWidget(0, 5, new HTML("<strong>Request Details</strong>"));
+		itemList.getColumnFormatter().setWidth(5, "20%");
 		
-		final int itemCount = 3;
-		for (int row = 1; row <= itemCount; row++) {
-			itemList.setWidget(row, 0, new Label("Item Category from Server"
-					+ Integer.toString(row)));
-			itemList.setWidget(row, 1, new Label("Service from Server"
-					+ Integer.toString(row)));
+		
+		final ArrayList<Category> categoryList = new ArrayList<Category>();
+		final ArrayList<Service> serviceList = new ArrayList<Service>();
+		
+		
+		final ListBox category = new ListBox();
 
-			final Button view_item = new Button("View");
-			itemList.setWidget(row, 2, view_item);
-			view_item.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
+		categoryService
+				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+					public void onFailure(Throwable caught) {
 
+					}
+
+					public void onSuccess(ArrayList<Category> result) {
+						for (Category c : result)
+						{
+							categoryList.add(c);
+							category.addItem(c.getName());
+						}
+					}
+				});
+		
+
+		final ListBox service = new ListBox();
+		category.addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
+				service.clear();
+				int total = category.getItemCount();
+				for (int i=0;i<total;i++)
+				{
+					if (category.isItemSelected(i))
+					{
+						eventService.getServicesByCategoryId(categoryList.get(i).getCategoryId(), new AsyncCallback<List<Service>>(){
+							public void onFailure(Throwable caught)
+							{}
+							public void onSuccess(List<Service> result)
+							{
+								for (Service s: result)
+								{
+									serviceList.add(s);
+									service.addItem(s.getName());
+								}
+							}
+						});
+						break;
+					}
 				}
-			});
-
-			itemList.setWidget(row, 3, new Label("DueDate from Server"
-					+ Integer.toString(row)));
-			itemList.setWidget(row, 4, new Label("Request Details form Server"
-					+ Integer.toString(row)));
-		}
+			}
+		});	
+		
+		
+		final TextBox dueDate = new TextBox();
+		dueDate.setText("");
+		dueDate.setWidth("70px");
+		
+		final TextArea details = new TextArea();
+		details.setText("");
+		details.setWidth("100px");
+		
+		final TextBox quantity = new TextBox();
+		quantity.setText("");
+		quantity.setWidth("20px");
+		
+		
+		itemList.setWidget(1, 0, category);
+		itemList.setWidget(1, 1, service);
+		itemList.setWidget(1, 3, quantity);
+		itemList.setWidget(1, 4, dueDate);
+		itemList.setWidget(1, 5, details);
+		
+		
 		panel.add(itemList);
-		final Button addNew = new Button("Add New");
+		//final Button addNew = new Button("Add New");
 		final Button update = new Button("Update");
-		HorizontalPanel p = new HorizontalPanel();
-		p.add(addNew);
-		p.add(update);
-		panel.add(p);
+		//HorizontalPanel p = new HorizontalPanel();
+		//p.add(addNew);
+		//p.add(update);
+		panel.add(update);
 		d.add(panel);
 		d.setAnimationEnabled(true);
 		d.center();
 		d.show();
-
-		addNew.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				int row = itemList.getRowCount() + 1;
-
-				final ListBox category = new ListBox();
-
-				categoryService
-						.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
-							public void onFailure(Throwable caught) {
-
-							}
-
-							public void onSuccess(ArrayList<Category> result) {
-								int size = result.size();
-								for (int i = 0; i < size; i++)
-									category.addItem(result.get(i).getName());
-							}
-						});
-				itemList.setWidget(row, 0, category);
-				final ListBox service = new ListBox();
-				category.addChangeHandler(new ChangeHandler() {
-					public void onChange(ChangeEvent event) {
-						service.clear();
-						if (category.isItemSelected(0)) {
-							service.addItem("11");
-							service.addItem("12");
-						} else if (category.isItemSelected(1)) {
-							service.addItem("21");
-							service.addItem("22");
-						}
-					}
-				});
-
-				itemList.setWidget(row, 1, service);
-
-				final Button view_item = new Button("View");
-				itemList.setWidget(row, 2, view_item);
-				view_item.addClickHandler(new ClickHandler() {
-					public void onClick(ClickEvent event) {
-
-					}
-				});
-
-				final TextBox dueDate = new TextBox();
-				dueDate.setText("");
-				dueDate.setWidth("70px");
-				itemList.setWidget(row, 3, dueDate);
-
-				final TextArea details = new TextArea();
-				details.setText("");
-				details.setWidth("100px");
-				itemList.setWidget(row, 4, details);
-			}
-		});
-
+		
+		
+		
+		
 		update.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				
+				
 				d.hide();
 			}
 		});
@@ -794,6 +787,34 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		});
 	
 		attendList.setBorderWidth(1);
+		
+		final FlexTable itemList = new FlexTable();
+		itemList.setWidth("100%");
+		
+		
+		eventService.getServiceRequestsByEventId(eventId, new AsyncCallback<List<ServiceRequest>>() {
+			public void onFailure(Throwable caught)
+			{}
+			public void onSuccess(List<ServiceRequest> result)
+			{
+				int i=0;
+				for (ServiceRequest s : result)
+				{
+					itemList.setWidget(i, 0, new Label(s.getName()));
+					itemList.setWidget(i, 1, new Label(s.getDueDate().toString()));
+					itemList.setWidget(i, 2, new Label(s.getQuantity().toString()));
+					String status;
+					if (s.getStatus() == ServiceRequest.ACCEPTED)
+						status = "Accepted";
+					else if(s.getStatus() == ServiceRequest.PENDING)
+						status = "Pending";
+					else
+						status = "Igored";
+					itemList.setWidget(i, 3, new Label(status));
+				}
+			}
+		});
+		itemList.setBorderWidth(1);
 
 		FlexTable table = new FlexTable();
 		table.setWidget(0, 0, new HTML("<strong>Event Title:</strong>"));
@@ -814,6 +835,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		panel.add(table);
 		panel.add(new HTML("<strong>Attendee List:</strong>"));
 		panel.add(attendList);
+		panel.add(new HTML("<strong>Requested Services</strong>"));
+		panel.add(itemList);
 		Button close = new Button("Close");
 		panel.add(close);
 
