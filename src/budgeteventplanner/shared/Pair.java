@@ -1,24 +1,27 @@
 package budgeteventplanner.shared;
 
-public class Pair<V1, V2> {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-    private final V1 value1;
-    private final V2 value2;
+public class Pair<A, B> implements IsSerializable{
 
-    public Pair(V1 value1, V2 value2) {
-        this .value1 = value1;
-        this .value2 = value2;
+    private final A value1;
+    private final B value2;
+    
+    public Pair(A value1, B value2) {
+        this.value1 = value1;
+        this.value2 = value2;
     }
 
-    public V1 getValue1() {
+    public A getA() {
         return value1;
     }
 
-    public V2 getValue2() {
+    public B getB() {
         return value2;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public boolean equals(Object o) {
         if (this  == o) {
             return true;

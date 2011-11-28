@@ -1,6 +1,7 @@
 package budgeteventplanner.server;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import budgeteventplanner.client.BudgetService;
 import budgeteventplanner.client.entity.Budget;
@@ -8,8 +9,9 @@ import budgeteventplanner.client.entity.BudgetItem;
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pair;
 
-import com.google.appengine.repackaged.com.google.common.base.Pair;
+import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -63,8 +65,8 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public ArrayList<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
-		ArrayList<Pair<String, Double>> list = new ArrayList<Pair<String, Double>>();
+	public List<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
+		ArrayList<Pair<String, Double>> list = Lists.newArrayList();
 		Objectify ofy = ObjectifyService.begin();
 		Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("eventId", eventId);
 		for (ServiceRequest request : queryServiceRequest) {
