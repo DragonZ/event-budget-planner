@@ -5,8 +5,6 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
@@ -24,6 +22,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -47,7 +46,7 @@ public class VendorHomePage implements EntryPoint {
 
   private final VendorServiceAsync vendorServiceProvider = GWT.create(VendorService.class);
 
-  private static final Logger log = Logger.getLogger(VendorHomePage.class.getName());
+  //private static final Logger log = Logger.getLogger(VendorHomePage.class.getName());
 
   /*
    * (non-Javadoc)
@@ -120,8 +119,6 @@ public class VendorHomePage implements EntryPoint {
     // initializeServiceTable(); //new method to initialize the service
     // table
     refreshExistingService();
-    refreshExistingService();
-    refreshExistingService();
 
     vendorPage.add(eventFolders, DockPanel.WEST);
     vendorPage.add(events, DockPanel.EAST);
@@ -188,24 +185,6 @@ public class VendorHomePage implements EntryPoint {
 
         });
 
-        // refresh the table
-
-        // RootPanel.get("ZhenLong").setVisible(false);
-
-        // int oldRows = existingService
-        // .getRowCount();
-        // int newRows = oldRows + 1;
-        // while(oldRows != newRows)
-        // {
-        // refreshExistingService();
-        // oldRows = existingService
-        // .getRowCount();
-        // }
-
-        // RootPanel.get("ZhenLong").setVisible(true);
-
-        // TODO refresh
-
       }
     });
 
@@ -240,38 +219,6 @@ public class VendorHomePage implements EntryPoint {
 
   }
 
-  // TODO may need to be removed
-  public void initializeServiceTable() {
-    // get data from the service, list the existing services
-    existingService.getColumnFormatter().setWidth(0, "200px");
-    existingService.getColumnFormatter().setWidth(1, "350px");
-    existingService.getColumnFormatter().setWidth(2, "650px");
-    existingService.getColumnFormatter().setWidth(3, "150px");
-    existingService.getColumnFormatter().setWidth(4, "150px");
-    existingService.setWidget(0, 0, new Label("Category"));
-    existingService.setWidget(0, 1, new Label("Service"));
-    existingService.setWidget(0, 2, new Label("Description"));
-    existingService.setWidget(0, 3, new Label("Price"));
-    existingService.setWidget(0, 4, new Label("Option"));
-
-    refreshExistingService();
-  }
-
-  private String categoryFromidToname(String categoryID) {
-    categoryService.getCategoryName(categoryID, new AsyncCallback<String>() {
-      @Override
-      public void onFailure(Throwable caught) {
-        new DialogBox().setText("Remote Procedure Call - Failure");
-      }
-
-      @Override
-      public void onSuccess(String result) {
-        categoryName = result;
-
-      }
-    });
-    return categoryName;
-  }
 
   @SuppressWarnings("deprecation")
   public void refreshExistingService() {
@@ -353,31 +300,11 @@ public class VendorHomePage implements EntryPoint {
                           RootPanel.get("ZhenLong").setVisible(true);
                         }
                       });
-
-                  // RootPanel.get("ZhenLong")
-                  // .setVisible(false);
-
-                  // refreshExistingService();
-
-                  // RootPanel.get("ZhenLong")
-                  // .setVisible(true);Entry
                 }
               });
             }
           }
         });
-
-    // a.setText(displayCategoryID[2]);
-    // a.show();
-    // initialize category column here
-    // log.warning(deleteServiceID[5]);
-    // for(int i = 0; i < displayCategoryID.length; i++)
-    // {
-    // new DialogBox()
-    // .setText("Remote Procedure Call - Failure");
-    // existingService.setWidget(i + 1, 0, new
-    // Label(categoryFromidToname(displayCategoryID[i])));
-    // }
 
   }
 
@@ -438,8 +365,8 @@ public class VendorHomePage implements EntryPoint {
                   serviceRequestID.add(result.get(i).getB().getRequestId());
                 }
 
-                events.setWidget(0, 0, new Label("Events"));
-                events.setWidget(0, 3, new Label("Options"));
+                events.setWidget(0, 0, new HTML("<b>Requests</b>"));
+                events.setWidget(0, 3, new HTML("<b>Options</b>"));
                 for (int i = 0; i < result.size(); i++) {
                   events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
@@ -475,12 +402,11 @@ public class VendorHomePage implements EntryPoint {
                       VerticalPanel dialogVPanel = new VerticalPanel();
                       dialogVPanel.addStyleName("dialogVPanel");
 
-                      dialogVPanel.add(new Label("Request Service Name:" + "\n" + requestService));
-                      dialogVPanel.add(new Label());
-                      dialogVPanel.add(new Label("\n"));
-                      dialogVPanel.add(new Label("Quantity:" + requestQuatity + "\t" + "Due Date: " + requestDate));
-                      dialogVPanel.add(new Label("\n"));
-                      dialogVPanel.add(new Label("Detail: "));
+                      dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
+                      dialogVPanel.add(new HTML("<br>"));
+                      dialogVPanel.add(new HTML("<b>Detail: </b>"));
                       dialogVPanel.add(new Label(requestName));
                       
                       // TODO display request
@@ -587,16 +513,18 @@ public class VendorHomePage implements EntryPoint {
                 vendorPage.setBorderWidth(1);
                 // border display
 
-                events.setWidget(0, 0, new Label("Events"));
-                events.setWidget(0, 1, new Label("Options"));
+                events.setWidget(0, 0, new HTML("<b>Requests</b>"));
+                events.setWidget(0, 1, new HTML("<b>Options</b>"));
                 for (int i = 0; i < result.size(); i++) {
                   events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
                   viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
 
+                  final String requestService = result.get(i).getA();
                   final String requestName = result.get(i).getB().getName();
                   final String requestDate = result.get(i).getB().getDueDate().toString();
+                  final String requestQuatity = result.get(i).getB().getQuantity().toString();
                   // listener add
                   viewHyperlink[i].addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -618,8 +546,12 @@ public class VendorHomePage implements EntryPoint {
                       VerticalPanel dialogVPanel = new VerticalPanel();
                       dialogVPanel.addStyleName("dialogVPanel");
 
+                      dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
+                      dialogVPanel.add(new HTML("<br>"));
+                      dialogVPanel.add(new HTML("<b>Detail: </b>"));
                       dialogVPanel.add(new Label(requestName));
-                      dialogVPanel.add(new Label(requestDate));
                       // TODO display request
                       // detail info
                       dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -665,16 +597,18 @@ public class VendorHomePage implements EntryPoint {
                 vendorPage.setBorderWidth(1);
                 // border display
 
-                events.setWidget(0, 0, new Label("Events"));
-                events.setWidget(0, 1, new Label("Options"));
+                events.setWidget(0, 0, new HTML("<b>Requests</b>"));
+                events.setWidget(0, 1, new HTML("<b>Options</b>"));
                 for (int i = 0; i < result.size(); i++) {
                   events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
                   viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
 
+                  final String requestService = result.get(i).getA();
                   final String requestName = result.get(i).getB().getName();
                   final String requestDate = result.get(i).getB().getDueDate().toString();
+                  final String requestQuatity = result.get(i).getB().getQuantity().toString();
                   // listener add
                   viewHyperlink[i].addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -696,8 +630,12 @@ public class VendorHomePage implements EntryPoint {
                       VerticalPanel dialogVPanel = new VerticalPanel();
                       dialogVPanel.addStyleName("dialogVPanel");
 
+                      dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
+                      dialogVPanel.add(new HTML("<br>"));
+                      dialogVPanel.add(new HTML("<b>Detail: </b>"));
                       dialogVPanel.add(new Label(requestName));
-                      dialogVPanel.add(new Label(requestDate));
                       // TODO display request
                       // detail info
                       dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -721,118 +659,9 @@ public class VendorHomePage implements EntryPoint {
               }
             });
 
-        // // 2 buttons: view/accept
-        // events.clear();
-        // // 2 buttons: view/ignore
-        // // 3 hyberlinks: view/accept/ignore
-        // // read from sever the number of entries
-        // acceptHyperlink = new Hyperlink[30];
-        // // ignoreHyperlink = new Hyperlink[3];
-        // viewHyperlink = new Hyperlink[30];
-        //
-        // // ----------------
-        // vendorPage.setBorderWidth(1);
-        // // border display
-        //
-        // Date today = new Date();
-        // // Event name
-        //
-        // // prints Tue Dec 18 12:01:26 GMT-500 2007 in the default
-        // // locale.
-        // // GWT.log(today.toString(), null);
-        // final Label[] a = new Label[30];
-        // for (int i = 0; i < 30; i++)
-        // a[i] = new Label(today.toString());
-        //
-        // events.setWidget(0, 0, new Label("Events"));
-        // events.setWidget(0, 2, new Label("Options"));
-        // // events.setText(0, 2, "Events");
-        // // events.setText(0, 3, "Events");
-        // for (int i = 0; i < 30; i++) {
-        // events.setWidget(i + 1, 0, a[i]);
-        // events.getCellFormatter().setWidth(i, 0, "90%");
-        // viewHyperlink[i] = new Hyperlink("View",
-        // Integer.toString(i));
-        // // ignoreHyperlink[i] = new Hyperlink("ignore", "");
-        // acceptHyperlink[i] = new Hyperlink("Accept",
-        // Integer.toString(i));
-        // events.setWidget(i + 1, 1, viewHyperlink[i]);
-        // events.setWidget(i + 1, 2, acceptHyperlink[i]);
-        // // events.setWidget(i+1, 3, ignoreHyperlink[i]);
-        //
-        // // listener add
-        // viewHyperlink[i].addClickHandler(new ClickHandler() {
-        // public void onClick(ClickEvent event) {
-        // int i;
-        // for (i = 0; i < viewHyperlink.length; i++) {
-        // if (event.getSource() == viewHyperlink[i]) {
-        // break;
-        // }
-        // }
-        //
-        // // pop up the current event info
-        // final DialogBox currentEvent = new DialogBox();
-        // // .setWidget(a[i]);
-        // currentEvent.setAnimationEnabled(true);
-        // final Button closeButton = new Button("Close");
-        // closeButton.getElement().setId("closeButton");
-        // // final Label textToServerLabel = new Label();
-        // // final HTML serverResponseLabel = new HTML();
-        // VerticalPanel dialogVPanel = new VerticalPanel();
-        // dialogVPanel.addStyleName("dialogVPanel");
-        // dialogVPanel.add(new Label(a[i].getText()));
-        // // dialogVPanel.add(textToServerLabel);
-        // // dialogVPanel.add(new
-        // // HTML("<br><b>Server replies:</b>"));
-        // // dialogVPanel.add(serverResponseLabel);
-        // dialogVPanel
-        // .setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-        // dialogVPanel.add(closeButton);
-        // currentEvent.setWidget(dialogVPanel);
-        //
-        // // Add a handler to close the DialogBox
-        // closeButton.addClickHandler(new ClickHandler() {
-        // public void onClick(ClickEvent event) {
-        // currentEvent.hide();
-        // // sendButton.setEnabled(true);
-        // // sendButton.setFocus(true);
-        // }
-        // });
-        //
-        // currentEvent.center();
-        //
-        // }
-        // }); // view listener
-        //
-        // acceptHyperlink[i].addClickHandler(new ClickHandler() {
-        // public void onClick(ClickEvent event) {
-        // int i;
-        // for (i = 0; i < events.getRowCount(); i++) {
-        // if (event.getSource().equals(
-        // events.getWidget(i, 2))) {
-        // break;
-        // }
-        // }// do we need this loop? one listener only detect
-        // // one hyper;ink
-        //
-        // // move to accepted folder
-        // // remove from pending folder
-        // // communication to server, inform the event manager
-        // // re-get the list and refresh
-        // events.removeRow(i);
-        // }
-        // }); // accept listener
-        //
-        // }
-        // // hyberlinks listeners
-        // // ----------------
       }
     }
   }
 
-  public void requestTableRefresh(int status) {
-    // TODO
-    ;// receive data from server and refresh the entire table
-  }
 
 }
