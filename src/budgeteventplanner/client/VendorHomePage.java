@@ -412,7 +412,7 @@ public class VendorHomePage implements EntryPoint {
 
       if (tmp == pendingEvent) {
         vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.PENDING,
-            new AsyncCallback<List<ServiceRequest>>() {
+            new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
               public void onFailure(Throwable caught) {
@@ -421,7 +421,7 @@ public class VendorHomePage implements EntryPoint {
 
               @SuppressWarnings("deprecation")
               @Override
-              public void onSuccess(List<ServiceRequest> result) {
+              public void onSuccess(List<Pair<String, ServiceRequest>> result) {
                 events.clear();
                 // 3 hyberlinks: view/accept/ignore
                 // read from sever the number of entries
@@ -435,13 +435,13 @@ public class VendorHomePage implements EntryPoint {
                 // border display
 
                 for (int i = 0; i < result.size(); i++) {
-                  serviceRequestID.add(result.get(i).getRequestId());
+                  serviceRequestID.add(result.get(i).getB().getRequestId());
                 }
 
                 events.setWidget(0, 0, new Label("Events"));
                 events.setWidget(0, 3, new Label("Options"));
                 for (int i = 0; i < result.size(); i++) {
-                  events.setWidget(i + 1, 0, new Label(result.get(i).getName()));
+                  events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
                   viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
                   ignoreHyperlink[i] = new Hyperlink("Ignore", Integer.toString(i));
@@ -449,9 +449,11 @@ public class VendorHomePage implements EntryPoint {
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
                   events.setWidget(i + 1, 2, acceptHyperlink[i]);
                   events.setWidget(i + 1, 3, ignoreHyperlink[i]);
-
-                  final String requestName = result.get(i).getName();
-                  final String requestDate = result.get(i).getDueDate().toString();
+                  
+                  final String requestService = result.get(i).getA();
+                  final String requestName = result.get(i).getB().getName();
+                  final String requestDate = result.get(i).getB().getDueDate().toString();
+                  final String requestQuatity = result.get(i).getB().getQuantity().toString();
                   // listener add
                   viewHyperlink[i].addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -473,8 +475,14 @@ public class VendorHomePage implements EntryPoint {
                       VerticalPanel dialogVPanel = new VerticalPanel();
                       dialogVPanel.addStyleName("dialogVPanel");
 
+                      dialogVPanel.add(new Label("Request Service Name:" + "\n" + requestService));
+                      dialogVPanel.add(new Label());
+                      dialogVPanel.add(new Label("\n"));
+                      dialogVPanel.add(new Label("Quantity:" + requestQuatity + "\t" + "Due Date: " + requestDate));
+                      dialogVPanel.add(new Label("\n"));
+                      dialogVPanel.add(new Label("Detail: "));
                       dialogVPanel.add(new Label(requestName));
-                      dialogVPanel.add(new Label(requestDate));
+                      
                       // TODO display request
                       // detail info
                       dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -560,15 +568,16 @@ public class VendorHomePage implements EntryPoint {
 
       else if (tmp == acceptedEvent) {
         vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.ACCEPTED,
-            new AsyncCallback<List<ServiceRequest>>() {
+            new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
               public void onFailure(Throwable caught) {
 
               }
 
-              @Override
-              public void onSuccess(List<ServiceRequest> result) {
+              @SuppressWarnings("deprecation")
+			@Override
+              public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 
                 events.clear();
                 // 2 buttons: view(/ignore)
@@ -579,15 +588,15 @@ public class VendorHomePage implements EntryPoint {
                 // border display
 
                 events.setWidget(0, 0, new Label("Events"));
-                events.setWidget(0, 3, new Label("Options"));
+                events.setWidget(0, 1, new Label("Options"));
                 for (int i = 0; i < result.size(); i++) {
-                  events.setWidget(i + 1, 0, new Label(result.get(i).getName()));
+                  events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
                   viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
 
-                  final String requestName = result.get(i).getName();
-                  final String requestDate = result.get(i).getDueDate().toString();
+                  final String requestName = result.get(i).getB().getName();
+                  final String requestDate = result.get(i).getB().getDueDate().toString();
                   // listener add
                   viewHyperlink[i].addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -637,7 +646,7 @@ public class VendorHomePage implements EntryPoint {
       } else if (tmp == ignoredEvent) {
 
         vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.IGNORED,
-            new AsyncCallback<List<ServiceRequest>>() {
+            new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
               public void onFailure(Throwable caught) {
@@ -646,7 +655,7 @@ public class VendorHomePage implements EntryPoint {
 
               @SuppressWarnings("deprecation")
               @Override
-              public void onSuccess(List<ServiceRequest> result) {
+              public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 
                 events.clear();
                 // 2 buttons: view(/accept)
@@ -657,15 +666,15 @@ public class VendorHomePage implements EntryPoint {
                 // border display
 
                 events.setWidget(0, 0, new Label("Events"));
-                events.setWidget(0, 3, new Label("Options"));
+                events.setWidget(0, 1, new Label("Options"));
                 for (int i = 0; i < result.size(); i++) {
-                  events.setWidget(i + 1, 0, new Label(result.get(i).getName()));
+                  events.setWidget(i + 1, 0, new Label(result.get(i).getB().getName()));
                   events.getCellFormatter().setWidth(i, 0, "90%");
                   viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
 
-                  final String requestName = result.get(i).getName();
-                  final String requestDate = result.get(i).getDueDate().toString();
+                  final String requestName = result.get(i).getB().getName();
+                  final String requestDate = result.get(i).getB().getDueDate().toString();
                   // listener add
                   viewHyperlink[i].addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
