@@ -39,9 +39,9 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
 
 
   @Override
-  public List<ServiceRequest> getServiceRequestByStatus(String vendorId, Integer status) {
+  public List<Pair<String, ServiceRequest>> getServiceRequestByStatus(String vendorId, Integer status) {
     Objectify ofy = ObjectifyService.begin();
-    List<ServiceRequest> result = Lists.newArrayList();
+    List<Pair<String, ServiceRequest>> result = Lists.newArrayList();
 
     Query<Service> queryService = ofy.query(Service.class).filter("vendorId", vendorId);
     for (Service s : queryService) {
@@ -49,7 +49,7 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
           "serviceId", s.getServiceId());
       for (ServiceRequest request : queryServiceRequest) {
         if (request.getStatus().equals(status)) {
-          result.add(request);
+          result.add(new Pair<String, ServiceRequest>(s.getName(), request));
         }
       }
     }

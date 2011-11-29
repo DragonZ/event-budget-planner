@@ -18,7 +18,7 @@ public interface VendorServiceAsync {
 			AsyncCallback<List<Pair<String, Service>>> callback);
 
 	void getServiceRequestByStatus(String vendorId, Integer status,
-			AsyncCallback<List<ServiceRequest>> callback);
+			AsyncCallback<List<Pair<String, ServiceRequest>>> callback);
 
 	void updateServiceRequestStatus(String serviceRequestId, Integer status,
 			AsyncCallback<Void> callback);

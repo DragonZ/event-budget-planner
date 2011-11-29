@@ -19,7 +19,7 @@ public interface VendorService extends RemoteService {
 
 	List<Pair<String, Service>> getServiceByVendorId(String vendorId);
 
-	List<ServiceRequest> getServiceRequestByStatus(String vendorId,
+	List<Pair<String, ServiceRequest>> getServiceRequestByStatus(String vendorId,
 			Integer status);
 
 	void updateServiceRequestStatus(String serviceRequestId, Integer status);
