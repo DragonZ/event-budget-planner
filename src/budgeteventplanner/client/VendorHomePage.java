@@ -95,9 +95,9 @@ public class VendorHomePage implements EntryPoint {
     addPanel = new HorizontalPanel(); // nested panel in the service panel
 
     eventFolders = new Tree(); // vendor home page folders
-    pendingEvent = new TreeItem("Pending Events"); // pending
-    acceptedEvent = new TreeItem("Accepted Events");// accepted
-    ignoredEvent = new TreeItem("Ignored Events"); // ignored
+    pendingEvent = new TreeItem("Pending Requests"); // pending
+    acceptedEvent = new TreeItem("Accepted Requests");// accepted
+    ignoredEvent = new TreeItem("Ignored Requests"); // ignored
     // eventHistory = new TreeItem("Events History");
     // CAN DO
 
@@ -118,6 +118,8 @@ public class VendorHomePage implements EntryPoint {
     existingService = new FlexTable(); // table for service management page
     // initializeServiceTable(); //new method to initialize the service
     // table
+    refreshExistingService();
+    refreshExistingService();
     refreshExistingService();
 
     vendorPage.add(eventFolders, DockPanel.WEST);
