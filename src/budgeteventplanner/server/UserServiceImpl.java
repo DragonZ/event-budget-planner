@@ -3,6 +3,13 @@ package budgeteventplanner.server;
 import java.security.NoSuchAlgorithmException;
 
 import budgeteventplanner.client.UserService;
+import budgeteventplanner.client.entity.Attendee;
+import budgeteventplanner.client.entity.Budget;
+import budgeteventplanner.client.entity.BudgetItem;
+import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.client.entity.Event;
+import budgeteventplanner.client.entity.Service;
+import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.client.entity.User;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -12,8 +19,15 @@ import com.googlecode.objectify.ObjectifyService;
 @SuppressWarnings("serial")
 public class UserServiceImpl extends RemoteServiceServlet implements
 		UserService {
-	public UserServiceImpl() {
+	static {
 		ObjectifyService.register(User.class);
+    ObjectifyService.register(Service.class);
+    ObjectifyService.register(ServiceRequest.class);
+    ObjectifyService.register(Event.class);
+    ObjectifyService.register(Category.class);
+    ObjectifyService.register(Budget.class);
+    ObjectifyService.register(BudgetItem.class);
+    ObjectifyService.register(Attendee.class);
 	}
 
 	@Override

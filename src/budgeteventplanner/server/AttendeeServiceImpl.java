@@ -28,8 +28,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 
 	public AttendeeServiceImpl() {
 		super();
-		ObjectifyService.register(Attendee.class);
-		ObjectifyService.register(Event.class);
+		
 	}
 
 	@Override

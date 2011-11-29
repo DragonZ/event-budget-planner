@@ -21,8 +21,8 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 		EventService {
 	public EventServiceImpl() {
 		super();
-		ObjectifyService.register(Event.class);
-		ObjectifyService.register(ServiceRequest.class);
+//		ObjectifyService.register(Event.class);
+//		ObjectifyService.register(ServiceRequest.class);
 	}
 
 	@Override
