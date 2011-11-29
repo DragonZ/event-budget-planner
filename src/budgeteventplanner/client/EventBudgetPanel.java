@@ -49,6 +49,9 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	private final EventServiceAsync eventService = GWT
 			.create(EventService.class);
 	private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
+	
+	private final ArrayList<Category> categoryList = new ArrayList<Category>();
+	private final ArrayList<ArrayList<Service>> serviceList = new ArrayList<ArrayList<Service>>();
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -180,6 +183,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
 
+		ServiceRequestSave();
+		
 		eventService.getEventsByOrganizerIdAndStatus(organizerId,Event.ACTIVE,
 				new AsyncCallback<List<Event>>() {
 					public void onFailure(Throwable caught) {
@@ -515,6 +520,44 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		mother.add(panel);
 		
 	}
+	
+	public void ServiceRequestSave(){
+
+		categoryService
+				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+					public void onFailure(Throwable caught) {
+						//System.out.print("fail\n");
+
+					}
+
+					public void onSuccess(ArrayList<Category> result) {
+						//System.out.print("success\n");
+						for (Category c : result)
+						{
+
+							categoryList.add(c);
+						}
+					}
+				});
+		int total = categoryList.size();
+
+		for (int i=0;i<total;i++){
+			eventService.getServicesByCategoryId(categoryList.get(i).getCategoryId(), new AsyncCallback<List<Service>>(){
+				public void onFailure(Throwable caught)
+				{
+				}
+				public void onSuccess(List<Service> result)
+				{
+					//for (Service s: result)
+					//{
+						final ArrayList<Service> tempServiceList = new ArrayList<Service>(result);
+						serviceList.add(0, tempServiceList);
+					//}
+				}
+			});
+		}
+	}
+	
 	public void item_pop_up(String eventId) {
 		final DialogBox d = new DialogBox();
 		//d.setSize("300px", "100%");
@@ -539,8 +582,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		itemList.getColumnFormatter().setWidth(5, "20%");
 		
 		//sdfasdfasdfasdfasdfasdfasdf
-		final ArrayList<Category> categoryList = new ArrayList<Category>();
-		final ArrayList<Service> serviceList = new ArrayList<Service>();
+		//final ArrayList<Category> categoryList = new ArrayList<Category>();
+		//final ArrayList<Service> serviceList = new ArrayList<Service>();
 		
 		
 		final ListBox category = new ListBox();
@@ -565,28 +608,50 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		category.addChangeHandler(new ChangeHandler() {
 			public void onChange(ChangeEvent event) {
 				service.clear();
+				//service.addItem("wori");
 				int total = category.getItemCount();
 				for (int i=0;i<total;i++)
 				{
 					if (category.isItemSelected(i))
 					{
-						eventService.getServicesByCategoryId(categoryList.get(i).getCategoryId(), new AsyncCallback<List<Service>>(){
-							public void onFailure(Throwable caught)
-							{}
-							public void onSuccess(List<Service> result)
-							{
-								for (Service s: result)
-								{
-									serviceList.add(s);
-									service.addItem(s.getName());
-								}
-							}
-						});
+						final ArrayList<Service> tempService = new ArrayList<Service>(serviceList.get(i));
+						for (Service s: tempService)
+						{
+							//service.addItem("success");
+							service.addItem(s.getName());
+						}
+						//service.addItem(Integer.toString(i));
+						
 						break;
 					}
 				}
 			}
-		});	
+		});
+//		category.addChangeHandler(new ChangeHandler() {
+//			public void onChange(ChangeEvent event) {
+//				service.clear();
+//				int total = category.getItemCount();
+//				for (int i=0;i<total;i++)
+//				{
+//					if (category.isItemSelected(i))
+//					{
+//						eventService.getServicesByCategoryId(categoryList.get(i).getCategoryId(), new AsyncCallback<List<Service>>(){
+//							public void onFailure(Throwable caught)
+//							{}
+//							public void onSuccess(List<Service> result)
+//							{
+//								for (Service s: result)
+//								{
+//									serviceList.add(s);
+//									service.addItem(s.getName());
+//								}
+//							}
+//						});
+//						break;
+//					}
+//				}
+//			}
+//		});	
 		
 		
 		final TextBox dueDate = new TextBox();
