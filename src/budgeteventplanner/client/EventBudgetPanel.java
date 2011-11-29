@@ -538,7 +538,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		itemList.setWidget(0, 5, new HTML("<strong>Request Details</strong>"));
 		itemList.getColumnFormatter().setWidth(5, "20%");
 		
-		
+		//sdfasdfasdfasdfasdfasdfasdf
 		final ArrayList<Category> categoryList = new ArrayList<Category>();
 		final ArrayList<Service> serviceList = new ArrayList<Service>();
 		
