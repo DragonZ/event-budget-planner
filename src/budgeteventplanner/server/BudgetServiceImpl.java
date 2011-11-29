@@ -11,7 +11,7 @@ import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.shared.Pair;
 
-import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -22,7 +22,6 @@ import com.googlecode.objectify.Query;
 public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
 	public BudgetServiceImpl() {
-		super();
 		ObjectifyService.register(Budget.class);
 		ObjectifyService.register(BudgetItem.class);
 	}

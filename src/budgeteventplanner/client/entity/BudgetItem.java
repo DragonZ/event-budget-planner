@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
+import budgeteventplanner.shared.UUID;
+
 import com.googlecode.objectify.annotation.Entity;
 
 @SuppressWarnings("serial")
@@ -27,6 +29,7 @@ public class BudgetItem implements Serializable {
 
 		public Builder(String budgetId, String categoryId, Double limit) {
 			this.budgetItem = new BudgetItem();
+			this.budgetItem.budgetItemId = UUID.randomUUID();
 			this.budgetItem.budgetId = budgetId;
 			this.budgetItem.categoryId = categoryId;
 			this.budgetItem.limit = limit;
