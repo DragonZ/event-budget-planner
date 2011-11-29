@@ -274,8 +274,8 @@ public class BudgetEventPlanner implements EntryPoint {
 		final ListBox userType = new ListBox();
 		userType.addItem("Manager");
 		userType.addItem("Vendor");
-		userType.addItem("Attendee");
-		userType.addItem("Attendee2");
+//		userType.addItem("Attendee");
+//		userType.addItem("Attendee2");
 		final PasswordTextBox first_pw = new PasswordTextBox();
 		first_pw.setWidth("200px");
 		final PasswordTextBox second_pw = new PasswordTextBox();
