@@ -233,6 +233,12 @@ public class BudgetEventPlanner implements EntryPoint {
 									else if(result == 1){ // Vender
 										typeTurn = "ZhenLong";
 									}
+									else if(result == 2){ // Vender
+										typeTurn = "XuXuan";
+									}
+									else if(result == 3){ // Vender
+										typeTurn = "XuXuan2";
+									}
 									else{
 										exceptionBox.center();
 										clearButton.setFocus(true);
@@ -268,6 +274,8 @@ public class BudgetEventPlanner implements EntryPoint {
 		final ListBox userType = new ListBox();
 		userType.addItem("Manager");
 		userType.addItem("Vendor");
+		userType.addItem("Attendee");
+		userType.addItem("Attendee2");
 		final PasswordTextBox first_pw = new PasswordTextBox();
 		first_pw.setWidth("200px");
 		final PasswordTextBox second_pw = new PasswordTextBox();
