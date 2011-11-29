@@ -1,10 +1,10 @@
 package budgeteventplanner.client;
 
 import java.util.List;
-import java.util.Map.Entry;
 
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pair;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -15,7 +15,7 @@ public interface VendorServiceAsync {
 	void deleteService(String serviceId, AsyncCallback<Void> callback);
 
 	void getServiceByVendorId(String vendorId,
-			AsyncCallback<List<Entry<String, Service>>> callback);
+			AsyncCallback<List<Pair<String, Service>>> callback);
 
 	void getServiceRequestByStatus(String vendorId, Integer status,
 			AsyncCallback<List<ServiceRequest>> callback);

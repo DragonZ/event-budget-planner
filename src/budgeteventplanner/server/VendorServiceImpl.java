@@ -1,13 +1,12 @@
 package budgeteventplanner.server;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Map.Entry;
 
 import budgeteventplanner.client.VendorService;
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pair;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -67,15 +66,14 @@ public class VendorServiceImpl extends RemoteServiceServlet implements VendorSer
   }
 
   @Override
-  public List<Entry<String, Service>> getServiceByVendorId(String vendorId) {
+  public List<Pair<String, Service>> getServiceByVendorId(String vendorId) {
     Objectify ofy = ObjectifyService.begin();
-    List<Entry<String, Service>> list = Lists.newArrayList();
-    
+    List<Pair<String, Service>> list = Lists.newArrayList();
     Query<Service> q = ofy.query(Service.class).filter("vendorId", vendorId);
     for (Service service : q) {
       String categoryName = ofy.get(new Key<Category>(Category.class, service.getCategoryId()))
           .getName();
-      list.add(new SimpleEntry<String, Service>(categoryName, service));
+      list.add(new Pair<String, Service>(categoryName, service));
     }
     return list;
   }

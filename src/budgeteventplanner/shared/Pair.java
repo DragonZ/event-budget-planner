@@ -4,8 +4,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Pair<A, B> implements IsSerializable{
 
-    private final A value1;
-    private final B value2;
+    private A value1 = null;
+    private B value2 = null;
+    
+    public Pair() {}
     
     public Pair(A value1, B value2) {
         this.value1 = value1;

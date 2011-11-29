@@ -5,12 +5,13 @@ package budgeteventplanner.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pair;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -293,21 +294,21 @@ public class VendorHomePage implements EntryPoint {
     // a.setText("Remote Procedure Call - Failure");
     // a.show();
     vendorServiceProvider.getServiceByVendorId(userID,
-        new AsyncCallback<List<Entry<String, Service>>>() {
+        new AsyncCallback<List<Pair<String, Service>>>() {
           @Override
           public void onFailure(Throwable caught) {
             // TODO
           }
 
-          public void onSuccess(List<Entry<String, Service>> result) {
+          public void onSuccess(List<Pair<String, Service>> result) {
             deleteHyperlink = new Hyperlink[result.size()];
             deleteServiceID = new String[result.size()];
             displayCategoryID = new String[result.size()];
             // categoryList = new ArrayList<String>();
 
             for (int i = 0; i < result.size(); i++) {
-              deleteServiceID[i] = result.get(i).getValue().getServiceId();
-              displayCategoryID[i] = result.get(i).getValue().getCategoryId();
+              deleteServiceID[i] = result.get(i).getB().getServiceId();
+              displayCategoryID[i] = result.get(i).getB().getCategoryId();
               // categoryList.add(new
               // String(categoryFromidToname(result.get(i)
               // .getCategoryId())));
@@ -315,15 +316,15 @@ public class VendorHomePage implements EntryPoint {
 
             for (int i = 0; i < result.size(); i++) {
 
-              existingService.setWidget(i + 1, 0, new Label(result.get(i).getKey()));
+              existingService.setWidget(i + 1, 0, new Label(result.get(i).getA()));
               // category
               // name
 
               deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
-              existingService.setWidget(i + 1, 1, new Label(result.get(i).getValue().getName()));
-              existingService.setWidget(i + 1, 2, new Label(result.get(i).getValue()
+              existingService.setWidget(i + 1, 1, new Label(result.get(i).getB().getName()));
+              existingService.setWidget(i + 1, 2, new Label(result.get(i).getB()
                   .getDescription()));
-              existingService.setWidget(i + 1, 3, new Label(result.get(i).getValue().getPrice()
+              existingService.setWidget(i + 1, 3, new Label(result.get(i).getB().getPrice()
                   .toString()));
               existingService.setWidget(i + 1, 4, deleteHyperlink[i]);
 
@@ -359,7 +360,7 @@ public class VendorHomePage implements EntryPoint {
                   // refreshExistingService();
 
                   // RootPanel.get("ZhenLong")
-                  // .setVisible(true);
+                  // .setVisible(true);Entry
                 }
               });
             }
