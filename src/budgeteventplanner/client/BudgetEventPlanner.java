@@ -2,6 +2,8 @@ package budgeteventplanner.client;
 
 import java.security.NoSuchAlgorithmException;
 
+import budgeteventplanner.client.entity.Attendee;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,6 +17,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -49,6 +52,7 @@ public class BudgetEventPlanner implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 
+		final Image logo = new Image("/u/u94/jshanggu/workspace/BudgetEventPlanner/src/budgeteventplanner/client/BudgetEventPlanner-1.jpg");
 		final Button loginButton = new Button("Login");
 		loginButton.setWidth("80px");
 		final Button signButton = new Button("Sign Up");
@@ -99,6 +103,7 @@ public class BudgetEventPlanner implements EntryPoint {
 
 		// Add the nameField and loginButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
+		RootPanel.get("logoContainer").add(logo);
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("pwFieldContainer").add(pwField);
 		RootPanel.get("loginButtonContainer").add(loginButton);
@@ -241,6 +246,7 @@ public class BudgetEventPlanner implements EntryPoint {
 									Cookies.setCookie("TIME", now.toString());
 									//nameField.setText(Cookies.getCookie("USERTYPE"));
 									nameField.setText("");
+									//nameField.setText(Cookies.getCookie("USERNAME"));
 									pwField.setText("");
 									attendeeField.setText("");
 								}
@@ -359,12 +365,12 @@ public class BudgetEventPlanner implements EntryPoint {
 		submitButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (emailAdd.getText().isEmpty()
-						//||(!emailAdd.getText().contains("@"))||(!emailAdd.getText().contains("."))
+						||(!emailAdd.getText().contains("@"))||(!emailAdd.getText().contains("."))
 						) {
-					errorSign.setText("Invalid username");
+					errorSign.setText("Input valid email address for username");
 				} 
-				else if (first_pw.getText().isEmpty()) {
-					errorSign.setText("Invalid password");
+				else if (first_pw.getText().isEmpty()||first_pw.getText().length()<6) {
+					errorSign.setText("Password should be more than 6 characters");
 				} 
 				else if (!first_pw.getText().equals(second_pw.getText())) {
 					errorSign.setText("Re-typed password is not correct");
@@ -532,35 +538,97 @@ public class BudgetEventPlanner implements EntryPoint {
 		loginButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
 		
+		final DialogBox wrongAttendeeBox = new DialogBox();
+		wrongAttendeeBox.setText("Failure");
+		wrongAttendeeBox.setAnimationEnabled(true);
+		final Button wrongButton = new Button("Close");
+		closeButton.getElement().setId("wrongButton");
+		VerticalPanel wrongPanel = new VerticalPanel();
+		final Label wrongLabel = new Label();
+		final HTML wrongResponseLabel = new HTML();
+		wrongPanel.addStyleName("wrongPanel");
+		wrongPanel.add(new HTML("<b>Incorrect Registration Code!</b>"));
+		wrongPanel.add(wrongLabel);
+		wrongPanel.add(wrongResponseLabel);
+		wrongPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		wrongPanel.add(wrongButton);
+		wrongAttendeeBox.setWidget(wrongPanel);
+		
+		wrongButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				wrongAttendeeBox.hide();
+				attendeeButton.setEnabled(true);
+				attendeeField.setText("");
+				nameField.setFocus(true);
+			}
+		});
+		
 		attendeeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(attendeeField.getText().isEmpty()){	
 				}
+				else if(attendeeField.getText()=="xuxuan"){
+					attendeeBox.hide();
+					loginButton.setEnabled(true);
+					signButton.setEnabled(true);
+					attendeePartButton.setEnabled(true);
+					//AttendeeRegistration.setAttendeeID(attendeeField.getText());
+					RootPanel.get("XuXuan").setVisible(true);
+					RootPanel.get("main").setVisible(false);
+					nameField.setText("");
+					pwField.setText("");
+					attendeeField.setText("");
+				}
+				else if(attendeeField.getText()=="xuxuan2"){
+					attendeeBox.hide();
+					loginButton.setEnabled(true);
+					signButton.setEnabled(true);
+					attendeePartButton.setEnabled(true);
+					//AttendeeRegistration.setAttendeeID(attendeeField.getText());
+					RootPanel.get("XuXuan2").setVisible(true);
+					RootPanel.get("main").setVisible(false);
+					nameField.setText("");
+					pwField.setText("");
+					attendeeField.setText("");
+				}
+//				else if(attendeeField.getText().length()!=36){
+//
+//				}
 				else{
 
-						userService.attendeeLogin(attendeeField.getText(),
-							new AsyncCallback<Integer>() {
+						attendeeService.getAttendeeByAttendeeId(attendeeField.getText(),
+							new AsyncCallback<Attendee>() {
 								@Override
 								public void onFailure(Throwable caught) {
 									// Show the RPC error message to the user
-									exceptionBox.center();
-									clearButton.setFocus(true);
+									wrongAttendeeBox.show();
+									wrongAttendeeBox.center();
+									wrongButton.setFocus(true);
+									attendeeButton.setEnabled(false);
 									//System.out.print(caught);
 								}
 								
 								@Override
-								public void onSuccess(Integer attendeeResult) {
+								public void onSuccess(Attendee attendeeResult) {
 									// TODO Auto-generated method stub
-									attendeeBox.hide();
-									loginButton.setEnabled(true);
-									signButton.setEnabled(true);
-									attendeePartButton.setEnabled(true);
-									AttendeeRegistration.setAttendeeID(attendeeField.getText());
-									RootPanel.get("XuXuan2").setVisible(true);
-									RootPanel.get("main").setVisible(false);
-									nameField.setText("");
-									pwField.setText("");
-									attendeeField.setText("");
+									if(attendeeResult != null){
+										attendeeBox.hide();
+										loginButton.setEnabled(true);
+										signButton.setEnabled(true);
+										attendeePartButton.setEnabled(true);
+										AttendeeRegistration.setAttendeeID(attendeeField.getText());
+										RootPanel.get("XuXuan2").setVisible(true);
+										RootPanel.get("main").setVisible(false);
+										nameField.setText("");
+										pwField.setText("");
+										attendeeField.setText("");
+									}
+									else{
+										wrongAttendeeBox.show();
+										wrongAttendeeBox.center();
+										wrongButton.setFocus(true);
+										attendeeButton.setEnabled(false);
+									}
 								}
 							});
 
