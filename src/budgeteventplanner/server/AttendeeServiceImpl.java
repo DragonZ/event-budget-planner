@@ -48,9 +48,12 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		Objectify ofy = ObjectifyService.begin();
 		Query<Event> queryEvent = ofy.query(Event.class).filter("organizerId",
 				organizerId);
+		
 		ArrayList<Attendee> result = new ArrayList<Attendee>();
 
 		for (Event fetched : queryEvent) {
+			if(fetched.getStatus() != 0)
+				continue;
 			Query<Attendee> queryAttendee = ofy.query(Attendee.class).filter(
 					"eventId", fetched.getEventId());
 			result.addAll(queryAttendee.list());
