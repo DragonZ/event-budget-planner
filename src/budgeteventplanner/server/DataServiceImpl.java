@@ -14,8 +14,7 @@ import com.googlecode.objectify.Query;
 public class DataServiceImpl extends RemoteServiceServlet implements
 		DataService {
 
-	public DataServiceImpl() {
-		super();
+	static {
 		ObjectifyService.register(TestEntity.class);
 	}
 

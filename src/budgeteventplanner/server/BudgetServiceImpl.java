@@ -1,6 +1,5 @@
 package budgeteventplanner.server;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import budgeteventplanner.client.BudgetService;
@@ -22,11 +21,12 @@ import com.googlecode.objectify.Query;
 public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
 
-	public BudgetServiceImpl() {
+	static {
 		try {
 			ObjectifyService.register(Budget.class);
 			ObjectifyService.register(BudgetItem.class);
 			ObjectifyService.register(Service.class);
+			ObjectifyService.register(ServiceRequest.class);
 			ObjectifyService.register(Category.class);
 		} catch (Exception e) {
 		}
@@ -77,7 +77,7 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
-		ArrayList<Pair<String, Double>> list = Lists.newArrayList();
+		List<Pair<String, Double>> list = Lists.newArrayList();
 		Objectify ofy = ObjectifyService.begin();
 		Query<ServiceRequest> queryServiceRequest = ofy.query(
 				ServiceRequest.class).filter("eventId", eventId);
@@ -93,5 +93,20 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 			list.add(new Pair<String, Double>(categoryName, price));
 		}
 		return list;
+	}
+	
+	@Override
+	public List<Pair<String, Double>> getLimitsByBudgetId(String budgetId) {
+	  List<Pair<String, Double>> list = Lists.newArrayList();
+	  Objectify ofy = ObjectifyService.begin();
+	  Query<BudgetItem> queryBudgetItem = ofy.query(
+	      BudgetItem.class).filter("budgetId", budgetId);
+	    for (BudgetItem item : queryBudgetItem) {
+	      String categoryName = ofy.get(
+	          new Key<Category>(Category.class, item.getCategoryId())).getName();
+	      Double limit = item.getLimit();
+	      list.add(new Pair<String, Double>(categoryName, limit));
+	    }
+	    return list;
 	}
 }

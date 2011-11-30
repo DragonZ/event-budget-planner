@@ -1,6 +1,5 @@
 package budgeteventplanner.server;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +18,7 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class EventServiceImpl extends RemoteServiceServlet implements
 		EventService {
-	public EventServiceImpl() {
+	static {
 		try {
 			ObjectifyService.register(Attendee.class);
 			ObjectifyService.register(Event.class);

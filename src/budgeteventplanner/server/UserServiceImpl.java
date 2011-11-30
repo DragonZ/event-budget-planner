@@ -12,7 +12,7 @@ import com.googlecode.objectify.ObjectifyService;
 @SuppressWarnings("serial")
 public class UserServiceImpl extends RemoteServiceServlet implements
 		UserService {
-	public UserServiceImpl() {
+	static {
 		try {
 			ObjectifyService.register(User.class);
 		} catch (Exception e) {

@@ -15,7 +15,7 @@ import com.googlecode.objectify.Query;
 public class CategoryServiceImpl extends RemoteServiceServlet implements
 		CategoryService {
 
-	public CategoryServiceImpl() {
+	static {
 		try {
 			ObjectifyService.register(Category.class);
 		} catch (Exception e) {

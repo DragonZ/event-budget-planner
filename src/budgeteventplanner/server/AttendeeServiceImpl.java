@@ -26,7 +26,7 @@ import com.googlecode.objectify.Query;
 public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		AttendeeService {
 
-	public AttendeeServiceImpl() {
+	static {
 		try {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Attendee.class);

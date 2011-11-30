@@ -18,11 +18,11 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class VendorServiceImpl extends RemoteServiceServlet implements
 		VendorService {
-	public VendorServiceImpl() {
+	static {
 		try {
+		  ObjectifyService.register(Service.class);
+      ObjectifyService.register(ServiceRequest.class);
 			ObjectifyService.register(Category.class);
-			ObjectifyService.register(Service.class);
-			ObjectifyService.register(ServiceRequest.class);
 		} catch (Exception e) {
 		}
 	}
