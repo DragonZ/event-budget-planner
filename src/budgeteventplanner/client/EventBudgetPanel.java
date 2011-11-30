@@ -534,7 +534,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 						//System.out.print("success\n");
 						for (Category c : result)
 						{
-
 							categoryList.add(c);
 						}
 					}
@@ -551,7 +550,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 					//for (Service s: result)
 					//{
 						final ArrayList<Service> tempServiceList = new ArrayList<Service>(result);
-						serviceList.add(0, tempServiceList);
+						serviceList.add(tempServiceList);
 					//}
 				}
 			});
@@ -560,7 +559,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	
 	public void item_pop_up(String eventId) {
 		final DialogBox d = new DialogBox();
-		//d.setSize("300px", "100%");
+		//d.setSize("100%", "100%");
 		VerticalPanel panel = new VerticalPanel();
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		Button close = new Button("Close");
@@ -588,21 +587,12 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		final ListBox category = new ListBox();
 
-		categoryService
-				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
-					public void onFailure(Throwable caught) {
-
-					}
-
-					public void onSuccess(ArrayList<Category> result) {
-						for (Category c : result)
-						{
-							categoryList.add(c);
-							category.addItem(c.getName());
-						}
-					}
-				});
-		
+		for (Category c : categoryList){category.addItem(c.getName());}
+		for (Service s : serviceList.get(2)){category.addItem(s.getName());}
+//		int total = category.getItemCount();
+//		for (int i=0; i<total; i++){
+//			category.addItem(categoryList.get(i).getName());
+//		}
 
 		final ListBox service = new ListBox();
 		category.addChangeHandler(new ChangeHandler() {
@@ -614,8 +604,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 				{
 					if (category.isItemSelected(i))
 					{
-						final ArrayList<Service> tempService = new ArrayList<Service>(serviceList.get(i));
-						for (Service s: tempService)
+						//final ArrayList<Service> tempService = new ArrayList<Service>(serviceList.get(i));
+						for (Service s: serviceList.get(2))
 						{
 							//service.addItem("success");
 							service.addItem(s.getName());
