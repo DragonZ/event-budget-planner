@@ -20,9 +20,10 @@ import com.googlecode.objectify.Query;
 public class EventServiceImpl extends RemoteServiceServlet implements
 		EventService {
 	public EventServiceImpl() {
-		super();
-//		ObjectifyService.register(Event.class);
-//		ObjectifyService.register(ServiceRequest.class);
+		ObjectifyService.register(Attendee.class);
+		ObjectifyService.register(Event.class);
+		ObjectifyService.register(Service.class);
+		ObjectifyService.register(ServiceRequest.class);
 	}
 
 	@Override

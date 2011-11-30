@@ -17,7 +17,7 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 
 	public CategoryServiceImpl() {
 		super();
-//		ObjectifyService.register(Category.class);
+		ObjectifyService.register(Category.class);
 	}
 
 	@Override

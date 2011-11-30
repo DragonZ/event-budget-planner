@@ -23,8 +23,10 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
   
 	public BudgetServiceImpl() {
-//		ObjectifyService.register(Budget.class);
-//		ObjectifyService.register(BudgetItem.class);
+		ObjectifyService.register(Budget.class);
+		ObjectifyService.register(BudgetItem.class);
+		ObjectifyService.register(Service.class);
+		ObjectifyService.register(Category.class);
 	}
 
 	@Override
