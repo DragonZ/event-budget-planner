@@ -52,7 +52,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		ArrayList<Attendee> result = new ArrayList<Attendee>();
 
 		for (Event fetched : queryEvent) {
-			if(fetched.getStatus().equals(new Integer(0)))
+			if(!fetched.getStatus().equals(Integer.valueOf(0)))
 				continue;
 			Query<Attendee> queryAttendee = ofy.query(Attendee.class).filter(
 					"eventId", fetched.getEventId());
