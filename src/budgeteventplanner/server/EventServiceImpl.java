@@ -20,10 +20,13 @@ import com.googlecode.objectify.Query;
 public class EventServiceImpl extends RemoteServiceServlet implements
 		EventService {
 	public EventServiceImpl() {
-		ObjectifyService.register(Attendee.class);
-		ObjectifyService.register(Event.class);
-		ObjectifyService.register(Service.class);
-		ObjectifyService.register(ServiceRequest.class);
+		try {
+			ObjectifyService.register(Attendee.class);
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Service.class);
+			ObjectifyService.register(ServiceRequest.class);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -95,10 +98,9 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 		for (String attendeeId : attendeeIdList) {
 			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class,
 					attendeeId));
-			if(!oldAttendee.getEventId().equals(eventId))
-			{
-				Attendee newAttendee = new Attendee.Builder(oldAttendee, eventId)
-				.build();
+			if (!oldAttendee.getEventId().equals(eventId)) {
+				Attendee newAttendee = new Attendee.Builder(oldAttendee,
+						eventId).build();
 				ofy.put(newAttendee);
 			}
 		}

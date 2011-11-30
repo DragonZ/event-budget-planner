@@ -21,12 +21,15 @@ import com.googlecode.objectify.Query;
 @SuppressWarnings("serial")
 public class BudgetServiceImpl extends RemoteServiceServlet implements
 		BudgetService {
-  
+
 	public BudgetServiceImpl() {
-		ObjectifyService.register(Budget.class);
-		ObjectifyService.register(BudgetItem.class);
-		ObjectifyService.register(Service.class);
-		ObjectifyService.register(Category.class);
+		try {
+			ObjectifyService.register(Budget.class);
+			ObjectifyService.register(BudgetItem.class);
+			ObjectifyService.register(Service.class);
+			ObjectifyService.register(Category.class);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -41,15 +44,18 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	public BudgetItem addBudgetItemToBudget(String categoryId, String budgetId,
 			Double limit) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<BudgetItem> q = ofy.query(BudgetItem.class).filter("budgetId", budgetId).filter("categoryId", categoryId);
+		Query<BudgetItem> q = ofy.query(BudgetItem.class)
+				.filter("budgetId", budgetId).filter("categoryId", categoryId);
 		BudgetItem budgetItem;
-		
+
 		if (q.count() > 0) {
-			budgetItem = new BudgetItem.Builder(q.get()).setLimit(limit).build();
+			budgetItem = new BudgetItem.Builder(q.get()).setLimit(limit)
+					.build();
 		} else {
-			budgetItem = new BudgetItem.Builder(budgetId, categoryId, limit).build();
+			budgetItem = new BudgetItem.Builder(budgetId, categoryId, limit)
+					.build();
 		}
-		
+
 		ofy.put(budgetItem);
 		return budgetItem;
 	}
@@ -58,9 +64,12 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	public Double getTotalByEventId(String eventId) {
 		Double total = 0.0;
 		Objectify ofy = ObjectifyService.begin();
-		Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("eventId", eventId);
+		Query<ServiceRequest> queryServiceRequest = ofy.query(
+				ServiceRequest.class).filter("eventId", eventId);
 		for (ServiceRequest request : queryServiceRequest) {
-			Double price = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getPrice();
+			Double price = ofy.get(
+					new Key<Service>(Service.class, request.getServiceId()))
+					.getPrice();
 			total += price * request.getQuantity();
 		}
 		return total;
@@ -70,11 +79,17 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	public List<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
 		ArrayList<Pair<String, Double>> list = Lists.newArrayList();
 		Objectify ofy = ObjectifyService.begin();
-		Query<ServiceRequest> queryServiceRequest = ofy.query(ServiceRequest.class).filter("eventId", eventId);
+		Query<ServiceRequest> queryServiceRequest = ofy.query(
+				ServiceRequest.class).filter("eventId", eventId);
 		for (ServiceRequest request : queryServiceRequest) {
-			String categoryId = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getCategoryId();
-			String categoryName = ofy.get(new Key<Category>(Category.class, categoryId)).getName();
-			Double price = ofy.get(new Key<Service>(Service.class, request.getServiceId())).getPrice();
+			String categoryId = ofy.get(
+					new Key<Service>(Service.class, request.getServiceId()))
+					.getCategoryId();
+			String categoryName = ofy.get(
+					new Key<Category>(Category.class, categoryId)).getName();
+			Double price = ofy.get(
+					new Key<Service>(Service.class, request.getServiceId()))
+					.getPrice();
 			list.add(new Pair<String, Double>(categoryName, price));
 		}
 		return list;

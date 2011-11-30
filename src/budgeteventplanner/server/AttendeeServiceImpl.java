@@ -27,8 +27,11 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		AttendeeService {
 
 	public AttendeeServiceImpl() {
-		ObjectifyService.register(Event.class);
-		ObjectifyService.register(Attendee.class);
+		try {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Attendee.class);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -113,31 +116,32 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		sendEmail(attendee, status);
 	}
 
-	public void sendEmailBatchByOrganizer(ArrayList<String> attendeeIdList,Integer status){
+	public void sendEmailBatchByOrganizer(ArrayList<String> attendeeIdList,
+			Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		
-			
+
 		for (String attendeeId : attendeeIdList) {
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class,
 					attendeeId));
 
-			if(status == -1) //-1 means deleted by organizer
+			if (status == -1) // -1 means deleted by organizer
 			{
-				String subject="You Have been Removed From Event";
-				String msgBody="You Have been Removed From Event.";
-			sendCustomizedEmail( attendee,  subject,
-					 msgBody);
+				String subject = "You Have been Removed From Event";
+				String msgBody = "You Have been Removed From Event.";
+				sendCustomizedEmail(attendee, subject, msgBody);
 			}
-			if(status == 1) //1 means send inviting letter
+			if (status == 1) // 1 means send inviting letter
 			{
-				String subject="You are invited to a new Event";
-				String msgBody="Your Registration code is:"+attendee.getAttendeeId()+"\n Please go to purduebep.appspot.com for registration";
-			sendCustomizedEmail( attendee,  subject,
-					 msgBody);
+				String subject = "You are invited to a new Event";
+				String msgBody = "Your Registration code is:"
+						+ attendee.getAttendeeId()
+						+ "\n Please go to purduebep.appspot.com for registration";
+				sendCustomizedEmail(attendee, subject, msgBody);
 			}
 		}
-		
+
 	}
+
 	public void sendEmailBatch(ArrayList<String> attendeeIdList, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		for (String attendeeId : attendeeIdList) {
@@ -147,10 +151,9 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-
 	public void sendCustomizedEmail(String attendeeId, String subject,
 			String msgBody) {
-		Attendee attendee=getAttendeeByAttendeeId(attendeeId);
+		Attendee attendee = getAttendeeByAttendeeId(attendeeId);
 		Session session = Session.getDefaultInstance(new Properties(), null);
 		msgBody = "Dear " + attendee.getName() + msgBody + "\n\n\n Team XYZs";
 
@@ -168,10 +171,12 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 
 		}
 	}
+
 	public void sendCustomizedEmail(Attendee attendee, String subject,
 			String msgBody) {
 		Session session = Session.getDefaultInstance(new Properties(), null);
-		msgBody = "Dear " + attendee.getName() + "\n"+msgBody + "\n\n\n Team XYZs";
+		msgBody = "Dear " + attendee.getName() + "\n" + msgBody
+				+ "\n\n\n Team XYZs";
 
 		try {
 			Message msg = new MimeMessage(session);
@@ -204,6 +209,25 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 			ofy.delete(attendee);
 		}
 
+	}
+
+	@Override
+	public void fillAttendeesInEvent(String eventId,
+			ArrayList<String> attendeeIdList) {
+		ArrayList<String> newattendeeIdList = new ArrayList<String>();
+		Objectify ofy = ObjectifyService.begin();
+		for (String attendeeId : attendeeIdList) {
+			Attendee oldAttendee = ofy.get(new Key<Attendee>(Attendee.class,
+					attendeeId));
+			if (!oldAttendee.getEventId().equals(eventId)) {
+
+				Attendee newAttendee = new Attendee.Builder(oldAttendee,
+						eventId).build();
+				ofy.put(newAttendee);
+				newattendeeIdList.add(newAttendee.getAttendeeId());
+			}
+		}
+		sendEmailBatchByOrganizer(newattendeeIdList, 1);
 	}
 
 }

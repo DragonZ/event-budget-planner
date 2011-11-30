@@ -16,8 +16,10 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 		CategoryService {
 
 	public CategoryServiceImpl() {
-		super();
-		ObjectifyService.register(Category.class);
+		try {
+			ObjectifyService.register(Category.class);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -44,7 +46,8 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String getCategoryName(String categoryId) {
 		Objectify ofy = ObjectifyService.begin();
-		Category category = ofy.get(new Key<Category>(Category.class, categoryId));
+		Category category = ofy.get(new Key<Category>(Category.class,
+				categoryId));
 		return category.getName();
 	}
 
