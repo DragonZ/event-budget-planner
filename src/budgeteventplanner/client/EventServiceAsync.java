@@ -33,9 +33,6 @@ public interface EventServiceAsync {
 	void getServicesByCategoryId(String categoryId,
 			AsyncCallback<List<Service>> callback);
 
-	void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList,
-			AsyncCallback<Void> callback);
-
 	void changeEventStatusByEventId(String eventId, Integer status,
 			AsyncCallback<Void> callback);
 

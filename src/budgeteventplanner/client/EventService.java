@@ -31,8 +31,6 @@ public interface EventService extends RemoteService {
 
 	List<Service> getServicesByCategoryId(String categoryId);
 
-	void fillAttendeesInEvent(String eventId, ArrayList<String> attendeeIdList);
-
 	void changeEventStatusByEventId(String eventId, Integer status);
 
 	void deleteEventByEventId(String eventId);
