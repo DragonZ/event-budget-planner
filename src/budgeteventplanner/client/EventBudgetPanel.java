@@ -575,19 +575,12 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		itemList.setWidget(0, 5, new HTML("<strong>Request Details</strong>"));
 		itemList.getColumnFormatter().setWidth(5, "20%");
 
-		// final ArrayList<Category> categoryList = new ArrayList<Category>();
-		// final ArrayList<Service> serviceList = new ArrayList<Service>();
-
 		final ListBox category = new ListBox();
 
+		category.clear();
 		for (Category c : categoryList) {
 			category.addItem(c.getName());
 		}
-		// for (Service s : serviceList.get(0)){category.addItem(s.getName());}
-		// int total = category.getItemCount();
-		// for (int i=0; i<total; i++){
-		// category.addItem(categoryList.get(i).getName());
-		// }
 
 		final ListBox service = new ListBox();
 		category.addChangeHandler(new ChangeHandler() {
@@ -598,38 +591,12 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 				}
 			}
 		});
-		// category.addChangeHandler(new ChangeHandler() {
-		// public void onChange(ChangeEvent event) {
-		// service.clear();
-		// int total = category.getItemCount();
-		// for (int i=0;i<total;i++)
-		// {
-		// if (category.isItemSelected(i))
-		// {
-		// eventService.getServicesByCategoryId(categoryList.get(i).getCategoryId(),
-		// new AsyncCallback<List<Service>>(){
-		// public void onFailure(Throwable caught)
-		// {}
-		// public void onSuccess(List<Service> result)
-		// {
-		// for (Service s: result)
-		// {
-		// serviceList.add(s);
-		// service.addItem(s.getName());
-		// }
-		// }
-		// });
-		// break;
-		// }
-		// }
-		// }
-		// });
-
+		
 		final TextBox dueDate = new TextBox();
 		dueDate.setText("");
 		dueDate.setWidth("70px");
 
-		final TextArea details = new TextArea();
+		final TextBox details = new TextBox();
 		details.setText("");
 		details.setWidth("100px");
 
