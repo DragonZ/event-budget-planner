@@ -51,8 +51,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	private final AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
 
-	private final List<Category> categoryList = Lists.newArrayList();
-	private final List<List<Service>> serviceList = Lists.newArrayList();
+	private List<Category> categoryList = Lists.newArrayList();
+	private List<List<Service>> serviceList = Lists.newArrayList();
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -75,6 +75,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		leftPanel.setWidth("100px");
 		event_h_panel.add(leftPanel);
 
+		
 		activeLink.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				event_h_panel.clear();
@@ -179,6 +180,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
 
+
 		ServiceRequestSave();
 
 		eventService.getEventsByOrganizerIdAndStatus(organizerId, Event.ACTIVE,
@@ -256,9 +258,9 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 										if (event_table.getWidget(row, 7)
 												.equals(attend_list))
 											break;
-									String event_id = event_table.getText(row,
-											0);
-									attendee_pop_up(event_id);
+									String event_id = event_table.getText(row,0);
+									String event_name = event_table.getText(row, 1);
+									attendee_pop_up(event_id,event_name);
 								}
 							});
 							view_info.addClickHandler(new ClickHandler() {
@@ -528,6 +530,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	}
 
 	public void ServiceRequestSave() {
+		categoryList.clear();
+		serviceList.clear();
 		categoryService
 				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
 					public void onFailure(Throwable caught) {
@@ -570,17 +574,26 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		// itemList.getColumnFormatter().setWidth(2, "10%");
 		itemList.setWidget(0, 4, new HTML("<strong>Due Date</strong>"));
 		itemList.getColumnFormatter().setWidth(4, "20%");
-		itemList.setWidget(0, 3, new HTML("<strong>Quantity</strong>"));
-		itemList.getColumnFormatter().setWidth(3, "20%");
+		itemList.setWidget(0, 3, new HTML("<strong>#</strong>"));
+		itemList.getColumnFormatter().setWidth(3, "10%");
 		itemList.setWidget(0, 5, new HTML("<strong>Request Details</strong>"));
 		itemList.getColumnFormatter().setWidth(5, "20%");
 
 		final ListBox category = new ListBox();
 
-		category.clear();
+		//category.clear();
 		for (Category c : categoryList) {
 			category.addItem(c.getName());
 		}
+		
+//		d.setHTML(serviceList.get(0).get(0).getName());
+//		d.center();
+		
+//		int i = 1;
+//		for (Service s : serviceList.get(0)) {
+//			itemList.setWidget(i, 1, new Label(s.getName()));
+//			i++;
+//		}
 
 		final ListBox service = new ListBox();
 		category.addChangeHandler(new ChangeHandler() {
@@ -621,10 +634,47 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		d.setAnimationEnabled(true);
 		d.center();
 		d.show();
+		
+		final String eventIdSent = eventId;
 
 		update.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				String serviceId = serviceList.get(category.getSelectedIndex()).get(service.getSelectedIndex()).getServiceId();
 
+				
+
+				int quant = Integer.parseInt(quantity.getText());
+//				Scanner s = new Scanner(dueDate.getText()).useDelimiter("/");
+//				int month = Integer.parseInt(s.next());
+//				int day = Integer.parseInt(s.next());
+//				int year = Integer.parseInt(s.next());
+				@SuppressWarnings("deprecation")
+				final Date dueDateSent = new Date(dueDate.getText());
+
+				String name = details.getText();
+
+				eventService.addServiceRequest(serviceId, eventIdSent, name,
+				            quant, dueDateSent, new AsyncCallback<Void>(){
+
+				@Override
+				            public void onFailure(Throwable caught) {
+				                   new DialogBox().setText("Remote Procedure Call - Failure");
+				                 }
+
+				                 @Override
+				                 public void onSuccess(Void result) {
+				                   service.setSelectedIndex(0);
+				        category.setSelectedIndex(0);
+				                   quantity.setText("");
+				        dueDate.setText("");
+				                   details.setText("");
+				                   
+				                   // TODO may need to refresh the table
+
+				                 }
+
+
+				});
 				d.hide();
 			}
 		});
@@ -747,10 +797,10 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		});
 	}
 
-	public void attendee_pop_up(String event_id) {
+	public void attendee_pop_up(String event_id, String event_name) {
 		// set cookie for organizer id and event id
 
-		AttendeeManager.edittingAttendees(event_id, "YuanXia");
+		AttendeeManager.edittingAttendees(event_id, event_name, "YuanXia");
 		RootPanel.get("XiaYuan").setVisible(false);
 		RootPanel.get("XuXuan").setVisible(true);
 
