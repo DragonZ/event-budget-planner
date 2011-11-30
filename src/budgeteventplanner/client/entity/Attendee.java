@@ -128,7 +128,7 @@ public class Attendee implements Serializable {
 	}
 
 	public String toString() {
-		String result = "\nName: " + name + "\nEmail: " + email + "\nAddress: "
+		String result = "Name: " + name + "\nEmail: " + email + "\nAddress: "
 				+ address + "\nJob Title: " + jobTitle + "\nCompany Name: "
 				+ companyName + "\nPhone Number: " + phoneNumber;
 		return result;
