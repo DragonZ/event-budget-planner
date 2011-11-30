@@ -118,9 +118,8 @@ public class VendorHomePage implements EntryPoint {
     existingService = new FlexTable(); // table for service management page
     // initializeServiceTable(); //new method to initialize the service
     // table
-    refreshExistingService();
-    refreshExistingService();
-    refreshExistingService();
+    //refreshExistingService();
+    //refreshExistingService();
 
     vendorPage.add(eventFolders, DockPanel.WEST);
     vendorPage.add(events, DockPanel.EAST);
@@ -214,7 +213,8 @@ public class VendorHomePage implements EntryPoint {
 
     eventFolders.addSelectionHandler(new treeHandler<TreeItem>());
     // add listeners
-
+    
+    refreshExistingService();
     tab.selectTab(0);
     tab.setSize("100%", "100%");
     // tab initialization
