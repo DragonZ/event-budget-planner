@@ -51,6 +51,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -124,8 +125,7 @@ public class AttendeeManager implements EntryPoint {
 	static ArrayList<String> AttendeeIDs = new ArrayList<String>();
 	static TreeItem eventAttendeeTreeItem ;//= new TreeItem(
 			//"Attendees in This Event");
-	//static TreeItem organizerAttendeeTreeItem = new TreeItem(
-			//"Attendees You had used before");
+	static TreeItem organizerAttendeeTreeItem = new TreeItem(new HTML("<b>Attendees in other events</b>"));
 	static Button submit = new Button("Apply all changes");
 	static Button addToEvent = new Button("Add");// checked attendees to current
 													// event
@@ -163,12 +163,14 @@ public class AttendeeManager implements EntryPoint {
 		infoBox.setSize("300px", "300px");
 		infoBox.setReadOnly(true);
 		infoBox.setText("info of eventAttendeeList will appear here");
-		eventAttendeeTree.addItem(eventAttendeeTreeItem);
-		//organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
+		//eventAttendeeTree.addItem(eventAttendeeTreeItem);
+		organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
 
 		VerticalPanel vPanelorganizer = new VerticalPanel();
-		vPanelorganizer.add(addToEvent);
-		vPanelorganizer.add(loadOrganizerAttendee);
+		HorizontalPanel loadAndAdd = new HorizontalPanel();
+		loadAndAdd.add(loadOrganizerAttendee);
+		loadAndAdd.add(addToEvent);
+		vPanelorganizer.add(loadAndAdd);
 		vPanelorganizer.add(organizerAttendeeTree);
 
 		hPanel.add(vPanelorganizer);
@@ -183,8 +185,10 @@ public class AttendeeManager implements EntryPoint {
 		hPanelInfoBox.add(submit);
 
 		VerticalPanel vPanelEvent = new VerticalPanel();
-		vPanelEvent.add(removeFromEvent);
-		vPanelEvent.add(loadEventAttendee);
+		HorizontalPanel loadAndAddEvent = new HorizontalPanel();
+		loadAndAddEvent.add(loadEventAttendee);
+		loadAndAddEvent.add(removeFromEvent);
+		vPanelEvent.add(loadAndAddEvent);
 		vPanelEvent.add(eventAttendeeTree);
 		// hPanel.add(eventAttendeeTree);
 		hPanel.add(vPanelEvent);
@@ -477,9 +481,9 @@ public class AttendeeManager implements EntryPoint {
 	}
 
 	static void getOrganizerAttendeeList(){
-		infoBox.setText("lorganizerOwnedEventInfoList:"+lorganizerOwnedEventInfoList.toString());
+		//infoBox.setText("lorganizerOwnedEventInfoList:"+lorganizerOwnedEventInfoList.toString());
 		for(ArrayList<String> eventInfo :lorganizerOwnedEventInfoList ){
-			final TreeItem ti= new TreeItem(eventInfo.get(1));
+			final TreeItem ti= new TreeItem(new HTML("<b>"+eventInfo.get(1)+"</b>"));
 			for(ArrayList<String> attendeeInfo: lorganizerAllAttendeeInfoList){
 				if(attendeeInfo.get(3).compareTo(eventInfo.get(0))==0){
 					setAttendeeInOrganizerTree(attendeeInfo.get(0), attendeeInfo.get(1), attendeeInfo.get(2),ti);
@@ -494,7 +498,7 @@ public class AttendeeManager implements EntryPoint {
 		// set organizer's attendeelist
 		
 
-		eventAttendeeTreeItem=new TreeItem(eventName);
+		eventAttendeeTreeItem=new TreeItem(new HTML("<b>"+eventName+"</b>"));
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
 		eventService.getEventsByOrganizerId(organizerID, new AsyncCallback<List<Event>>(){
 

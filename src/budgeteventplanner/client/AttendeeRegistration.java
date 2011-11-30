@@ -78,9 +78,13 @@ public class AttendeeRegistration implements EntryPoint {
 		status.addItem("yes");
 		status.addItem("no");
 		status.addItem("maybe");
+		
 		RootPanel.get("status").add(statusLabel);
 		RootPanel.get("statusBox").add(status);
 
+		RootPanel.get("email").add(emailLabel);
+		RootPanel.get("emailBox").add(emailBox);
+		
 		RootPanel.get("firstName").add(firstNameLabel);
 		RootPanel.get("firstNameBox").add(firstNameBox);
 
