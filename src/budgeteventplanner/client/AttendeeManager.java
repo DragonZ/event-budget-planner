@@ -38,8 +38,10 @@
 package budgeteventplanner.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import budgeteventplanner.client.entity.Attendee;
+import budgeteventplanner.client.entity.Event;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -68,8 +70,8 @@ public class AttendeeManager implements EntryPoint {
 		//	.create(AttendeeService.class);
 	private  static AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
-	/*private  static EventServiceAsync eventService = GWT
-	.create(EventService.class);*/
+	private  static EventServiceAsync eventService = GWT
+	.create(EventService.class);
 
 	/*
 	 * static ArrayList<String> eventAttendeeEmailList =new ArrayList<String>();
@@ -109,6 +111,8 @@ public class AttendeeManager implements EntryPoint {
 	static ArrayList<CheckBox> lorganizerAttendeeCheckBoxList = new ArrayList<CheckBox>();
 	static ArrayList<String> lorganizerReadyToCreateList = new ArrayList<String>();
 	static ArrayList<ArrayList<String>> lorganizerCheckedAttendeeInfoList = new ArrayList<ArrayList<String>>();
+	static ArrayList<ArrayList<String>> lorganizerAllAttendeeInfoList = new ArrayList<ArrayList<String>>();//id name info eventId
+
 	// //////////////////////////////////////////////
 
 	final static TextArea infoBox = new TextArea();
@@ -118,10 +122,10 @@ public class AttendeeManager implements EntryPoint {
 	static HorizontalPanel hPanel = new HorizontalPanel();
 	static VerticalPanel vPanel = new VerticalPanel();
 	static ArrayList<String> AttendeeIDs = new ArrayList<String>();
-	static TreeItem eventAttendeeTreeItem = new TreeItem(
-			"Attendees in This Event");
-	static TreeItem organizerAttendeeTreeItem = new TreeItem(
-			"Attendees You had used before");
+	static TreeItem eventAttendeeTreeItem ;//= new TreeItem(
+			//"Attendees in This Event");
+	//static TreeItem organizerAttendeeTreeItem = new TreeItem(
+			//"Attendees You had used before");
 	static Button submit = new Button("Apply all changes");
 	static Button addToEvent = new Button("Add");// checked attendees to current
 													// event
@@ -138,7 +142,8 @@ public class AttendeeManager implements EntryPoint {
 	static Button inputAttendeePop = new Button("Create Attendee");
 	DialogBox sendEmailBox = new DialogBox();
 	static DialogBox inputAttendeeBox = new DialogBox();
-
+	static Button loadOrganizerAttendee = new Button("Load");
+	static Button loadEventAttendee = new Button("Load");
 	// static TreeItem rootCheckable =new TreeItem(new CheckBox("Attendees"));
 	// static VerticalPanel dialogVPanel = new VerticalPanel();
 	// final static DialogBox wusuowei = new DialogBox();
@@ -159,10 +164,11 @@ public class AttendeeManager implements EntryPoint {
 		infoBox.setReadOnly(true);
 		infoBox.setText("info of eventAttendeeList will appear here");
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
-		organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
+		//organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
 
 		VerticalPanel vPanelorganizer = new VerticalPanel();
 		vPanelorganizer.add(addToEvent);
+		vPanelorganizer.add(loadOrganizerAttendee);
 		vPanelorganizer.add(organizerAttendeeTree);
 
 		hPanel.add(vPanelorganizer);
@@ -178,6 +184,7 @@ public class AttendeeManager implements EntryPoint {
 
 		VerticalPanel vPanelEvent = new VerticalPanel();
 		vPanelEvent.add(removeFromEvent);
+		vPanelEvent.add(loadEventAttendee);
 		vPanelEvent.add(eventAttendeeTree);
 		// hPanel.add(eventAttendeeTree);
 		hPanel.add(vPanelEvent);
@@ -344,7 +351,8 @@ public class AttendeeManager implements EntryPoint {
 
 		});
 
-		edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509", "YuanXia");
+	
+		edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","Build2 Demo", "YuanXia");
 		// showAttendees("ddd");
 		// TreeItem eventAttendeeTree =new TreeItem();
 
@@ -385,7 +393,8 @@ public class AttendeeManager implements EntryPoint {
 		lorganizerAttendeeCheckBoxList.clear();
 		lorganizerReadyToCreateList.clear();
 		lorganizerCheckedAttendeeInfoList.clear();
-		organizerAttendeeTreeItem.removeItems();
+		lorganizerAllAttendeeInfoList.clear();
+		lorganizerOwnedEventInfoList.clear();
 		eventAttendeeTreeItem.removeItems();
 		readyToSendNotifyList.clear();
 
@@ -398,7 +407,7 @@ public class AttendeeManager implements EntryPoint {
 		}
 	}
 
-	static void setAttendeeInOrganizerTree(String id, String name, String info) {
+/*	static void setAttendeeInOrganizerTree(String id, String name, String info) {
 		final ArrayList<String> attendeeInfo = new ArrayList<String>();
 		attendeeInfo.add(id);
 		attendeeInfo.add(name);
@@ -419,7 +428,29 @@ public class AttendeeManager implements EntryPoint {
 			}
 		});
 	}
-
+*/
+	static void setAttendeeInOrganizerTree(String id, String name, String info,TreeItem ti) {
+		final ArrayList<String> attendeeInfo = new ArrayList<String>();
+		attendeeInfo.add(id);
+		attendeeInfo.add(name);
+		attendeeInfo.add(info);
+		CheckBox cb = new CheckBox(name);
+		lorganizerAttendeeCheckBoxList.add(cb);
+		ti.addItem(cb);
+		cb.addClickHandler(new ClickHandler() {
+			@SuppressWarnings("deprecation")
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				infoBox.setText(attendeeInfo.get(2));
+				if (((CheckBox) event.getSource()).isChecked()) {
+					lorganizerCheckedAttendeeInfoList.add(attendeeInfo);
+				} else {
+					lorganizerCheckedAttendeeInfoList.remove(attendeeInfo);
+				}
+			}
+		});
+	}
+	
 	static void setAttendeeInEventTree(String id, String name, final String info) {
 		final ArrayList<String> attendeeInfo = new ArrayList<String>();
 		attendeeInfo.add(id);
@@ -445,46 +476,113 @@ public class AttendeeManager implements EntryPoint {
 		});
 	}
 
-	public static void edittingAttendees(final String eventID,
-			String organizerID) {
+	static void getOrganizerAttendeeList(){
+		infoBox.setText("lorganizerOwnedEventInfoList:"+lorganizerOwnedEventInfoList.toString());
+		for(ArrayList<String> eventInfo :lorganizerOwnedEventInfoList ){
+			final TreeItem ti= new TreeItem(eventInfo.get(1));
+			for(ArrayList<String> attendeeInfo: lorganizerAllAttendeeInfoList){
+				if(attendeeInfo.get(3).compareTo(eventInfo.get(0))==0){
+					setAttendeeInOrganizerTree(attendeeInfo.get(0), attendeeInfo.get(1), attendeeInfo.get(2),ti);
+				}
+			}
+					
+			organizerAttendeeTree.addItem(ti);
+		}
+	}
+	public static void edittingAttendees(final String eventID, String eventName,
+			final String organizerID) {
 		// set organizer's attendeelist
-		attendeeService.getAttendeeListByOrganizerId(organizerID,
-				new AsyncCallback<ArrayList<Attendee>>() {
-					public void onFailure(Throwable caught) {
-						infoBox.setText("error while get attendeelist by organizer:"
-								+ caught);
-					}
+		
 
-					public void onSuccess(ArrayList<Attendee> attendeeList) {
+		eventAttendeeTreeItem=new TreeItem(eventName);
+		eventAttendeeTree.addItem(eventAttendeeTreeItem);
+		eventService.getEventsByOrganizerId(organizerID, new AsyncCallback<List<Event>>(){
 
-						// infoBox.setText("number:"+attendeeList.size());
-						for (int i = 0; i < attendeeList.size(); i++) {
-							String info = attendeeList.get(i).toString();
-							String id = attendeeList.get(i).getAttendeeId();
-							String name = attendeeList.get(i).getName();
-							setAttendeeInOrganizerTree(id, name, info);
-						}
-					}
-				});
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				infoBox.setText("error at getEventsByOrganizerId:"
+						+ caught);
+			}
+
+			@Override
+			public void onSuccess(List<Event> result) {
+				// TODO Auto-generated method stub
+				
+				for(Event e:result){
+					ArrayList<String> eventInfo=new ArrayList<String>();
+					eventInfo.add(e.getEventId());
+					eventInfo.add(e.getName());
+					if(e.getEventId()!=eventID)
+					lorganizerOwnedEventInfoList.add(eventInfo);
+				}
+				//infoBox.setText(lorganizerOwnedEventInfoList.toString());
+				
+			}} );
+	
+		loadOrganizerAttendee.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				attendeeService.getAttendeeListByOrganizerId(organizerID,
+						new AsyncCallback<ArrayList<Attendee>>() {
+							public void onFailure(Throwable caught) {
+								infoBox.setText("error while get attendeelist by organizer:"
+										+ caught);
+							}
+
+							public void onSuccess(ArrayList<Attendee> attendeeList) {
+
+								// infoBox.setText("number:"+attendeeList.size());
+								for (int i = 0; i < attendeeList.size(); i++) {
+									String info = attendeeList.get(i).toString();
+									String id = attendeeList.get(i).getAttendeeId();
+									String name = attendeeList.get(i).getName();
+									String eventId = attendeeList.get(i).getEventId();
+									//setAttendeeInOrganizerTree(id, name, info);
+									 ArrayList<String> attendeeInfo = new ArrayList<String>();
+									attendeeInfo.add(id);
+									attendeeInfo.add(name);
+									attendeeInfo.add(info);
+									attendeeInfo.add(eventId);
+									lorganizerAllAttendeeInfoList.add(attendeeInfo);
+								}
+								
+								
+								getOrganizerAttendeeList();
+							}
+						});
+			}});
+		//get all event id of certain organizer
+	
+		
 		
 		// set event's attendeelist
-		attendeeService.getAttendeeListByEventId(eventID,
-				new AsyncCallback<ArrayList<Attendee>>() {
-					public void onFailure(Throwable caught) {
-					}
+		loadEventAttendee.addClickHandler(new ClickHandler(){
 
-					public void onSuccess(ArrayList<Attendee> attendeeList) {
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				attendeeService.getAttendeeListByEventId(eventID,
+						new AsyncCallback<ArrayList<Attendee>>() {
+							public void onFailure(Throwable caught) {
+							}
 
-						// infoBox.setText("number:"+attendeeList.size());
-						for (int i = 0; i < attendeeList.size(); i++) {
-							final String info = attendeeList.get(i).toString();
-							final String id = attendeeList.get(i)
-									.getAttendeeId();
-							String name = attendeeList.get(i).getName();
-							setAttendeeInEventTree(id, name, info);
-						}
-					}
-				});
+							public void onSuccess(ArrayList<Attendee> attendeeList) {
+
+								// infoBox.setText("number:"+attendeeList.size());
+								for (int i = 0; i < attendeeList.size(); i++) {
+									final String info = attendeeList.get(i).toString();
+									final String id = attendeeList.get(i)
+											.getAttendeeId();
+									String name = attendeeList.get(i).getName();
+									setAttendeeInEventTree(id, name, info);
+								}
+							}
+						});
+			}});
+		
 		// setListenerFor inputattendee
 		inputAttendee.addClickHandler(new ClickHandler() {
 
@@ -505,7 +603,7 @@ public class AttendeeManager implements EntryPoint {
 								readyToSendNotifyList.add(id);
 								// infoBox.setText(readyToSendNotifyList.toString());
 								setAttendeeInEventTree(id, name, info);
-								setAttendeeInOrganizerTree(id, name, info);
+								//setAttendeeInOrganizerTree(id, name, info);
 							}
 						});
 				inputAttendeeBox.hide();
