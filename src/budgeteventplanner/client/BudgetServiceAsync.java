@@ -21,4 +21,6 @@ public interface BudgetServiceAsync {
 			AsyncCallback<List<Pair<String, Double>>> callback);
 	
 	void getLimitsByBudgetId(String budgetId, AsyncCallback<List<Pair<String, Double>>> callback);
+	
+	void getBudgetByOrganizerId(String organizerId, AsyncCallback<List<Budget>> callback);
 }

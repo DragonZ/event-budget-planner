@@ -6,6 +6,7 @@ import budgeteventplanner.client.BudgetService;
 import budgeteventplanner.client.entity.Budget;
 import budgeteventplanner.client.entity.BudgetItem;
 import budgeteventplanner.client.entity.Category;
+import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.shared.Pair;
@@ -28,6 +29,7 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 			ObjectifyService.register(Service.class);
 			ObjectifyService.register(ServiceRequest.class);
 			ObjectifyService.register(Category.class);
+			ObjectifyService.register(Event.class);
 		} catch (Exception e) {
 		}
 	}
@@ -109,4 +111,17 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	    }
 	    return list;
 	}
+
+  @Override
+  public List<Budget> getBudgetByOrganizerId(String organizerId) {
+    List<Budget> budgetList = Lists.newArrayList();
+    Objectify ofy = ObjectifyService.begin();
+    Query<Event> queryEvent = ofy.query(Event.class).filter("ogranizerId", organizerId);
+    for (Event event : queryEvent) {
+      Query<Budget> queryBudgetItem = ofy.query(
+          Budget.class).filter("eventId", event.getEventId());
+      budgetList.addAll(queryBudgetItem.list());
+    }
+    return budgetList;
+  }
 }
