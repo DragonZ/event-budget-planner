@@ -45,12 +45,16 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	public String organizerId;
 	
 	public boolean categoryLoaded;
-
+	public boolean pendingDelete = false;
+	public int pendingDeleteTarget;
+	
 	private final CategoryServiceAsync categoryService = GWT
 			.create(CategoryService.class);
 	private final EventServiceAsync eventService = GWT
 			.create(EventService.class);
 	private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
+	
+	private final VendorServiceAsync vendorService = GWT.create(VendorService.class);
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -161,8 +165,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 		Label l2 = new Label("Left Place Holder");
 		l2.setWidth("100px");
+		budget_h_panel.add(l2);
 		budget_h_panel.add(budget_right_v_panel);
-		budget_h_panel.add(new Label("TODO for BB"));
 
 		budget_add.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -194,6 +198,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 							i++;
 							event_table.setWidget(i, 0,
 									new Label(e.getEventId()));
+							event_table.getCellFormatter().setVisible(i, 0, false);
 							event_table.setWidget(i, 1, new Label(e.getName()));
 							event_table.setWidget(i, 2, new Label(e
 									.getStartTime().toString()));
@@ -202,7 +207,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 							event_table.setWidget(i, 4,
 									new Label(e.getAddress()));
 
-							final Button itemMod = new Button("Item Modify");
+							final Button itemMod = new Button("Add New");
 							itemMod.setWidth("100px");
 							event_table.setWidget(i, 5, itemMod);
 							
@@ -341,9 +346,9 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		event_table.setWidget(0, 4, new HTML("<strong>Location</strong>"));
 		event_table.getCellFormatter().setWidth(0, 4, "20%");
 
-		event_table.setWidget(0, 5, new HTML("<strong>Item</strong>"));
+		event_table.setWidget(0, 5, new HTML("<strong>Service</strong>"));
 		event_table.getCellFormatter().setWidth(0, 5, "100%");
-
+		
 		event_table.setWidget(0, 6, new HTML("<strong>Modify</strong>"));
 		event_table.getCellFormatter().setWidth(0, 6, "100%");
 
@@ -519,7 +524,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		mother.add(panel);
 		
 	}
-	public void item_pop_up(String eventId) {
+	public void item_pop_up(String eId) {
+		final String eventId = eId;
 		final DialogBox d = new DialogBox();
 		//d.setSize("300px", "100%");
 		VerticalPanel panel = new VerticalPanel();
@@ -529,18 +535,16 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 		final FlexTable itemList = new FlexTable();
 		itemList.setWidth("100%");
-		itemList.setWidget(0, 0, new HTML("<strong>Category</strong>"));
-		itemList.getColumnFormatter().setWidth(0, "10%");
-		itemList.setWidget(0, 1, new HTML("<strong>Service</strong>"));
-		itemList.getColumnFormatter().setWidth(1, "10%");
+		itemList.setWidget(0, 0, new HTML("<strong>Name: </strong>"));
+		itemList.setWidget(1, 0, new HTML("<strong>Category: </strong>"));
+		itemList.getColumnFormatter().setWidth(0, "40%");
+		itemList.setWidget(2, 0, new HTML("<strong>Service: </strong>"));
 //		itemList.setWidget(0, 2, new HTML("<strong>View Service Details</strong>"));
 //		itemList.getColumnFormatter().setWidth(2, "10%");
-		itemList.setWidget(0, 4, new HTML("<strong>Due Date</strong>"));
-		itemList.getColumnFormatter().setWidth(4, "20%");
-		itemList.setWidget(0, 3, new HTML("<strong>Amount</strong>"));
-		itemList.getColumnFormatter().setWidth(3, "20%");
-		itemList.setWidget(0, 5, new HTML("<strong>Request Details</strong>"));
-		itemList.getColumnFormatter().setWidth(5, "20%");
+		itemList.setWidget(3, 0, new HTML("<strong>Service Price: </strong>"));
+		itemList.setWidget(4, 0, new HTML("<strong>Quantity: </strong>"));
+		itemList.setWidget(5, 0, new HTML("<strong>Due Date: </strong>"));
+		itemList.setWidget(6, 0, new HTML("<strong>Request Details: </strong>"));
 		
 		//sdfasdfasdfasdfasdfasdfasdf
 		final ArrayList<Category> categoryList = new ArrayList<Category>();
@@ -548,7 +552,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		
 		final ListBox category = new ListBox();
-
+		category.setWidth("100px");
 		categoryService
 				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
 					public void onFailure(Throwable caught) {
@@ -567,6 +571,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 
 		final ListBox service = new ListBox();
+		service.setWidth("100px");
 		category.addChangeHandler(new ChangeHandler() {
 			public void onChange(ChangeEvent event) {
 				service.clear();
@@ -579,6 +584,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 						{}
 						public void onSuccess(List<Service> result)
 						{
+							serviceList.clear();
 							for (Service s: result)
 							{
 								serviceList.add(s);
@@ -592,25 +598,40 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 			}
 		});	
 		
+		final Label price = new Label("");
+		
+		service.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
+				int i = service.getSelectedIndex();
+				price.setText(serviceList.get(i).getPrice().toString());
+			}
+		});
+		final TextBox name = new TextBox();
+		name.setText("");
+		name.setWidth("100px");
+		
+		final TextBox quantity = new TextBox();
+		quantity.setText("");
+		quantity.setWidth("100px");
 		
 		final TextBox dueDate = new TextBox();
 		dueDate.setText("");
-		dueDate.setWidth("70px");
+		dueDate.setWidth("100px");
 		
 		final TextArea details = new TextArea();
 		details.setText("");
 		details.setWidth("100px");
 		
-		final TextBox quantity = new TextBox();
-		quantity.setText("");
-		quantity.setWidth("20px");
-		
-		
-		itemList.setWidget(1, 0, category);
-		itemList.setWidget(1, 1, service);
-		itemList.setWidget(1, 3, quantity);
-		itemList.setWidget(1, 4, dueDate);
-		itemList.setWidget(1, 5, details);
+		itemList.setWidget(0, 1, name);
+		itemList.setWidget(1, 1, category);
+		itemList.setWidget(2, 1, service);
+		itemList.setWidget(3, 1, price);
+		itemList.setWidget(4, 1, quantity);
+		itemList.setWidget(5, 1, dueDate);
+		itemList.setWidget(6, 1, details);
 		
 		
 		panel.add(itemList);
@@ -622,7 +643,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		panel.add(update);
 		d.add(panel);
 		d.setAnimationEnabled(true);
-		//d.adopt(details);
 		d.center();
 		d.show();
 		
@@ -631,9 +651,15 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		update.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				
-				
-				d.hide();
+				int i = service.getSelectedIndex();
+				eventService.addServiceRequest(serviceList.get(i).getServiceId(), eventId, name.getText(), Integer.parseInt(quantity.getText()), new Date(dueDate.getText()), new AsyncCallback<Void>() {
+					public void onFailure(Throwable caught)
+					{}
+					public void onSuccess(Void result)
+					{
+						d.hide();
+					}
+				});
 			}
 		});
 
@@ -796,29 +822,64 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		final FlexTable itemList = new FlexTable();
 		itemList.setWidth("100%");
 		
-		
+		final ArrayList<ServiceRequest> serviceList = new ArrayList<ServiceRequest>();
 		eventService.getServiceRequestsByEventId(eventId, new AsyncCallback<List<ServiceRequest>>() {
 			public void onFailure(Throwable caught)
 			{}
 			public void onSuccess(List<ServiceRequest> result)
 			{
 				int i=0;
-				for (ServiceRequest s : result)
+				for (ServiceRequest sr : result)
 				{
+					final int t = i;
+					final ServiceRequest s = sr;
+					serviceList.add(s);
 					itemList.setWidget(i, 0, new Label(s.getName()));
 					itemList.setWidget(i, 1, new Label(s.getDueDate().toString()));
 					itemList.setWidget(i, 2, new Label(s.getQuantity().toString()));
 					String status;
 					if (s.getStatus() == ServiceRequest.ACCEPTED)
+					{
 						status = "Accepted";
+						itemList.setWidget(i, 3, new Label(status));
+					}
 					else if(s.getStatus() == ServiceRequest.PENDING)
+					{
 						status = "Pending";
+						Hyperlink delete = new Hyperlink();
+						delete.setText(status);
+						itemList.setWidget(i, 3, delete);
+						
+						delete.addClickHandler(new ClickHandler() {
+							
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								//pendingDelete = true;
+								//pendingDeleteTarget = t;
+								vendorService.updateServiceRequestStatus(s.getRequestId(), ServiceRequest.IGNORED, new AsyncCallback<Void>() {
+									public void onFailure(Throwable caught)
+									{}
+									public void onSuccess(Void result)
+									{
+										d.hide();
+									}
+								});
+							}
+						});
+					}
 					else
+					{
 						status = "Igored";
-					itemList.setWidget(i, 3, new Label(status));
+						itemList.setWidget(i, 3, new Label(status));
+					}
+					
+					i++;
 				}
 			}
 		});
+		
+
 		itemList.setBorderWidth(1);
 
 		FlexTable table = new FlexTable();
@@ -850,6 +911,18 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		d.center();
 		d.show();
 
+		if (pendingDelete == true)
+		{
+			vendorService.updateServiceRequestStatus(serviceList.get(pendingDeleteTarget).getRequestId(), ServiceRequest.IGNORED, new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught)
+				{}
+				public void onSuccess(Void result)
+				{
+					d.hide();
+				}
+			});
+		}
+		
 		close.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				d.hide();
