@@ -19,10 +19,36 @@ public class User implements Serializable {
 	private String name;
 	private String company;
 	private String address;
-
-
-	public final static Integer ROLE_ORGANIZER = 1;
-	public final static Integer ROLE_VENDOR = 2;
+  
+	public enum UserType {
+	  ORGANIZER (1, "Organizer"),
+	  VENDOR (2, "Vendor");
+	  
+	  private final Integer roleId;
+    private final String roleText;
+    
+	  UserType(int roleId, String roleText) {
+	    this.roleId = roleId;
+	    this.roleText = roleText;
+	  }
+	  
+	  public Integer getRoleId() {
+	    return roleId;
+	  }
+	  
+	  public String getRoleText() {
+	    return roleText;
+	  }
+	  
+    public static Integer getRoleIdByText(String roleText) {
+	    for (UserType type : UserType.values()) {
+	      if (type.getRoleText().equals(roleText)) {
+	        return type.getRoleId();
+	      }
+	    }
+	    return 0;
+	  }
+	}
 
 	public User() {}
 
