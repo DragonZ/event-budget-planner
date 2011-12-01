@@ -19,4 +19,6 @@ public interface BudgetService extends RemoteService {
 	Double getTotalByEventId(String eventId);
 
 	List<Pair<String, Double>> getSubtotalsByEventId(String eventId);
+	
+	List<Pair<String, Double>> getLimitsByBudgetId(String budgetId);
 }
