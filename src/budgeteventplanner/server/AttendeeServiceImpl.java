@@ -158,7 +158,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 			String msgBody) {
 		Attendee attendee = getAttendeeByAttendeeId(attendeeId);
 		Session session = Session.getDefaultInstance(new Properties(), null);
-		msgBody = "Dear " + attendee.getName() + msgBody + "\n\n\n Team XYZs";
+		msgBody = "Dear " + attendee.getName() +"\n"+ msgBody + "\n\n\n Team XYZs";
 
 		try {
 			Message msg = new MimeMessage(session);
@@ -206,12 +206,13 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void deleteAttendeeByAttendeeIdList(ArrayList<String> attendeeIdList) {
+		sendEmailBatchByOrganizer(attendeeIdList,-1);
 		Objectify ofy = ObjectifyService.begin();
 		for (String id : attendeeIdList) {
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, id));
 			ofy.delete(attendee);
 		}
-
+		
 	}
 
 	@Override
