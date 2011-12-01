@@ -33,6 +33,9 @@
  *  need to a method get eventIdList(String organizerid)
  *  from server how to find the eventinfo from attendeeID
  *  for those attendee don't wannt to attend, just show in red.
+ *  
+ *  
+ *  after click set the load unclickible. can cancel whole thing and go back,
  */
 
 package budgeteventplanner.client;
@@ -126,7 +129,7 @@ public class AttendeeManager implements EntryPoint {
 	static TreeItem eventAttendeeTreeItem ;//= new TreeItem(
 			//"Attendees in This Event");
 	static TreeItem organizerAttendeeTreeItem = new TreeItem(new HTML("<b>Attendees in other events</b>"));
-	static Button submit = new Button("Apply all changes");
+	static Button submit = new Button("Apply All Changes");
 	static Button addToEvent = new Button("Add");// checked attendees to current
 													// event
 	static Button removeFromEvent = new Button("Remove");// checked attendees
@@ -144,6 +147,7 @@ public class AttendeeManager implements EntryPoint {
 	static DialogBox inputAttendeeBox = new DialogBox();
 	static Button loadOrganizerAttendee = new Button("Load");
 	static Button loadEventAttendee = new Button("Load");
+	static Button jmpbackToEvent = new Button("Back");
 	// static TreeItem rootCheckable =new TreeItem(new CheckBox("Attendees"));
 	// static VerticalPanel dialogVPanel = new VerticalPanel();
 	// final static DialogBox wusuowei = new DialogBox();
@@ -160,7 +164,7 @@ public class AttendeeManager implements EntryPoint {
 		hPanel.setSpacing(50);
 		RootPanel.get("attendees").add(vPanelmain);
 		hPanel.setSize("100%", "100%");
-		infoBox.setSize("300px", "300px");
+		infoBox.setSize("100%", "300px");
 		infoBox.setReadOnly(true);
 		infoBox.setText("info of eventAttendeeList will appear here");
 		//eventAttendeeTree.addItem(eventAttendeeTreeItem);
@@ -170,6 +174,7 @@ public class AttendeeManager implements EntryPoint {
 		HorizontalPanel loadAndAdd = new HorizontalPanel();
 		loadAndAdd.add(loadOrganizerAttendee);
 		loadAndAdd.add(addToEvent);
+		addToEvent.setVisible(false);
 		vPanelorganizer.add(loadAndAdd);
 		vPanelorganizer.add(organizerAttendeeTree);
 
@@ -181,13 +186,18 @@ public class AttendeeManager implements EntryPoint {
 		vPanelInfoBox.add(hPanelInfoBox);
 		hPanel.add(vPanelInfoBox);
 		hPanelInfoBox.add(sendEmailPop);
+		sendEmailPop.setEnabled(false);
 		hPanelInfoBox.add(inputAttendeePop);
+		inputAttendeePop.setEnabled(false);
 		hPanelInfoBox.add(submit);
+		submit.setEnabled(false);
+		hPanelInfoBox.add(jmpbackToEvent);
 
 		VerticalPanel vPanelEvent = new VerticalPanel();
 		HorizontalPanel loadAndAddEvent = new HorizontalPanel();
 		loadAndAddEvent.add(loadEventAttendee);
 		loadAndAddEvent.add(removeFromEvent);
+		removeFromEvent.setVisible(false);
 		vPanelEvent.add(loadAndAddEvent);
 		vPanelEvent.add(eventAttendeeTree);
 		// hPanel.add(eventAttendeeTree);
@@ -347,16 +357,24 @@ public class AttendeeManager implements EntryPoint {
 					setAttendeeInEventTree(attendeeInfo.get(0),
 							attendeeInfo.get(1), attendeeInfo.get(2));
 					lorganizerReadyToCreateList.add(attendeeInfo.get(0));
-					infoBox.setText(lorganizerReadyToCreateList.toString());
+					//infoBox.setText(lorganizerReadyToCreateList.toString());
 				}
 
 				clearOrganizerTree();
 			}
 
 		});
+		jmpbackToEvent.addClickHandler(new ClickHandler(){
 
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				clearEverythingBeforeJumpBack();
+				RootPanel.get("XuXuan").setVisible(false);
+				RootPanel.get("XiaYuan").setVisible(true);
+			}});
 	
-		edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","Build2 Demo", "YuanXia");
+		//edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","Build2 Demo", "YuanXia");
 		// showAttendees("ddd");
 		// TreeItem eventAttendeeTree =new TreeItem();
 
@@ -387,6 +405,22 @@ public class AttendeeManager implements EntryPoint {
 		leventCheckedAttendeeInfoList.clear();
 	}
 
+	
+	@SuppressWarnings("deprecation")
+	static void clearSthForReusing(){
+		leventCheckedTreeItemList.clear();
+		leventCheckedAttendeeInfoList.clear();
+		leventReadyToRemoveAttendeeIdList.clear();
+		readyToSendNotifyList.clear();
+		lorganizerReadyToCreateList.clear();
+		lorganizerCheckedAttendeeInfoList.clear();
+		for(CheckBox cb : leventAttendeeCheckBoxList){
+			cb.setChecked(false);
+		}
+		for(CheckBox cb : lorganizerAttendeeCheckBoxList){
+			cb.setChecked(false);
+		}
+	}
 	static void clearEverythingBeforeJumpBack() {
 		leventAttendeeInfoList.clear();
 		leventCheckedTreeItemList.clear();
@@ -400,8 +434,39 @@ public class AttendeeManager implements EntryPoint {
 		lorganizerAllAttendeeInfoList.clear();
 		lorganizerOwnedEventInfoList.clear();
 		eventAttendeeTreeItem.removeItems();
-		readyToSendNotifyList.clear();
-
+		organizerAttendeeTree.removeItems();
+		organizerAttendeeTree.addItem(organizerAttendeeTreeItem);
+		eventAttendeeTree.removeItems();
+		//remove listener
+		HorizontalPanel loadAndAdd=(HorizontalPanel) loadOrganizerAttendee.getParent();
+		loadOrganizerAttendee.removeFromParent();
+		loadOrganizerAttendee=new Button("Load");
+		loadAndAdd.insert(loadOrganizerAttendee, 0);
+		
+		HorizontalPanel loadAndAddEvent=(HorizontalPanel) loadEventAttendee.getParent();
+		loadEventAttendee.removeFromParent();
+		loadEventAttendee=new Button("Load");
+		loadAndAddEvent.insert(loadEventAttendee, 0);
+		
+		HorizontalPanel inputAttendeeHPanel =(HorizontalPanel) inputAttendee.getParent();
+		inputAttendee.removeFromParent();
+		inputAttendee=new Button("Create Attendee");
+		inputAttendeeHPanel.insert(inputAttendee,0);
+		
+		HorizontalPanel hPanelInfoBox = (HorizontalPanel) submit.getParent();
+		submit.removeFromParent();
+		submit= new Button("Apply All Changes");
+		//hPanelInfoBox.insert(submit,2);
+		hPanelInfoBox.insert(submit,2);
+		
+		//set button 
+		addToEvent.setVisible(false);
+		loadOrganizerAttendee.setVisible(true);
+		removeFromEvent.setVisible(false);
+		loadEventAttendee.setVisible(true);
+		sendEmailPop.setEnabled(false);
+		inputAttendeePop.setEnabled(false);
+		submit.setEnabled(false);
 	};
 
 	static void removeAttendeeFromEventAttendeeInfoList(String id) {
@@ -500,7 +565,7 @@ public class AttendeeManager implements EntryPoint {
 
 		eventAttendeeTreeItem=new TreeItem(new HTML("<b>"+eventName+"</b>"));
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
-		eventService.getEventsByOrganizerId(organizerID, new AsyncCallback<List<Event>>(){
+		eventService.getEventsByOrganizerIdAndStatus(organizerID,0, new AsyncCallback<List<Event>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -555,8 +620,11 @@ public class AttendeeManager implements EntryPoint {
 								
 								
 								getOrganizerAttendeeList();
+								loadOrganizerAttendee.setVisible(false);
+								addToEvent.setVisible(true);
 							}
 						});
+			
 			}});
 		//get all event id of certain organizer
 	
@@ -583,6 +651,11 @@ public class AttendeeManager implements EntryPoint {
 									String name = attendeeList.get(i).getName();
 									setAttendeeInEventTree(id, name, info);
 								}
+								removeFromEvent.setVisible(true);
+								loadEventAttendee.setVisible(false);
+								sendEmailPop.setEnabled(true);
+								inputAttendeePop.setEnabled(true);
+								submit.setEnabled(true);
 							}
 						});
 			}});
@@ -675,7 +748,7 @@ public class AttendeeManager implements EntryPoint {
 							@Override
 							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-								infoBox.setText("error:" + caught);
+								infoBox.setText("error while removing:" + caught);
 							}
 
 							@Override
@@ -703,9 +776,10 @@ public class AttendeeManager implements EntryPoint {
 						});
 
 				infoBox.setText("info of eventAttendeeList will appear here");
-				clearEverythingBeforeJumpBack();
-				RootPanel.get("XuXuan").setVisible(false);
-				RootPanel.get("XiaYuan").setVisible(true);
+				clearSthForReusing();
+				//clearEverythingBeforeJumpBack();
+				//RootPanel.get("XuXuan").setVisible(false);
+				//RootPanel.get("XiaYuan").setVisible(true);
 			}
 
 		});
