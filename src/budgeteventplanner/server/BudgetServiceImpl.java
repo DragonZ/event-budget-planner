@@ -116,7 +116,7 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
   public List<Budget> getBudgetByOrganizerId(String organizerId) {
     List<Budget> budgetList = Lists.newArrayList();
     Objectify ofy = ObjectifyService.begin();
-    Query<Event> queryEvent = ofy.query(Event.class).filter("ogranizerId", organizerId);
+    Query<Event> queryEvent = ofy.query(Event.class).filter("organizerId", organizerId);
     for (Event event : queryEvent) {
       Query<Budget> queryBudgetItem = ofy.query(
           Budget.class).filter("eventId", event.getEventId());
