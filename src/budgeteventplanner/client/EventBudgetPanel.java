@@ -161,8 +161,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 		Label l2 = new Label("Left Place Holder");
 		l2.setWidth("100px");
-		budget_h_panel.add(l2);
 		budget_h_panel.add(budget_right_v_panel);
+		budget_h_panel.add(new Label("TODO for BB"));
 
 		budget_add.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -622,6 +622,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		panel.add(update);
 		d.add(panel);
 		d.setAnimationEnabled(true);
+		//d.adopt(details);
 		d.center();
 		d.show();
 		
