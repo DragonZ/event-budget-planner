@@ -31,219 +31,200 @@ import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class DatabaseTestPage implements EntryPoint {
-	private final BudgetServiceAsync budgetService = GWT
-	.create(BudgetService.class);
+  private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
 
-	List<Pair<String, Double>> datatable = Lists.newArrayList();
-	PieChart pie;
-	BarChart bar;
-	TextBox changeValueBox;
-	Button modifyButton;
-	int selectionID;
-	@Override
-	public void onModuleLoad() {
+  List<Pair<String, Double>> datatable = Lists.newArrayList();
+  PieChart pie;
+  BarChart bar;
+  TextBox changeValueBox;
+  Button modifyButton;
+  int selectionID;
 
-		// Create the popup dialog box
-		final DialogBox dialogBox = new DialogBox();
-		dialogBox.setText("Remote Procedure Call");
-		dialogBox.setAnimationEnabled(true);
-		final Button closeButton = new Button("Close");
-		// We can set the id of a widget by accessing its Element
-		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
-		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-		dialogVPanel.add(textToServerLabel);
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogVPanel.add(closeButton);
-		dialogBox.setWidget(dialogVPanel);
+  @Override
+  public void onModuleLoad() {
 
-		closeButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-			}
-		});
+    // Create the popup dialog box
+    final DialogBox dialogBox = new DialogBox();
+    dialogBox.setText("Remote Procedure Call");
+    dialogBox.setAnimationEnabled(true);
+    final Button closeButton = new Button("Close");
+    // We can set the id of a widget by accessing its Element
+    closeButton.getElement().setId("closeButton");
+    final Label textToServerLabel = new Label();
+    final HTML serverResponseLabel = new HTML();
+    VerticalPanel dialogVPanel = new VerticalPanel();
+    dialogVPanel.addStyleName("dialogVPanel");
+    dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
+    dialogVPanel.add(textToServerLabel);
+    dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
+    dialogVPanel.add(serverResponseLabel);
+    dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+    dialogVPanel.add(closeButton);
+    dialogBox.setWidget(dialogVPanel);
 
-		final Button drawButton = new Button("Draw");
-		drawButton.setEnabled(false);
-		RootPanel.get("databaseContainer").add(drawButton);
+    closeButton.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        dialogBox.hide();
+      }
+    });
 
-		final Button reloadButton = new Button("reload");
-		reloadButton.setEnabled(false);
-		RootPanel.get("databaseContainer").add(reloadButton);
+    final Button drawButton = new Button("Draw");
+    drawButton.setEnabled(false);
+    RootPanel.get("databaseContainer").add(drawButton);
 
-		budgetService.getLimitsByBudgetId(
-				"7C1A90FE-A1A2-41A5-8A48-AB7746201829",
-				new AsyncCallback<List<Pair<String, Double>>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("failure");
-					}
+    final Button reloadButton = new Button("reload");
+    reloadButton.setEnabled(false);
+    RootPanel.get("databaseContainer").add(reloadButton);
 
-					@Override
-					public void onSuccess(List<Pair<String, Double>> result) {
-						datatable.addAll(result);
-						drawButton.setEnabled(true);
-					}
-				});
+    budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
+        new AsyncCallback<List<Pair<String, Double>>>() {
+          @Override
+          public void onFailure(Throwable caught) {
+          }
 
-		changeValueBox = new TextBox();
-		changeValueBox.setName("Enter new value");
-		changeValueBox.setEnabled(false);
-		RootPanel.get("databaseContainer").add(changeValueBox);
-		
-		modifyButton = new Button("modify");
-		modifyButton.setEnabled(false);
-		RootPanel.get("databaseContainer").add(modifyButton);
-		
-		
-		
-		drawButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Runnable onLoadCallback = new Runnable() {
-					public void run() {
-						try{
-							RootPanel.get("databaseContainer").remove(pie);
-							RootPanel.get("databaseContainer").remove(bar);
-						}catch(Exception e){}
-						
-						
-						DataTable data = DataTable.create();
+          @Override
+          public void onSuccess(List<Pair<String, Double>> result) {
+            datatable.addAll(result);
+            drawButton.setEnabled(true);
+          }
+        });
 
-						if (data.getNumberOfColumns() == 0) {
-							data.addColumn(ColumnType.STRING, "Category");
-							data.addColumn(ColumnType.NUMBER, "Limit");
-						}
+    changeValueBox = new TextBox();
+    changeValueBox.setName("Enter new value");
+    changeValueBox.setEnabled(false);
+    RootPanel.get("databaseContainer").add(changeValueBox);
 
-						for (Pair<String, Double> pair : datatable) {
-							data.addRow();
-							data.setValue(data.getNumberOfRows() - 1, 0,
-									pair.getA());
-							data.setValue(data.getNumberOfRows() - 1, 1,
-									pair.getB());
-						}
+    modifyButton = new Button("modify");
+    modifyButton.setEnabled(false);
+    RootPanel.get("databaseContainer").add(modifyButton);
 
-						Panel panel = RootPanel.get("databaseContainer");
-						
-						
-						pie = new PieChart(data, createOptions());
-						bar = new BarChart(data, createOptions());
-						
-						pie.addSelectHandler(createSelectHandler(pie));
-						bar.addSelectHandler(createSelectHandler(bar));
-						
-						panel.add(pie);
-						panel.add(bar);
-						
-					}
-				};
-				VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
-				
-				reloadButton.setEnabled(true);
-			}
-		});
+    drawButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Runnable onLoadCallback = new Runnable() {
+          public void run() {
+            try {
+              RootPanel.get("databaseContainer").remove(pie);
+              RootPanel.get("databaseContainer").remove(bar);
+            } catch (Exception e) {
+            }
 
-		modifyButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Pair<String, Double> newPair = 
-					new Pair<String, Double>(datatable.get(selectionID).getA(), 
-							Double.parseDouble(changeValueBox.getText()));
-				
-				datatable.set(selectionID, newPair);
-			}
-		});
-		
-		
-		reloadButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
-						new AsyncCallback<List<Pair<String, Double>>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("failure");
-					}
+            DataTable data = DataTable.create();
 
-					@Override
-					public void onSuccess(List<Pair<String, Double>> result) {
-						datatable.clear();
-						datatable.addAll(result);
-//						DomEvent.fireNativeEvent(nativeEvent, this);
-//						NativeEvent createClickEvent = new GwtEvent();
-						Panel panel = RootPanel.get("databaseContainer");
-						
-					}
-				});
-			}
-		});
-		
-		
-		
-		
-		
-		
-	}
+            if (data.getNumberOfColumns() == 0) {
+              data.addColumn(ColumnType.STRING, "Category");
+              data.addColumn(ColumnType.NUMBER, "Limit");
+            }
 
-	private Options createOptions() {
-		Options options = Options.create();
-		options.setWidth(400);
-		options.setHeight(240);
-		options.setTitle("My Daily Activities");
-		options.set("is3D", true);
-		return options;
-	}
+            for (Pair<String, Double> pair : datatable) {
+              data.addRow();
+              data.setValue(data.getNumberOfRows() - 1, 0, pair.getA());
+              data.setValue(data.getNumberOfRows() - 1, 1, pair.getB());
+            }
 
-	private SelectHandler createSelectHandler(final CoreChart chart) {
-		return new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				changeValueBox.setEnabled(true);
-				modifyButton.setEnabled(true);
-				
-				
-				String message = "";
+            Panel panel = RootPanel.get("databaseContainer");
 
-				// May be multiple selections.
-				JsArray<Selection> selections = chart.getSelections();
+            pie = new PieChart(data, createOptions());
+            bar = new BarChart(data, createOptions());
 
-				for (int i = 0; i < selections.length(); i++) {
-					// add a new line for each selection
-					message += i == 0 ? "" : "\n";
+            pie.addSelectHandler(createSelectHandler(pie));
+            bar.addSelectHandler(createSelectHandler(bar));
 
-					Selection selection = selections.get(i);
+            panel.add(pie);
+            panel.add(bar);
 
-					if (selection.isCell()) {
-						// isCell() returns true if a cell has been selected.
+          }
+        };
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
 
-						// getRow() returns the row number of the selected cell.
-						int row = selection.getRow();
-						// getColumn() returns the column number of the selected
-						// cell.
-						int column = selection.getColumn();
-						message += "cell " + row + ":" + column + " selected";
-						
-					} else if (selection.isRow()) {
-						// isRow() returns true if an entire row has been
-						// selected.
+        reloadButton.setEnabled(true);
+      }
+    });
 
-						// getRow() returns the row number of the selected row.
-						int row = selection.getRow();
-						message += "row " + row + " selected";
-						selectionID = row;
-					} else {
-						// unreachable
-						message += "Pie chart selections should be either row selections or cell selections.";
-						message += "  Other visualizations support column selections as well.";
-					}
-				}
-				Window.alert(message);
-			}
-		};
-	}
+    modifyButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Pair<String, Double> newPair = new Pair<String, Double>(datatable.get(selectionID).getA(),
+            Double.parseDouble(changeValueBox.getText()));
+
+        datatable.set(selectionID, newPair);
+      }
+    });
+
+    reloadButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
+            new AsyncCallback<List<Pair<String, Double>>>() {
+              @Override
+              public void onFailure(Throwable caught) {
+                Window.alert("failure");
+              }
+
+              @Override
+              public void onSuccess(List<Pair<String, Double>> result) {
+                datatable.clear();
+                datatable.addAll(result);
+              }
+            });
+      }
+    });
+
+  }
+
+  private Options createOptions() {
+    Options options = Options.create();
+    options.setWidth(400);
+    options.setHeight(240);
+    options.setTitle("My Daily Activities");
+    options.set("is3D", true);
+    return options;
+  }
+
+  private SelectHandler createSelectHandler(final CoreChart chart) {
+    return new SelectHandler() {
+      @Override
+      public void onSelect(SelectEvent event) {
+        changeValueBox.setEnabled(true);
+        modifyButton.setEnabled(true);
+
+        String message = "";
+
+        // May be multiple selections.
+        JsArray<Selection> selections = chart.getSelections();
+
+        for (int i = 0; i < selections.length(); i++) {
+          // add a new line for each selection
+          message += i == 0 ? "" : "\n";
+
+          Selection selection = selections.get(i);
+
+          if (selection.isCell()) {
+            // isCell() returns true if a cell has been selected.
+
+            // getRow() returns the row number of the selected cell.
+            int row = selection.getRow();
+            // getColumn() returns the column number of the selected
+            // cell.
+            int column = selection.getColumn();
+            message += "cell " + row + ":" + column + " selected";
+
+          } else if (selection.isRow()) {
+            // isRow() returns true if an entire row has been
+            // selected.
+
+            // getRow() returns the row number of the selected row.
+            int row = selection.getRow();
+            message += "row " + row + " selected";
+            selectionID = row;
+          } else {
+            // unreachable
+            message += "Pie chart selections should be either row selections or cell selections.";
+            message += "  Other visualizations support column selections as well.";
+          }
+        }
+        Window.alert(message);
+      }
+    };
+  }
 }

@@ -40,7 +40,9 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 
 		User user = ofy.query(User.class).filter("email", email).get();
 
-		if (encrypted.equals(user.getPassword())) {
+		if (user == null) {
+		  return -1;
+		} else if (encrypted.equals(user.getPassword())) {
 			return user.getRole();
 		} else {
 			return -1;
