@@ -231,11 +231,11 @@ public class VendorHomePage implements EntryPoint {
     existingService.getColumnFormatter().setWidth(2, "650px");
     existingService.getColumnFormatter().setWidth(3, "150px");
     existingService.getColumnFormatter().setWidth(4, "150px");
-    existingService.setWidget(0, 0, new Label("Category"));
-    existingService.setWidget(0, 1, new Label("Service"));
-    existingService.setWidget(0, 2, new Label("Description"));
-    existingService.setWidget(0, 3, new Label("Price"));
-    existingService.setWidget(0, 4, new Label("Option"));
+    existingService.setWidget(0, 0, new HTML("<b>Category</b>"));
+    existingService.setWidget(0, 1, new HTML("<b>Service</b>"));
+    existingService.setWidget(0, 2, new HTML("<b>Description</b>"));
+    existingService.setWidget(0, 3, new HTML("<b>Price</b>"));
+    existingService.setWidget(0, 4, new HTML("<b>Option</b>"));
 
     // String userID = Cookies.getCookie("USERNAME");
     String userID = "lzhen";
