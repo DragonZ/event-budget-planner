@@ -19,32 +19,22 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.visualization.client.AbstractDataTable;
+import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.events.SelectHandler;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class DatabaseTestPage implements EntryPoint {
-
-  private final DataServiceAsync dataService = GWT.create(DataService.class);
-
-  // private final UserServiceAsync userService = GWT.create(UserService.class);
-
-  private final EventServiceAsync eventService = GWT.create(EventService.class);
-
   private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
+  
+  List<Pair<String, Double>> datatable = Lists.newArrayList();
 
-  private final List<String> categoryName = Lists.newArrayList();
-
-  private final List<Double> limitList = Lists.newArrayList();
-
-  final Boolean loaded = new Boolean(true);
   @Override
   public void onModuleLoad() {
+
     // Create the popup dialog box
     final DialogBox dialogBox = new DialogBox();
     dialogBox.setText("Remote Procedure Call");
@@ -70,21 +60,48 @@ public class DatabaseTestPage implements EntryPoint {
       }
     });
 
-    Runnable onLoadCallback = new Runnable() {
-      public void run() {
-        Panel panel = RootPanel.get();
+    final Button drawButton = new Button("Draw");
+    drawButton.setEnabled(false);
+    RootPanel.get("databaseContainer").add(drawButton);
 
-        // Create a pie chart visualization.
-        PieChart pie = new PieChart(createTable(), createOptions());
+    budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
+        new AsyncCallback<List<Pair<String, Double>>>() {
+          @Override
+          public void onFailure(Throwable caught) {
+          }
 
-        pie.addSelectHandler(createSelectHandler(pie));
-        panel.add(pie);
+          @Override
+          public void onSuccess(List<Pair<String, Double>> result) {
+            datatable.addAll(result);
+            drawButton.setEnabled(true);
+          }
+        });
+
+    drawButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Runnable onLoadCallback = new Runnable() {
+          public void run() {
+            DataTable data = DataTable.create();
+
+            data.addColumn(ColumnType.STRING, "Category");
+            data.addColumn(ColumnType.NUMBER, "Limit");
+
+            for (Pair<String, Double> pair : datatable) {
+              data.addRow();
+              data.setValue(data.getNumberOfRows() - 1, 0, pair.getA());
+              data.setValue(data.getNumberOfRows() - 1, 1, pair.getB());
+            }
+
+            Panel panel = RootPanel.get("databaseContainer");
+            PieChart pie = new PieChart(data, createOptions());
+            pie.addSelectHandler(createSelectHandler(pie));
+            panel.add(pie);
+          }
+        };
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
       }
-    };
-
-    // Load the visualization api, passing the onLoadCallback to be called
-    // when loading is done.
-    VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+    });
   }
 
   private Options createOptions() {
@@ -92,6 +109,7 @@ public class DatabaseTestPage implements EntryPoint {
     options.setWidth(400);
     options.setHeight(240);
     options.setTitle("My Daily Activities");
+    options.set("is3D", true);
     return options;
   }
 
@@ -134,40 +152,5 @@ public class DatabaseTestPage implements EntryPoint {
         Window.alert(message);
       }
     };
-  }
-
-  private AbstractDataTable createTable() {
-    
-    DataTable data = DataTable.create();
-    budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
-        new AsyncCallback<List<Pair<String, Double>>>() {
-          @Override
-          public void onFailure(Throwable caught) {
-          }
-
-          @Override
-          public void onSuccess(List<Pair<String, Double>> result) {
-            for (Pair<String, Double> pair : result) {
-              Window.alert("categoryName:" + pair.getA());
-              Window.alert("limit:" + pair.getB());
-              categoryName.add(pair.getA());
-              limitList.add(pair.getB());
-            }
-          }
-        });
-    
-      data.addColumn(ColumnType.STRING, "Category");
-      data.addColumn(ColumnType.NUMBER, "Limit");
-    
-      Window.alert("categoryNameSize:" + categoryName.size());
-      data.addRows(categoryName.size());
-      
-      for (int i = 0; i < categoryName.size(); i++) {
-        //Window.alert("categoryName:" + categoryName.get(i));
-        //Window.alert("limit:" + limitList.get(i));
-        data.setValue(i, 0, categoryName.get(i));
-        data.setValue(i, 1, limitList.get(i));
-      }
-    return data;
   }
 }
