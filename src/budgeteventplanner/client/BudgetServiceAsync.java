@@ -9,7 +9,7 @@ import budgeteventplanner.shared.Pair;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface BudgetServiceAsync {
-	void createBudget(String eventId, String name,
+	void createBudget(String eventId, String name, Double limit,
 			AsyncCallback<Budget> callback);
 
 	void addBudgetItemToBudget(String categoryId, String budgetId,

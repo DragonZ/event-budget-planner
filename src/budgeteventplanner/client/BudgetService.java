@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("budget")
 public interface BudgetService extends RemoteService {
-	Budget createBudget(String eventId, String name);
+	Budget createBudget(String eventId, String name, Double limit);
 
 	BudgetItem addBudgetItemToBudget(String categoryId, String budgetId,
 			Double limit);
