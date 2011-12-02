@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import budgeteventplanner.client.entity.Attendee;
+import budgeteventplanner.client.entity.Budget;
 import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
@@ -22,8 +23,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -32,9 +37,12 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
@@ -55,7 +63,9 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
 	
 	private final VendorServiceAsync vendorService = GWT.create(VendorService.class);
-
+    private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
+	Tree staticTree;
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onModuleLoad() {
@@ -104,73 +114,112 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		budget_h_panel.setSize("100%", "500px");
 		VerticalPanel budget_right_v_panel = new VerticalPanel();
 
-		final FlexTable budget_table = new FlexTable();
+//		final FlexTable budget_table = new FlexTable();
+//
+//		budget_table.setSize("1000px", "100%");
+//		budget_table.setText(0, 0, "Budget ID");
+//		budget_table.getCellFormatter().setWidth(0, 0, "20%");
+//		budget_table.setText(0, 1, "Budget Name");
+//		budget_table.getCellFormatter().setWidth(0, 1, "20%");
+//		budget_table.setText(0, 2, "Event Name");
+//		budget_table.getCellFormatter().setWidth(0, 2, "20%");
+//		budget_table.setText(0, 3, "Limit");
+//		budget_table.getCellFormatter().setWidth(0, 3, "20%");
+//		budget_table.setText(0, 4, "Modify");
+//		budget_table.getCellFormatter().setWidth(0, 4, "20%");
+//		budget_table.setText(0, 5, "Delete");
+//		budget_table.getCellFormatter().setWidth(0, 5, "20%");
+//
+//		int budget_row = 3;
+//		for (int i = 1; i <= budget_row; i++) {
+//			budget_table.setWidget(i, 0, new Label("Budget ID from Server"));
+//			budget_table.setWidget(i, 1, new Label("Budget Name from Server"));
+//			budget_table.setWidget(i, 2, new Label("Event Name from Server"));
+//			budget_table.setWidget(i, 3, new Label("Budget Limit from Server"));
+//
+//			
+//			final Button budget_mod = new Button("Modify");
+//			budget_table.setWidget(i, 4, budget_mod);
+//			final Button budget_del = new Button("Delete");
+//			budget_table.setWidget(i, 5, budget_del);
+//
+//			budget_mod.addClickHandler(new ClickHandler() {
+//				public void onClick(ClickEvent event) {
+//					int row;
+//					int total_event = budget_table.getRowCount();
+//					for (row = 1; row <= total_event; row++) {
+//						if (budget_table.getWidget(row, 4).equals(budget_mod))
+//							break;
+//					}
+//					budget_pop_up(1, row, budget_table);
+//				}
+//			});
+//
+//			budget_del.addClickHandler(new ClickHandler() {
+//				public void onClick(ClickEvent event) {
+//					int temp_r;
+//					int total_r = budget_table.getRowCount();
+//					for (temp_r = 1; temp_r <= total_r; temp_r++) {
+//						if (budget_table.getWidget(temp_r, 5)
+//								.equals(budget_del))
+//							break;
+//					}
+//					budget_table.removeRow(temp_r);
+//				}
+//			});
+//		}
 
-		budget_table.setSize("1000px", "100%");
-		budget_table.setText(0, 0, "Budget ID");
-		budget_table.getCellFormatter().setWidth(0, 0, "20%");
-		budget_table.setText(0, 1, "Budget Name");
-		budget_table.getCellFormatter().setWidth(0, 1, "20%");
-		budget_table.setText(0, 2, "Event Name");
-		budget_table.getCellFormatter().setWidth(0, 2, "20%");
-		budget_table.setText(0, 3, "Limit");
-		budget_table.getCellFormatter().setWidth(0, 3, "20%");
-		budget_table.setText(0, 4, "Modify");
-		budget_table.getCellFormatter().setWidth(0, 4, "20%");
-		budget_table.setText(0, 5, "Delete");
-		budget_table.getCellFormatter().setWidth(0, 5, "20%");
+		staticTree = new Tree();
+        staticTree.setAnimationEnabled(true);
+        staticTree.ensureDebugId("cwTree-staticTree");
+        ScrollPanel staticTreeWrapper = new ScrollPanel(staticTree);
+        staticTreeWrapper.ensureDebugId("cwTree-staticTree-Wrapper");
+        staticTreeWrapper.setWidth("300px");
 
-		int budget_row = 3;
-		for (int i = 1; i <= budget_row; i++) {
-			budget_table.setWidget(i, 0, new Label("Budget ID from Server"));
-			budget_table.setWidget(i, 1, new Label("Budget Name from Server"));
-			budget_table.setWidget(i, 2, new Label("Event Name from Server"));
-			budget_table.setWidget(i, 3, new Label("Budget Limit from Server"));
+        // Wrap the static tree in a DecoratorPanel
+        DecoratorPanel staticDecorator = new DecoratorPanel();
+        staticDecorator.setWidget(staticTreeWrapper);
+        
+        //TODO add existing budgets to the tree
+        final TreeItem budgetName = staticTree.addItem("Budget Name");
+        
+        budgetService.getBudgetByOrganizerId(organizerId, new AsyncCallback<List<Budget>>(){
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("fail!!!!!!1");
+              new DialogBox().setText("Remote Procedure Call - Failure");
+            }
 
-			
-			final Button budget_mod = new Button("Modify");
-			budget_table.setWidget(i, 4, budget_mod);
-			final Button budget_del = new Button("Delete");
-			budget_table.setWidget(i, 5, budget_del);
-
-			budget_mod.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					int row;
-					int total_event = budget_table.getRowCount();
-					for (row = 1; row <= total_event; row++) {
-						if (budget_table.getWidget(row, 4).equals(budget_mod))
-							break;
-					}
-					budget_pop_up(1, row, budget_table);
-				}
-			});
-
-			budget_del.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					int temp_r;
-					int total_r = budget_table.getRowCount();
-					for (temp_r = 1; temp_r <= total_r; temp_r++) {
-						if (budget_table.getWidget(temp_r, 5)
-								.equals(budget_del))
-							break;
-					}
-					budget_table.removeRow(temp_r);
-				}
-			});
-		}
-
+            @Override
+            public void onSuccess(List<Budget> result) {
+             for(Budget b : result)
+              {
+                  
+                  TreeItem item  = new TreeItem(b.getName());
+                  item.setTitle(b.getBudgetId());
+                  budgetName.addItem(item);
+                  
+              }
+            }
+        });
+        
+        staticTree.addSelectionHandler(new treeHandler<TreeItem>());
+        
 		Button budget_add = new Button("Add");
 		budget_right_v_panel.add(budget_add);
-		budget_right_v_panel.add(budget_table);
+		budget_right_v_panel.add(staticDecorator);
 
 		Label l2 = new Label("Left Place Holder");
 		l2.setWidth("100px");
-		budget_h_panel.add(l2);
+		//budget_h_panel.add(l2);
 		budget_h_panel.add(budget_right_v_panel);
+		Label tmp = new Label("TODO for Budget");
+        tmp.setWidth("1200px");
+        budget_h_panel.add(tmp);
 
 		budget_add.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				budget_pop_up(0, 0, budget_table);
+				budget_pop_up();
 			}
 		});
 
@@ -182,7 +231,26 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 		t_panel.selectTab(0);
 
+		}
+	
+	@SuppressWarnings("hiding")
+    public class treeHandler<TreeItem> implements SelectionHandler<TreeItem> {
+      public void onSelection(SelectionEvent<TreeItem> event) {
+         
+      }
 	}
+	
+ 
+ 
+  public void refreshBudgetTree(Tree staticTree)
+  {
+      staticTree = new Tree();
+      staticTree.setAnimationEnabled(true);
+      staticTree.ensureDebugId("cwTree-staticTree");
+      
+      //TODO get new budgets tree
+  }
+	
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
 
@@ -931,128 +999,190 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 
 	}
 
-	public void budget_pop_up(int f, int r, FlexTable e) {
-		final int flag = f;
-		final int row = r;
-		final FlexTable budget_table = e;
-		final DialogBox d = new DialogBox();
-		VerticalPanel panel = new VerticalPanel();
-		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+    public void budget_pop_up()
+    {
+       final DialogBox d = new DialogBox();
+       VerticalPanel panel = new VerticalPanel();
+       panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+       
+       FlexTable addBudgetTable = new FlexTable();
+       addBudgetTable.setWidget(0, 0, new Label("Budget Name:"));
+       final TextBox budget_name = new TextBox();
+       addBudgetTable.setWidget(0, 1, budget_name);
+       addBudgetTable.setWidget(1, 0, new Label("Event List:"));
+       final ListBox list = new ListBox();
+       addBudgetTable.setWidget(1, 1, list);
+       
+//		eventService
+//		.getEventsByOrganizerId(organizerId,
+//				new AsyncCallback<List<Event>>() {
+//			public void onFailure(Throwable caught) {
+//
+//			}
+//
+//			public void onSuccess(List<Event> result) {
+//				for (Event c : result)
+//				{
+//					list.addItem(c.getName());
+//				}
+//				categoryLoaded = true;
+//			}
+//		});
+       
+       addBudgetTable.setWidget(2, 0, new Label("Total Limit:"));
+       final TextBox budget_limit = new TextBox();
+       addBudgetTable.setWidget(2, 1, budget_limit);
 
-		Button add_row = new Button("Add Entry");
-
-		FlexTable upper_table = new FlexTable();
-		upper_table.setWidget(0, 0, new Label("Budget Name:"));
-		final TextBox budget_name = new TextBox();
-		final ListBox list = new ListBox();
-		upper_table.setWidget(0, 1, budget_name);
-		upper_table.setWidget(0, 2, add_row);
-
-		upper_table.getColumnFormatter().setWidth(0, "100px");
-		upper_table.getColumnFormatter().setWidth(1, "100px");
-		upper_table.getColumnFormatter().setWidth(2, "100px");
-
-		if (flag == 0) {
-			upper_table.setWidget(1, 0, new Label("Event List:"));
-			list.addItem("Event 1 From Server");
-			list.addItem("Event 2 from Server");
-			upper_table.setWidget(1, 1, list);
-		}
-
-		Button close_d = new Button("Close");
-		panel.add(close_d);
-		panel.add(upper_table);
-
-		final FlexTable table = new FlexTable();
-
-		table.setText(0, 0, "Description");
-		table.getCellFormatter().setWidth(0, 0, "500px");
-		table.setText(0, 1, "Category");
-		table.getCellFormatter().setWidth(0, 1, "300px");
-		table.setText(0, 2, "Amount");
-		table.getCellFormatter().setWidth(0, 2, "100px");
-		table.setText(0, 3, "Delete");
-		table.getCellFormatter().setWidth(0, 3, "100px");
-
-
-		Button save_d = new Button("Save");
-
-		panel.add(table);
-		panel.add(save_d);
-
+       Button addBudget = new Button("Add");
+       addBudgetTable.setWidget(3, 0, addBudget);
+       Button close_d = new Button("Close");
+       addBudgetTable.setWidget(3, 1, close_d);
+		
+		addBudgetTable.getColumnFormatter().setWidth(0, "100px");
+		addBudgetTable.getColumnFormatter().setWidth(1, "100px");
+		
+		panel.add(addBudgetTable);
+		
 		d.setWidget(panel);
 		d.setAnimationEnabled(true);
 
 		d.center();
 		d.show();
-
-		add_row.addClickHandler(new ClickHandler() {
+		
+		addBudget.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				final int row = table.getRowCount();
-				table.setWidget(row, 0, new TextBox());
-				ListBox lb_temp = new ListBox();
-				lb_temp.addItem("1000");
-				lb_temp.addItem("2000");
-				table.setWidget(row, 1, lb_temp);
-				TextBox tb_temp = new TextBox();
-				tb_temp.setWidth("20px");
-				table.setWidget(row, 2, tb_temp);
-				final Button del = new Button("Delete");
-				table.setWidget(row, 3, del);
-
-				del.addClickHandler(new ClickHandler() {
-					public void onClick(ClickEvent event) {
-						int temp_row = 1;
-						int total_row = table.getRowCount();
-						for (int i = 1; i < total_row; i++) {
-							if (table.getWidget(i, 3).equals(del)) {
-								temp_row = i;
-								break;
-							}
-						}
-						table.removeRow(temp_row);
-					}
-				});
 			}
 		});
-
+		
 		close_d.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				d.hide();
 			}
 		});
-		save_d.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				d.hide();
-				if (flag == 0) {
-					final int row_temp = table.getRowCount() + 1;
-					budget_table.setWidget(row_temp, 0, new Label(
-							"New ID generated by Server"));
-					budget_table.setWidget(row_temp, 1,
-							new Label(budget_name.getText()));
-					budget_table.setWidget(
-							row_temp,
-							2,
-							new Label(list.getItemText(list.getSelectedIndex())));
-					budget_table
-							.setWidget(row_temp, 3, new Label("New budget"));
-
-					final Button temp_mod = new Button("Modify");
-					budget_table.setWidget(row_temp, 4, temp_mod);
-					final Button temp_del = new Button("Delete");
-					budget_table.setWidget(row_temp, 5, temp_del);
-				} else if (flag == 1) {
-					final int row_temp = row;
-					budget_table.setWidget(row_temp, 1, new Label(budget_name.getText()));
-					budget_table.setWidget(row_temp, 2,	new Label(list.getItemText(list.getSelectedIndex())));
-					budget_table.setWidget(row_temp, 3, new Label("New budget"));
-				}
-				RootPanel.get("XiaYuan").clear();
-				onModuleLoad();
-				t_panel.selectTab(1);
-			}
-		});
-
-	}
+    }
+	
+//	public void budget_pop_up(int f, int r, FlexTable e) {
+//		final int flag = f;
+//		final int row = r;
+//		final FlexTable budget_table = e;
+//		final DialogBox d = new DialogBox();
+//		VerticalPanel panel = new VerticalPanel();
+//		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+//
+//		Button add_row = new Button("Add Entry");
+//
+//		FlexTable upper_table = new FlexTable();
+//		upper_table.setWidget(0, 0, new Label("Budget Name:"));
+//		final TextBox budget_name = new TextBox();
+//		final ListBox list = new ListBox();
+//		upper_table.setWidget(0, 1, budget_name);
+//		upper_table.setWidget(0, 2, add_row);
+//
+//		upper_table.getColumnFormatter().setWidth(0, "100px");
+//		upper_table.getColumnFormatter().setWidth(1, "100px");
+//		upper_table.getColumnFormatter().setWidth(2, "100px");
+//
+//		if (flag == 0) {
+//			upper_table.setWidget(1, 0, new Label("Event List:"));
+//			list.addItem("Event 1 From Server");
+//			list.addItem("Event 2 from Server");
+//			upper_table.setWidget(1, 1, list);
+//		}
+//
+//		Button close_d = new Button("Close");
+//		panel.add(close_d);
+//		panel.add(upper_table);
+//
+//		final FlexTable table = new FlexTable();
+//
+//		table.setText(0, 0, "Description");
+//		table.getCellFormatter().setWidth(0, 0, "500px");
+//		table.setText(0, 1, "Category");
+//		table.getCellFormatter().setWidth(0, 1, "300px");
+//		table.setText(0, 2, "Amount");
+//		table.getCellFormatter().setWidth(0, 2, "100px");
+//		table.setText(0, 3, "Delete");
+//		table.getCellFormatter().setWidth(0, 3, "100px");
+//
+//
+//		Button save_d = new Button("Save");
+//
+//		panel.add(table);
+//		panel.add(save_d);
+//
+//		d.setWidget(panel);
+//		d.setAnimationEnabled(true);
+//
+//		d.center();
+//		d.show();
+//
+//		add_row.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				final int row = table.getRowCount();
+//				table.setWidget(row, 0, new TextBox());
+//				ListBox lb_temp = new ListBox();
+//				lb_temp.addItem("1000");
+//				lb_temp.addItem("2000");
+//				table.setWidget(row, 1, lb_temp);
+//				TextBox tb_temp = new TextBox();
+//				tb_temp.setWidth("20px");
+//				table.setWidget(row, 2, tb_temp);
+//				final Button del = new Button("Delete");
+//				table.setWidget(row, 3, del);
+//
+//				del.addClickHandler(new ClickHandler() {
+//					public void onClick(ClickEvent event) {
+//						int temp_row = 1;
+//						int total_row = table.getRowCount();
+//						for (int i = 1; i < total_row; i++) {
+//							if (table.getWidget(i, 3).equals(del)) {
+//								temp_row = i;
+//								break;
+//							}
+//						}
+//						table.removeRow(temp_row);
+//					}
+//				});
+//			}
+//		});
+//
+//		close_d.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				d.hide();
+//			}
+//		});
+//		save_d.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				d.hide();
+//				if (flag == 0) {
+//					final int row_temp = table.getRowCount() + 1;
+//					budget_table.setWidget(row_temp, 0, new Label(
+//							"New ID generated by Server"));
+//					budget_table.setWidget(row_temp, 1,
+//							new Label(budget_name.getText()));
+//					budget_table.setWidget(
+//							row_temp,
+//							2,
+//							new Label(list.getItemText(list.getSelectedIndex())));
+//					budget_table
+//							.setWidget(row_temp, 3, new Label("New budget"));
+//
+//					final Button temp_mod = new Button("Modify");
+//					budget_table.setWidget(row_temp, 4, temp_mod);
+//					final Button temp_del = new Button("Delete");
+//					budget_table.setWidget(row_temp, 5, temp_del);
+//				} else if (flag == 1) {
+//					final int row_temp = row;
+//					budget_table.setWidget(row_temp, 1, new Label(budget_name.getText()));
+//					budget_table.setWidget(row_temp, 2,	new Label(list.getItemText(list.getSelectedIndex())));
+//					budget_table.setWidget(row_temp, 3, new Label("New budget"));
+//				}
+//				RootPanel.get("XiaYuan").clear();
+//				onModuleLoad();
+//				t_panel.selectTab(1);
+//			}
+//		});
+//
+//	}
 
 }
