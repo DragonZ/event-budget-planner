@@ -30,6 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -64,8 +65,18 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	
 	private final VendorServiceAsync vendorService = GWT.create(VendorService.class);
     private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
-	Tree staticTree;
-	
+	private Tree staticTree;
+	private Button modifyBudget;
+    // private Button deleteBudget;
+    private HorizontalPanel chartPanel;
+    private HorizontalPanel buttonPanel;
+    private Button draw1;
+    private Button draw2;
+    private Button draw3;
+    private FlexTable existingRequest;
+
+    private String sentBudgetID;
+    
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onModuleLoad() {
@@ -169,6 +180,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 //			});
 //		}
 
+		// Create a static tree and a container to hold it
 		staticTree = new Tree();
         staticTree.setAnimationEnabled(true);
         staticTree.ensureDebugId("cwTree-staticTree");
@@ -186,8 +198,8 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
         budgetService.getBudgetByOrganizerId(organizerId, new AsyncCallback<List<Budget>>(){
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("fail!!!!!!1");
-              new DialogBox().setText("Remote Procedure Call - Failure");
+                //Window.alert("fail!!!!!!1");
+              //new DialogBox().setText("Remote Procedure Call - Failure");
             }
 
             @Override
@@ -203,23 +215,68 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
             }
         });
         
-        staticTree.addSelectionHandler(new treeHandler<TreeItem>());
+        staticTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+            public void onSelection(SelectionEvent<TreeItem> event) {
+                TreeItem tmp = event.getSelectedItem();
+                sentBudgetID = tmp.getTitle();
+                Window.alert(sentBudgetID);
+            }
+        });
         
+		HorizontalPanel budget_left_v_panel_h_button_panel = new HorizontalPanel();
+        
+		FlexTable buttonTable = new FlexTable();
+		
 		Button budget_add = new Button("Add");
-		budget_right_v_panel.add(budget_add);
+		buttonTable.setWidget(0, 0, budget_add);
+		Button budget_delete = new Button("Delete");
+		buttonTable.setWidget(0, 2, budget_delete);
+		budget_left_v_panel_h_button_panel.add(budget_add);
+		
+		buttonTable.getColumnFormatter().setWidth(0, "100px");
+		buttonTable.getColumnFormatter().setWidth(1, "100px");
+		buttonTable.getColumnFormatter().setWidth(2, "30px");
+
+		budget_left_v_panel_h_button_panel.add(buttonTable);
+		
+		budget_right_v_panel.add(budget_left_v_panel_h_button_panel);
 		budget_right_v_panel.add(staticDecorator);
 
 		Label l2 = new Label("Left Place Holder");
 		l2.setWidth("100px");
-		//budget_h_panel.add(l2);
 		budget_h_panel.add(budget_right_v_panel);
+		
+        DockPanel chartField = new DockPanel();
+        buttonPanel = new HorizontalPanel();
+        chartPanel = new HorizontalPanel();
+        modifyBudget = new Button("Add Item");
+        // deleteBudget = new Button("Delete");
+        draw1 = new Button("Draw_1");
+        draw2 = new Button("Draw_2");
+        draw3 = new Button("Draw_3");
+        buttonPanel.add(modifyBudget);
+        // buttonPanel.add(deleteBudget);
+        buttonPanel.add(draw1);
+        buttonPanel.add(draw2);
+        buttonPanel.add(draw3);
+        chartField.add(buttonPanel, DockPanel.NORTH);
+        chartField.add(chartPanel, DockPanel.CENTER);
+		
 		Label tmp = new Label("TODO for Budget");
         tmp.setWidth("1200px");
-        budget_h_panel.add(tmp);
+        chartPanel.add(tmp);
 
+        budget_h_panel.add(chartField);
+        
 		budget_add.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				budget_pop_up();
+			}
+		});
+		
+		budget_delete.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				budget_delete();
 			}
 		});
 
@@ -242,14 +299,47 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	
  
  
-  public void refreshBudgetTree(Tree staticTree)
-  {
-      staticTree = new Tree();
-      staticTree.setAnimationEnabled(true);
-      staticTree.ensureDebugId("cwTree-staticTree");
-      
-      //TODO get new budgets tree
-  }
+	public void refreshBudgetTree() {
+        // Create a static tree and a container to hold it
+        staticTree = new Tree();
+        staticTree.setAnimationEnabled(true);
+        staticTree.ensureDebugId("cwTree-staticTree");
+
+        // Wrap the static tree in a DecoratorPanel
+
+        // TODO add existing budgets to the tree
+        final TreeItem budgetName = staticTree.addItem("Budget Name");
+
+        budgetService.getBudgetByOrganizerId(organizerId,
+                new AsyncCallback<List<Budget>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        //Window.alert("fail!!!!!!1");
+                        //new DialogBox().setText("Remote Procedure Call - Failure");
+                    }
+
+                    @Override
+                    public void onSuccess(List<Budget> result) {
+                        for (Budget b : result) {
+
+                            TreeItem item = new TreeItem(b.getName());
+                            item.setTitle(b.getBudgetId());
+                            budgetName.addItem(item);
+
+                        }
+                    }
+                });
+
+        // final Label tmp = new Label("TODO for BB");
+
+        staticTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+            public void onSelection(SelectionEvent<TreeItem> event) {
+                TreeItem tmp = event.getSelectedItem();
+                sentBudgetID = tmp.getTitle();
+                Window.alert(sentBudgetID);
+            }
+        });
+    }
 	
 	public void EventTableRefresh(FlexTable table) {
 		final FlexTable event_table = table;
@@ -1013,21 +1103,20 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
        final ListBox list = new ListBox();
        addBudgetTable.setWidget(1, 1, list);
        
-//		eventService
-//		.getEventsByOrganizerId(organizerId,
-//				new AsyncCallback<List<Event>>() {
-//			public void onFailure(Throwable caught) {
-//
-//			}
-//
-//			public void onSuccess(List<Event> result) {
-//				for (Event c : result)
-//				{
-//					list.addItem(c.getName());
-//				}
-//				categoryLoaded = true;
-//			}
-//		});
+		eventService
+		.getEventsByOrganizerId(organizerId,
+				new AsyncCallback<List<Event>>() {
+			public void onFailure(Throwable caught) {
+
+			}
+
+			public void onSuccess(List<Event> result) {
+				for (Event c : result)
+				{
+					list.addItem(c.getName());
+				}
+			}
+		});
        
        addBudgetTable.setWidget(2, 0, new Label("Total Limit:"));
        final TextBox budget_limit = new TextBox();
@@ -1038,6 +1127,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
        Button close_d = new Button("Close");
        addBudgetTable.setWidget(3, 1, close_d);
 		
+       
 		addBudgetTable.getColumnFormatter().setWidth(0, "100px");
 		addBudgetTable.getColumnFormatter().setWidth(1, "100px");
 		
@@ -1051,8 +1141,10 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		
 		addBudget.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				//budgetService
 			}
 		});
+		
 		
 		close_d.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -1061,6 +1153,10 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		});
     }
 	
+    public void budget_delete(){
+    	
+    }
+    
 //	public void budget_pop_up(int f, int r, FlexTable e) {
 //		final int flag = f;
 //		final int row = r;
