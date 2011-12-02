@@ -3,6 +3,7 @@ package budgeteventplanner.client;
 import java.util.List;
 
 import budgeteventplanner.client.entity.BudgetItem;
+import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.shared.Pair;
 
 import com.google.common.collect.Lists;
@@ -23,11 +24,13 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.events.SelectHandler;
+import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
@@ -36,10 +39,16 @@ import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 public class DatabaseTestPage implements EntryPoint {
 	private final BudgetServiceAsync budgetService = GWT
 	.create(BudgetService.class);
-
-	List<Pair<String, BudgetItem>> datatable = Lists.newArrayList();
+	
+	private final EventServiceAsync eventService = GWT
+	.create(EventService.class);
+	
+	List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
+	List<Pair<String, Double>> catCostPairList;	// <CategoryId, cost>
+	DataTable coreChartData;
 	PieChart pie;
 	BarChart bar;
+	Table table;
 	TextBox changeValueBox;
 	Button modifyButton;
 	int selectionID;
@@ -77,6 +86,10 @@ public class DatabaseTestPage implements EntryPoint {
 		final Button drawButton = new Button("Draw");
 		drawButton.setEnabled(false);
 		RootPanel.get("databaseContainer").add(drawButton);
+		
+		final Button sheetButton = new Button("Sheet");
+		sheetButton.setEnabled(false);
+		RootPanel.get("databaseContainer").add(sheetButton);
 
 		final Button reloadButton = new Button("reload");
 		reloadButton.setEnabled(false);
@@ -92,11 +105,17 @@ public class DatabaseTestPage implements EntryPoint {
 
 					@Override
 					public void onSuccess(List<Pair<String, BudgetItem>> result) {
-						datatable.addAll(result);
+						catBitPairList.addAll(result);
 						drawButton.setEnabled(true);
+						sheetButton.setEnabled(true);
 					}
 
 				});
+		
+		initializeServiceRequestList("09320BA8-961D-434B-85F1-6014F24DB9EC");
+		
+		
+		
 
 		changeValueBox = new TextBox();
 		changeValueBox.setName("Enter new value");
@@ -121,15 +140,15 @@ public class DatabaseTestPage implements EntryPoint {
 
 				if(event.getUnicodeCharCode()== 13 && !modificationBox.getText().isEmpty())
 				{
-					BudgetItem temp = datatable.get(selectionID).getB();
+					BudgetItem temp = catBitPairList.get(selectionID).getB();
 					temp = new BudgetItem.Builder(temp).setLimit(Double.parseDouble(modificationBox.getText())).build();
 					Window.alert(modificationBox.getText()+" entered");
 					
-					//Update data locally
-					datatable.set(selectionID, 
-							new Pair<String, BudgetItem>(datatable.get(selectionID).getA(), temp));
-					//Update data to Server
-					updateEntryToServer(datatable.get(selectionID).getB().getBudgetItemId(), Double.parseDouble(modificationBox.getText()));
+					//Update coreChartData locally
+					catBitPairList.set(selectionID, 
+							new Pair<String, BudgetItem>(catBitPairList.get(selectionID).getA(), temp));
+					//Update coreChartData to Server
+					updateEntryToServer(catBitPairList.get(selectionID).getB().getBudgetItemId(), Double.parseDouble(modificationBox.getText()));
 					
 					promptModifyBox.hide();
 				}
@@ -158,56 +177,95 @@ public class DatabaseTestPage implements EntryPoint {
 							RootPanel.get("databaseContainer").remove(bar);
 						}catch(Exception e){}
 						
-						
-						DataTable data = DataTable.create();
+						DataTable coreChartData = DataTable.create();
 
-						if (data.getNumberOfColumns() == 0) {
-							data.addColumn(ColumnType.STRING, "Category");
-							data.addColumn(ColumnType.NUMBER, "Limit");
+						if (coreChartData.getNumberOfColumns() == 0) {
+							coreChartData.addColumn(ColumnType.STRING, "Category");
+							coreChartData.addColumn(ColumnType.NUMBER, "Limit");
 						}
 
-						for (Pair<String, BudgetItem> pair : datatable) {
-							data.addRow();
-							data.setValue(data.getNumberOfRows() - 1, 0,
+						for (Pair<String, BudgetItem> pair : catBitPairList) {
+							coreChartData.addRow();
+							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 0,
 									pair.getA());
-							data.setValue(data.getNumberOfRows() - 1, 1,
+							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 1,
 									pair.getB().getLimit());
 						}
 
 						Panel panel = RootPanel.get("databaseContainer");
-						
-						
-						pie = new PieChart(data, createOptions());
-						bar = new BarChart(data, createOptions());
+						pie = new PieChart(coreChartData, createOptions());
+						bar = new BarChart(coreChartData, createOptions());
 						
 						pie.addSelectHandler(createSelectHandler(pie));
 						bar.addSelectHandler(createSelectHandler(bar));
 						
 						panel.add(pie);
 						panel.add(bar);
-						
 					}
 				};
-				VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
-				
+				VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);				
 				reloadButton.setEnabled(true);
 			}
 		});
 
+		sheetButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Runnable onLoadCallback = new Runnable() {
+					public void run() {
+						try{
+							RootPanel.get("databaseContainer").remove(table);
+						}catch(Exception e){}
+						
+						
+						coreChartData = DataTable.create();
+
+						if (coreChartData.getNumberOfColumns() == 0) {
+							coreChartData.addColumn(ColumnType.STRING, "Category");
+							coreChartData.addColumn(ColumnType.NUMBER, "Quantity");
+							coreChartData.addColumn(ColumnType.NUMBER, "Limit");
+						}
+
+						for (Pair<String, BudgetItem> pair : catBitPairList) {
+							coreChartData.addRow();
+							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 0,
+									pair.getA());
+							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 1,
+									mapToServiceRequestList(pair.getA()));
+							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 2,
+									pair.getB().getLimit());
+						}
+
+						Panel panel = RootPanel.get("databaseContainer");
+						
+						table = new Table(coreChartData, Table.Options.create());
+						panel.add(table);
+					}
+				};
+				VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
+				
+				reloadButton.setEnabled(true);
+			}
+		});
+		
+		
+		
+		
+		
 		modifyButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				BudgetItem temp = datatable.get(selectionID).getB();
+				BudgetItem temp = catBitPairList.get(selectionID).getB();
 				temp = new BudgetItem.Builder(temp).setLimit(Double.parseDouble(modificationBox.getText())).build();
 				
 				Pair<String, BudgetItem> newPair = 
-					new Pair<String, BudgetItem>(datatable.get(selectionID).getA(), temp);
-				//Update data locally
-				datatable.set(selectionID, newPair);
+					new Pair<String, BudgetItem>(catBitPairList.get(selectionID).getA(), temp);
+				//Update coreChartData locally
+				catBitPairList.set(selectionID, newPair);
 				
-				//Update data to Server
-				updateEntryToServer(datatable.get(selectionID).getA(), Double.parseDouble(modificationBox.getText()));
+				//Update coreChartData to Server
+				updateEntryToServer(catBitPairList.get(selectionID).getA(), Double.parseDouble(modificationBox.getText()));
 			}
 		});
 		
@@ -224,8 +282,8 @@ public class DatabaseTestPage implements EntryPoint {
 
 					@Override
 					public void onSuccess(List<Pair<String, BudgetItem>> result) {
-						datatable.clear();
-						datatable.addAll(result);
+						catBitPairList.clear();
+						catBitPairList.addAll(result);
 //						DomEvent.fireNativeEvent(nativeEvent, this);
 //						NativeEvent createClickEvent = new GwtEvent();
 						Panel panel = RootPanel.get("databaseContainer");
@@ -242,6 +300,13 @@ public class DatabaseTestPage implements EntryPoint {
 		
 	}
 
+	
+	private com.google.gwt.visualization.client.visualizations.Table.Options createTableOptions() {
+		com.google.gwt.visualization.client.visualizations.Table.Options options = com.google.gwt.visualization.client.visualizations.Table.Options.create();
+
+		return options;
+	}
+	
 	private Options createOptions() {
 		Options options = Options.create();
 		options.setWidth(400);
@@ -311,10 +376,52 @@ public class DatabaseTestPage implements EntryPoint {
 
 			@Override
 			public void onSuccess(Void result) {
-				Window.alert("server responds");
+	//			Window.alert("server responds");
 			}
 
 		});
 
+	}
+	
+	void initializeServiceRequestList(String eventId)
+	{
+		
+		budgetService.getSubtotalsByEventId(eventId, 
+				new AsyncCallback<List<Pair<String, Double>>>()
+				{
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("server update failure");						
+					}
+
+					@Override
+					public void onSuccess(List<Pair<String, Double>> result) {
+			//			Window.alert("server responds");
+						catCostPairList = result;					
+					}
+				});
+
+	}
+	private AbstractDataTable createTesetTable() {
+		DataTable coreChartData = DataTable.create();
+		coreChartData.addColumn(ColumnType.STRING, "Task");
+		coreChartData.addColumn(ColumnType.NUMBER, "Hours per Day");
+		coreChartData.addRows(2);
+		coreChartData.setValue(0, 0, "Work");
+		coreChartData.setValue(0, 1, 14);
+		coreChartData.setValue(1, 0, "Sleep");
+		coreChartData.setValue(1, 1, 10);
+		return coreChartData;
+	}
+	
+	private Double mapToServiceRequestList(String catId)
+	{
+		for (Pair<String, Double> e: catCostPairList) {
+			if(e.getA().endsWith(catId))
+				return e.getB();
+		}
+		return 0.0;
+		
 	}
 }
