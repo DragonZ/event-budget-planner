@@ -104,7 +104,7 @@ public class BudgetEventPlanner implements EntryPoint {
       }
     });
 
-    // Add a handler to open the signup dialog
+    // Add a handler to open the registration form
     btnSign.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         RootPanel.get("divPopup").clear();
