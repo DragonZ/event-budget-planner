@@ -177,7 +177,7 @@ public class DatabaseTestPage implements EntryPoint {
 							RootPanel.get("databaseContainer").remove(bar);
 						}catch(Exception e){}
 						
-						DataTable coreChartData = DataTable.create();
+						coreChartData = DataTable.create();
 
 						if (coreChartData.getNumberOfColumns() == 0) {
 							coreChartData.addColumn(ColumnType.STRING, "Category");
