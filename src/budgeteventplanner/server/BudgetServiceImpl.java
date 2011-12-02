@@ -127,7 +127,7 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
   @Override
   public void updateBudgetItemLimit(String budgetItemId, Double limit) {
 	  Objectify ofy = ObjectifyService.begin();
-	  BudgetItem newBudgetItem = ofy.query(BudgetItem.class).filter("budgetItemId", budgetItemId).get();
+	  BudgetItem newBudgetItem =ofy.get(new Key<BudgetItem>(BudgetItem.class, budgetItemId));
 	  newBudgetItem = new BudgetItem.Builder(newBudgetItem).setLimit(limit).build();
 	  ofy.put(newBudgetItem);
   }
