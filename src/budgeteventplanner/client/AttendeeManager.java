@@ -66,48 +66,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AttendeeManager implements EntryPoint {
 
-	/**
-	 * Create a remote service proxy to talk to the server-side Greeting
-	 * service.
-	 */
-	//private final static EventServiceAsync eventService = GWT
-		//	.create(AttendeeService.class);
 	private  static AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
 	private  static EventServiceAsync eventService = GWT
 	.create(EventService.class);
 
-	/*
-	 * static ArrayList<String> eventAttendeeEmailList =new ArrayList<String>();
-	 * static ArrayList<CheckBox> eventAttendeeList= new
-	 * ArrayList<CheckBox>();// = new Label[5]; static ArrayList<String>
-	 * readyToRemoveIdList=new ArrayList<String>(); static ArrayList<TreeItem>
-	 * readyToRemoveCheckBoxList=new ArrayList<TreeItem>(); static
-	 * ArrayList<String> readyToSendNotifyList=new ArrayList<String>();
-	 * 
-	 * static ArrayList<CheckBox> organizerAttendeeList= new
-	 * ArrayList<CheckBox>(); static ArrayList< ArrayList<String>>
-	 * readyToCreateList=new ArrayList< ArrayList<String>>(); static
-	 * ArrayList<ArrayList<String>> readyToMoveToEventList= new ArrayList<
-	 * ArrayList<String>>();
-	 */
-	// /////////////////////////////////////////////
-	static ArrayList<ArrayList<String>> leventAttendeeInfoList = new ArrayList<ArrayList<String>>();// the
-																									// email,
-																									// info,
-																									// name
-																									// in
-																									// the
-																									// list
+	// The Array Lists
+	static ArrayList<ArrayList<String>> leventAttendeeInfoList = new ArrayList<ArrayList<String>>();// the email, info, name, eventId of list
 	static ArrayList<CheckBox> leventAttendeeCheckBoxList = new ArrayList<CheckBox>();
 	static ArrayList<TreeItem> leventCheckedTreeItemList = new ArrayList<TreeItem>();
-	static ArrayList<ArrayList<String>> leventCheckedAttendeeInfoList = new ArrayList<ArrayList<String>>();// the
-																											// email,
-																											// info,
-																											// name
-																											// of
-																											// checked
-																										// box
+	static ArrayList<ArrayList<String>> leventCheckedAttendeeInfoList = new ArrayList<ArrayList<String>>();// the email, info, name, eventId of checked box
 	static ArrayList<String> leventReadyToRemoveAttendeeIdList = new ArrayList<String>();
 	static ArrayList<String> readyToSendNotifyList = new ArrayList<String>();
 //arrayList for organizer
@@ -117,48 +85,38 @@ public class AttendeeManager implements EntryPoint {
 	static ArrayList<ArrayList<String>> lorganizerCheckedAttendeeInfoList = new ArrayList<ArrayList<String>>();
 	static ArrayList<ArrayList<String>> lorganizerAllAttendeeInfoList = new ArrayList<ArrayList<String>>();//id name info eventId
 
-	// //////////////////////////////////////////////
 
-	final static TextArea infoBox = new TextArea();
-	final static TextArea emailContentBox = new TextArea();
-	static Button sendEmail = new Button("Send");// To attendees in This Event
-	static Button sendEmailPop = new Button("Send Email");
 	static HorizontalPanel hPanel = new HorizontalPanel();
 	static VerticalPanel vPanel = new VerticalPanel();
-	static ArrayList<String> AttendeeIDs = new ArrayList<String>();
-	static TreeItem eventAttendeeTreeItem ;//= new TreeItem(
-			//"Attendees in This Event");
+//	static ArrayList<String> AttendeeIDs = new ArrayList<String>();
+	
+	static TreeItem eventAttendeeTreeItem ;
 	static TreeItem organizerAttendeeTreeItem = new TreeItem(new HTML("<b>Attendees in other events</b>"));
-	static Button submit = new Button("Apply All Changes");
-	static Button addToEvent = new Button("Add");// checked attendees to current
-													// event
-	static Button removeFromEvent = new Button("Remove");// checked attendees
-															// from current
-															// event
 	static Tree eventAttendeeTree = new Tree();
 	static Tree organizerAttendeeTree = new Tree();
+	
 	Label nameLabel = new Label("*Name:");
 	static TextBox nameBox = new TextBox();
 	Label emailLabel = new Label("*Email:");
 	static TextBox emailBox = new TextBox();
+	DialogBox sendEmailBox = new DialogBox();
+	final static TextArea infoBox = new TextArea();
+	final static TextArea emailContentBox = new TextArea();
+	
 	static Button inputAttendee = new Button("Create Attendee");
 	static Button inputAttendeePop = new Button("Create Attendee");
-	DialogBox sendEmailBox = new DialogBox();
+	static Button submit = new Button("Apply All Changes");
+	static Button addToEvent = new Button("Add");// checked attendees to current event
+	static Button removeFromEvent = new Button("Remove");// checked attendee sfrom current event
+	static Button sendEmail = new Button("Send");// To attendees in This Event
+	static Button sendEmailPop = new Button("Send Email");
 	static DialogBox inputAttendeeBox = new DialogBox();
 	static Button loadOrganizerAttendee = new Button("Load");
 	static Button loadEventAttendee = new Button("Load");
 	static Button jmpbackToEvent = new Button("Back");
-	// static TreeItem rootCheckable =new TreeItem(new CheckBox("Attendees"));
-	// static VerticalPanel dialogVPanel = new VerticalPanel();
-	// final static DialogBox wusuowei = new DialogBox();
+
 	@Override
 	public void onModuleLoad() {
-
-		// dialogVPanel.addStyleName("dialogVPanel");
-		// dialogVPanel.add(new HTML("<b>Submit Successful!</b>"));
-		//
-		// dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		// wusuowei.setWidget(dialogVPanel);
 
 		VerticalPanel vPanelmain = new VerticalPanel();
 		hPanel.setSpacing(50);
@@ -207,8 +165,6 @@ public class AttendeeManager implements EntryPoint {
 
 		sendEmailBox.setText("Send Email");
 		VerticalPanel sendEmailVPanel = new VerticalPanel();
-		// sendEmailVPanel.setSize("100%", "100%");
-		// sendEmailVPanel.setSpacing(5);
 		emailContentBox.setSize("300px", "100px");
 		sendEmailVPanel.add(emailContentBox);
 		HorizontalPanel sendEmailHPanel = new HorizontalPanel();
@@ -219,7 +175,6 @@ public class AttendeeManager implements EntryPoint {
 		sendEmailHPanel.setSpacing(3);
 		sendEmailVPanel.add(sendEmailHPanel);
 		sendEmailBox.setWidget(sendEmailVPanel);
-		// vPanelmain.add(sendEmailVPanel);
 
 		inputAttendeeBox.setText("InPut Attendee Manuly");
 		VerticalPanel inputAttendeeVPanel = new VerticalPanel();
@@ -337,7 +292,6 @@ public class AttendeeManager implements EntryPoint {
 
 			}
 		});
-
 		addToEvent.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -375,17 +329,10 @@ public class AttendeeManager implements EntryPoint {
 			}});
 	
 		//edittingAttendees("A811938E-93C5-4373-8478-C8FC28E5C509","Build2 Demo", "YuanXia");
-		// showAttendees("ddd");
-		// TreeItem eventAttendeeTree =new TreeItem();
 
 	}
 
-	// test For new UI
-	/*
-	 * private static String getEmailFromInfo(String info){ int
-	 * start=info.indexOf("Email: "); start=start+7; int
-	 * end=info.indexOf("\nAddress:"); return info.substring(start, end); }
-	 */
+
 
 	static void clearOrganizerTree() {
 		// clean tree and clear lorganizerCheckedAttendeeInfoList
@@ -406,7 +353,7 @@ public class AttendeeManager implements EntryPoint {
 	}
 
 	
-	@SuppressWarnings("deprecation")
+//clear after Apply All(submit) for reusing
 	static void clearSthForReusing(){
 		leventCheckedTreeItemList.clear();
 		leventCheckedAttendeeInfoList.clear();
@@ -415,12 +362,14 @@ public class AttendeeManager implements EntryPoint {
 		lorganizerReadyToCreateList.clear();
 		lorganizerCheckedAttendeeInfoList.clear();
 		for(CheckBox cb : leventAttendeeCheckBoxList){
-			cb.setChecked(false);
+			cb.setValue(false);
 		}
 		for(CheckBox cb : lorganizerAttendeeCheckBoxList){
-			cb.setChecked(false);
+			cb.setValue(false);
 		}
 	}
+	
+//clear before jump back. clear all list, reset all listener, hide buttons
 	static void clearEverythingBeforeJumpBack() {
 		leventAttendeeInfoList.clear();
 		leventCheckedTreeItemList.clear();
@@ -476,7 +425,8 @@ public class AttendeeManager implements EntryPoint {
 		}
 	}
 
-/*	static void setAttendeeInOrganizerTree(String id, String name, String info) {
+/*May reuse later
+ * 	static void setAttendeeInOrganizerTree(String id, String name, String info) {
 		final ArrayList<String> attendeeInfo = new ArrayList<String>();
 		attendeeInfo.add(id);
 		attendeeInfo.add(name);
@@ -498,6 +448,7 @@ public class AttendeeManager implements EntryPoint {
 		});
 	}
 */
+	//Set attendee
 	static void setAttendeeInOrganizerTree(String id, String name, String info,TreeItem ti) {
 		final ArrayList<String> attendeeInfo = new ArrayList<String>();
 		attendeeInfo.add(id);
@@ -558,11 +509,11 @@ public class AttendeeManager implements EntryPoint {
 			organizerAttendeeTree.addItem(ti);
 		}
 	}
+	
+	//the entry used from event editing
 	public static void edittingAttendees(final String eventID, String eventName,
 			final String organizerID) {
-		// set organizer's attendeelist
-		
-
+		// set organizer's event
 		eventAttendeeTreeItem=new TreeItem(new HTML("<b>"+eventName+"</b>"));
 		eventAttendeeTree.addItem(eventAttendeeTreeItem);
 		eventService.getEventsByOrganizerIdAndStatus(organizerID,0, new AsyncCallback<List<Event>>(){
@@ -588,7 +539,7 @@ public class AttendeeManager implements EntryPoint {
 				//infoBox.setText(lorganizerOwnedEventInfoList.toString());
 				
 			}} );
-	
+	//load all attendees
 		loadOrganizerAttendee.addClickHandler(new ClickHandler(){
 
 			@Override
@@ -626,11 +577,8 @@ public class AttendeeManager implements EntryPoint {
 						});
 			
 			}});
-		//get all event id of certain organizer
-	
-		
-		
-		// set event's attendeelist
+
+		// load event's attendeelist
 		loadEventAttendee.addClickHandler(new ClickHandler(){
 
 			@Override
@@ -660,7 +608,7 @@ public class AttendeeManager implements EntryPoint {
 						});
 			}});
 		
-		// setListenerFor inputattendee
+		// setListenerFor inputattendee manuly
 		inputAttendee.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -688,6 +636,7 @@ public class AttendeeManager implements EntryPoint {
 
 			}
 		});
+		//the buttion for apply all changes
 		submit.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -711,7 +660,7 @@ public class AttendeeManager implements EntryPoint {
 							}
 
 						});
-				/*
+				/* may useful latere
 				 * attendeeService.sendEmailBatchByOrganizer(
 				 * lorganizerReadyToCreateList,1,new AsyncCallback<Void>(){
 				 * 
@@ -727,7 +676,7 @@ public class AttendeeManager implements EntryPoint {
 				 */
 				// remove readyToRemoveIdList
 
-				/*
+				/*may useful latere
 				 * attendeeService.sendEmailBatchByOrganizer(
 				 * leventReadyToRemoveAttendeeIdList,-1,new
 				 * AsyncCallback<Void>(){
@@ -786,6 +735,8 @@ public class AttendeeManager implements EntryPoint {
 
 	}
 
+	
+	// All the code below is used for old edition
 	/*
 	 * public static void edittingAttendees (final String eventID, String
 	 * organizerID){ attendeeService.getAttendeeListByOrganizerId(organizerID,
