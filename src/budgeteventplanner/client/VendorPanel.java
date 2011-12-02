@@ -1,9 +1,5 @@
-/**
- * 
- */
 package budgeteventplanner.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import budgeteventplanner.client.entity.Category;
@@ -11,7 +7,7 @@ import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.shared.Pair;
 
-import com.google.gwt.core.client.EntryPoint;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -19,6 +15,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -35,27 +32,13 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * @author lzhen
- * 
- */
-public class VendorHomePage implements EntryPoint {
-
-  // server communication
+public class VendorPanel extends Composite {
   private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
+  private final VendorServiceAsync vendorService = GWT.create(VendorService.class);
 
-  private final VendorServiceAsync vendorServiceProvider = GWT.create(VendorService.class);
-
-  //private static final Logger log = Logger.getLogger(VendorHomePage.class.getName());
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
-   */
   TabPanel tab;
 
-  DockPanel vendorPage;
+  DockPanel panelServiceRequest;
   Tree eventFolders;
   TreeItem pendingEvent;
   TreeItem acceptedEvent;
@@ -64,11 +47,10 @@ public class VendorHomePage implements EntryPoint {
   // TreeItem eventHistory;
   // CAN DO
 
-  DockPanel vendorService;
+  DockPanel panelService;
   FlexTable existingService;
   HorizontalPanel addPanel;
   ListBox category;
-  // TODO
   TextBox service;
   TextArea description;
   TextBox price;
@@ -77,21 +59,19 @@ public class VendorHomePage implements EntryPoint {
   Hyperlink acceptHyperlink[];
   Hyperlink ignoreHyperlink[];
   Hyperlink viewHyperlink[];
-  ArrayList<String> serviceRequestID;
-  // ArrayList<String> categoryList;
+  List<String> serviceRequestId;
 
   Hyperlink deleteHyperlink[];
   String[] deleteServiceID;
   String[] displayCategoryID;
   String categoryName;
 
-  @Override
-  public void onModuleLoad() {
+  public VendorPanel() {
 
-    tab = new TabPanel(); // the bottom tab panel for vendor page
+    tab = new TabPanel(); // the top panel for vendor page
 
-    vendorPage = new DockPanel(); // vendor home page panel
-    vendorService = new DockPanel(); // vendor service management page panel
+    panelServiceRequest = new DockPanel(); // vendor home page panel
+    panelService = new DockPanel(); // vendor service management page panel
     addPanel = new HorizontalPanel(); // nested panel in the service panel
 
     eventFolders = new Tree(); // vendor home page folders
@@ -116,13 +96,9 @@ public class VendorHomePage implements EntryPoint {
     // size issue to be done
 
     existingService = new FlexTable(); // table for service management page
-    // initializeServiceTable(); //new method to initialize the service
-    // table
-    //refreshExistingService();
-    //refreshExistingService();
 
-    vendorPage.add(eventFolders, DockPanel.WEST);
-    vendorPage.add(events, DockPanel.EAST);
+    panelServiceRequest.add(eventFolders, DockPanel.WEST);
+    panelServiceRequest.add(events, DockPanel.EAST);
 
     category = new ListBox(); // get category from server
     initializeCategory();
@@ -133,7 +109,8 @@ public class VendorHomePage implements EntryPoint {
     // description.setCharacterWidth(80); optional size method
     description.setWidth("600px");
     description.setVisibleLines(1);
-    addService = new Button("ADD");
+    addService = new Button("Add");
+    
     addService.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
 
@@ -161,7 +138,7 @@ public class VendorHomePage implements EntryPoint {
             double sentPrice = Double.parseDouble(price.getText());
 
             // add to server
-            vendorServiceProvider.addService(sentCategoryID, userID, sentText, sentPrice,
+            vendorService.addService(sentCategoryID, userID, sentText, sentPrice,
                 sentDescription, new AsyncCallback<Void>() {
                   @Override
                   public void onFailure(Throwable caught) {
@@ -176,16 +153,10 @@ public class VendorHomePage implements EntryPoint {
                     description.setText("");
                     price.setText("");
                     RootPanel.get("ZhenLong").setVisible(true);
-                    // TODO
-
                   }
-
                 });
-
           }
-
         });
-
       }
     });
 
@@ -194,8 +165,8 @@ public class VendorHomePage implements EntryPoint {
     addPanel.add(description);
     addPanel.add(price);
     addPanel.add(addService);
-    vendorService.add(existingService, DockPanel.CENTER);
-    vendorService.add(addPanel, DockPanel.SOUTH);
+    panelService.add(existingService, DockPanel.CENTER);
+    panelService.add(addPanel, DockPanel.SOUTH);
     category.setSize("150px", "100%");
     addPanel.setCellWidth(category, "200px");
     service.setSize("300px", "100%");
@@ -206,21 +177,19 @@ public class VendorHomePage implements EntryPoint {
     addService.setWidth("100px");
     addPanel.setCellWidth(addService, "150px");
 
-    tab.add(vendorPage, "Vendor");
-    tab.add(vendorService, "Service");
-    RootPanel.get("ZhenLong").add(tab);
+    tab.add(panelServiceRequest, "Service Request");
+    tab.add(panelService, "Service");
     // add operations
 
-    eventFolders.addSelectionHandler(new treeHandler<TreeItem>());
+    eventFolders.addSelectionHandler(new TreeHandler<TreeItem>());
     // add listeners
-    
+
     refreshExistingService();
     tab.selectTab(0);
     tab.setSize("100%", "100%");
-    // tab initialization
 
+    initWidget(tab);
   }
-
 
   @SuppressWarnings("deprecation")
   public void refreshExistingService() {
@@ -239,10 +208,8 @@ public class VendorHomePage implements EntryPoint {
 
     // String userID = Cookies.getCookie("USERNAME");
     String userID = "lzhen";
-    // DialogBox a = new DialogBox();
-    // a.setText("Remote Procedure Call - Failure");
-    // a.show();
-    vendorServiceProvider.getServiceByVendorId(userID,
+    
+    vendorService.getServiceByVendorId(userID,
         new AsyncCallback<List<Pair<String, Service>>>() {
           @Override
           public void onFailure(Throwable caught) {
@@ -253,14 +220,10 @@ public class VendorHomePage implements EntryPoint {
             deleteHyperlink = new Hyperlink[result.size()];
             deleteServiceID = new String[result.size()];
             displayCategoryID = new String[result.size()];
-            // categoryList = new ArrayList<String>();
 
             for (int i = 0; i < result.size(); i++) {
               deleteServiceID[i] = result.get(i).getB().getServiceId();
               displayCategoryID[i] = result.get(i).getB().getCategoryId();
-              // categoryList.add(new
-              // String(categoryFromidToname(result.get(i)
-              // .getCategoryId())));
             }
 
             for (int i = 0; i < result.size(); i++) {
@@ -271,8 +234,7 @@ public class VendorHomePage implements EntryPoint {
 
               deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
               existingService.setWidget(i + 1, 1, new Label(result.get(i).getB().getName()));
-              existingService.setWidget(i + 1, 2, new Label(result.get(i).getB()
-                  .getDescription()));
+              existingService.setWidget(i + 1, 2, new Label(result.get(i).getB().getDescription()));
               existingService.setWidget(i + 1, 3, new Label(result.get(i).getB().getPrice()
                   .toString()));
               existingService.setWidget(i + 1, 4, deleteHyperlink[i]);
@@ -288,7 +250,7 @@ public class VendorHomePage implements EntryPoint {
                   }
 
                   // TODO deleteServiceID[i - 1]
-                  vendorServiceProvider.deleteService(deleteServiceID[i - 1],
+                  vendorService.deleteService(deleteServiceID[i - 1],
                       new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -332,7 +294,7 @@ public class VendorHomePage implements EntryPoint {
   }
 
   @SuppressWarnings("hiding")
-  public class treeHandler<TreeItem> implements SelectionHandler<TreeItem> {
+  class TreeHandler<TreeItem> implements SelectionHandler<TreeItem> {
     public void onSelection(SelectionEvent<TreeItem> event) {
       Object tmp = event.getSelectedItem();
       // TODO cookie userID
@@ -340,7 +302,7 @@ public class VendorHomePage implements EntryPoint {
       // TODO all status should be integer
 
       if (tmp == pendingEvent) {
-        vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.PENDING,
+        vendorService.getServiceRequestByStatus(userID, ServiceRequest.PENDING,
             new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
@@ -358,13 +320,13 @@ public class VendorHomePage implements EntryPoint {
                 acceptHyperlink = new Hyperlink[result.size()];
                 ignoreHyperlink = new Hyperlink[result.size()];
                 viewHyperlink = new Hyperlink[result.size()];
-                serviceRequestID = new ArrayList<String>();
+                serviceRequestId = Lists.newArrayList();
 
-                vendorPage.setBorderWidth(1);
+                panelServiceRequest.setBorderWidth(1);
                 // border display
 
                 for (int i = 0; i < result.size(); i++) {
-                  serviceRequestID.add(result.get(i).getB().getRequestId());
+                  serviceRequestId.add(result.get(i).getB().getRequestId());
                 }
 
                 events.setWidget(0, 0, new HTML("<b>Requests</b>"));
@@ -378,7 +340,7 @@ public class VendorHomePage implements EntryPoint {
                   events.setWidget(i + 1, 1, viewHyperlink[i]);
                   events.setWidget(i + 1, 2, acceptHyperlink[i]);
                   events.setWidget(i + 1, 3, ignoreHyperlink[i]);
-                  
+
                   final String requestService = result.get(i).getA();
                   final String requestName = result.get(i).getB().getName();
                   final String requestDate = result.get(i).getB().getDueDate().toString();
@@ -405,12 +367,15 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*
+                                                                           * +
+                                                                           * requestQuatity
+                                                                           */));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
                       dialogVPanel.add(new Label(requestName));
-                      
+
                       // TODO display request
                       // detail info
                       dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -441,7 +406,7 @@ public class VendorHomePage implements EntryPoint {
                       // remove from pending
                       // folder
                       // communication to server,
-                      vendorServiceProvider.updateServiceRequestStatus(serviceRequestID.get(i - 1),
+                      vendorService.updateServiceRequestStatus(serviceRequestId.get(i - 1),
                           1, new AsyncCallback<Void>() {
                             @Override
                             public void onFailure(Throwable caught) {
@@ -455,7 +420,7 @@ public class VendorHomePage implements EntryPoint {
                           });
 
                       events.removeRow(i);
-                      serviceRequestID.remove(i - 1);
+                      serviceRequestId.remove(i - 1);
                     }
                   }); // accept listener
 
@@ -470,7 +435,7 @@ public class VendorHomePage implements EntryPoint {
                       // remove from pending
                       // folder
                       // communication to server,
-                      vendorServiceProvider.updateServiceRequestStatus(serviceRequestID.get(i - 1),
+                      vendorService.updateServiceRequestStatus(serviceRequestId.get(i - 1),
                           2, new AsyncCallback<Void>() {
                             @Override
                             public void onFailure(Throwable caught) {
@@ -484,7 +449,7 @@ public class VendorHomePage implements EntryPoint {
                           });
 
                       events.removeRow(i);
-                      serviceRequestID.remove(i - 1);
+                      serviceRequestId.remove(i - 1);
 
                     }
                   });
@@ -495,7 +460,7 @@ public class VendorHomePage implements EntryPoint {
       }// end of pending service request
 
       else if (tmp == acceptedEvent) {
-        vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.ACCEPTED,
+        vendorService.getServiceRequestByStatus(userID, ServiceRequest.ACCEPTED,
             new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
@@ -504,7 +469,7 @@ public class VendorHomePage implements EntryPoint {
               }
 
               @SuppressWarnings("deprecation")
-			@Override
+              @Override
               public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 
                 events.clear();
@@ -512,7 +477,7 @@ public class VendorHomePage implements EntryPoint {
                 // ignoreHyperlink = new Hyperlink[3];
                 viewHyperlink = new Hyperlink[result.size()];
 
-                vendorPage.setBorderWidth(1);
+                panelServiceRequest.setBorderWidth(1);
                 // border display
 
                 events.setWidget(0, 0, new HTML("<b>Requests</b>"));
@@ -549,7 +514,10 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*
+                                                                           * +
+                                                                           * requestQuatity
+                                                                           */));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
@@ -579,7 +547,7 @@ public class VendorHomePage implements EntryPoint {
 
       } else if (tmp == ignoredEvent) {
 
-        vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.IGNORED,
+        vendorService.getServiceRequestByStatus(userID, ServiceRequest.IGNORED,
             new AsyncCallback<List<Pair<String, ServiceRequest>>>() {
 
               @Override
@@ -593,10 +561,9 @@ public class VendorHomePage implements EntryPoint {
 
                 events.clear();
                 // 2 buttons: view(/accept)
-                // ignoreHyperlink = new Hyperlink[3];
                 viewHyperlink = new Hyperlink[result.size()];
 
-                vendorPage.setBorderWidth(1);
+                panelServiceRequest.setBorderWidth(1);
                 // border display
 
                 events.setWidget(0, 0, new HTML("<b>Requests</b>"));
@@ -633,7 +600,10 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*
+                                                                           * +
+                                                                           * requestQuatity
+                                                                           */));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
@@ -664,6 +634,5 @@ public class VendorHomePage implements EntryPoint {
       }
     }
   }
-
 
 }

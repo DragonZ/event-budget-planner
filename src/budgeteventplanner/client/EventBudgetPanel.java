@@ -80,8 +80,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onModuleLoad() {
-		// TODO Auto-generated method stub
-
 		organizerId = "YuanXia";
 
 		// HorizontalSplitPanel event_h_panel=new HorizontalSplitPanel();
@@ -712,12 +710,12 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		final ListBox category = new ListBox();
 		category.setWidth("100px");
 		categoryService
-				.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+				.getAllCategory(new AsyncCallback<List<Category>>() {
 					public void onFailure(Throwable caught) {
 
 					}
 
-					public void onSuccess(ArrayList<Category> result) {
+					public void onSuccess(List<Category> result) {
 						for (Category c : result)
 						{
 							categoryList.add(c);
