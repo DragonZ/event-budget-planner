@@ -20,7 +20,9 @@ public interface BudgetServiceAsync {
 	void getSubtotalsByEventId(String eventId,
 			AsyncCallback<List<Pair<String, Double>>> callback);
 	
-	void getLimitsByBudgetId(String budgetId, AsyncCallback<List<Pair<String, Double>>> callback);
+	void getLimitsByBudgetId(String budgetId, AsyncCallback<List<Pair<String, BudgetItem>>> callback);
 	
 	void getBudgetByOrganizerId(String organizerId, AsyncCallback<List<Budget>> callback);
+	
+	void updateBudgetItemLimit(String budgetItemId, Double limit, AsyncCallback<Void> callback);
 }

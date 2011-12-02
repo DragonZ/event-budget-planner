@@ -20,7 +20,9 @@ public interface BudgetService extends RemoteService {
 
 	List<Pair<String, Double>> getSubtotalsByEventId(String eventId);
 	
-	List<Pair<String, Double>> getLimitsByBudgetId(String budgetId);
+	List<Pair<String, BudgetItem>> getLimitsByBudgetId(String budgetId);
 	
 	List<Budget> getBudgetByOrganizerId(String organizerId);
+	
+	void updateBudgetItemLimit(String budgetItemId, Double limit);
 }

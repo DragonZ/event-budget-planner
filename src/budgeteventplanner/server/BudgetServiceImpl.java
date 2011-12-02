@@ -35,9 +35,9 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Budget createBudget(String eventId, String name, Double limit) {
+	public Budget createBudget(String eventId, String name, Double Limit) {
 		Objectify ofy = ObjectifyService.begin();
-		Budget budget = new Budget.Builder(eventId, name, limit).build();
+		Budget budget = new Budget.Builder(eventId, name).setLimit(Limit).build();
 		ofy.put(budget);
 		return budget;
 	}
@@ -97,16 +97,16 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 		return list;
 	}
 	
-	public List<Pair<String, Double>> getLimitsByBudgetId(String budgetId) {
-	  List<Pair<String, Double>> list = Lists.newArrayList();
+	@Override
+	public List<Pair<String, BudgetItem>> getLimitsByBudgetId(String budgetId) {
+	  List<Pair<String, BudgetItem>> list = Lists.newArrayList();
 	  Objectify ofy = ObjectifyService.begin();
 	  Query<BudgetItem> queryBudgetItem = ofy.query(
 	      BudgetItem.class).filter("budgetId", budgetId);
 	    for (BudgetItem item : queryBudgetItem) {
 	      String categoryName = ofy.get(
 	          new Key<Category>(Category.class, item.getCategoryId())).getName();
-	      Double limit = item.getLimit();
-	      list.add(new Pair<String, Double>(categoryName, limit));
+	      list.add(new Pair<String, BudgetItem>(categoryName, item));
 	    }
 	    return list;
 	}
@@ -122,5 +122,13 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
       budgetList.addAll(queryBudgetItem.list());
     }
     return budgetList;
+  }
+
+  @Override
+  public void updateBudgetItemLimit(String budgetItemId, Double limit) {
+	  Objectify ofy = ObjectifyService.begin();
+	  BudgetItem newBudgetItem = ofy.query(BudgetItem.class).filter("budgetItemId", budgetItemId).get();
+	  newBudgetItem = new BudgetItem.Builder(newBudgetItem).setLimit(limit).build();
+	  ofy.put(newBudgetItem);
   }
 }
