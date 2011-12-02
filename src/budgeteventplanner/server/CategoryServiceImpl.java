@@ -1,10 +1,11 @@
 package budgeteventplanner.server;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import budgeteventplanner.client.CategoryService;
 import budgeteventplanner.client.entity.Category;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -30,13 +31,12 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public ArrayList<Category> getAllCategory() {
+	public List<Category> getAllCategory() {
 		Objectify ofy = ObjectifyService.begin();
 		Query<Category> q = ofy.query(Category.class);
 
-		ArrayList<Category> entities = new ArrayList<Category>();
+		List<Category> entities = Lists.newArrayList();
 
-		// Loop the query results and add to the array
 		for (Category fetched : q) {
 			entities.add(fetched);
 		}
