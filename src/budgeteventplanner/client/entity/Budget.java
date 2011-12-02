@@ -27,12 +27,11 @@ public class Budget implements Serializable {
 			this.budget = budget;
 		}
 
-		public Builder(String eventId, String name, Double limit) {
+		public Builder(String eventId, String name) {
 			this.budget = new Budget();
 			this.budget.budgetId = UUID.randomUUID();
 			this.budget.eventId = eventId;
 			this.budget.name = name;
-			this.budget.limit = limit;
 		}
 
 		public Builder setEventId(String eventId) {
