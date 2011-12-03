@@ -1,6 +1,3 @@
-/**
- * 
- */
 package budgeteventplanner.client;
 
 import java.util.ArrayList;
@@ -43,42 +40,39 @@ public class VendorHomePage extends Composite {
 
 	// server communication
 	private final CategoryServiceAsync categoryService = GWT.create(CategoryService.class);
-
 	private final VendorServiceAsync vendorServiceProvider = GWT.create(VendorService.class);
 
-	String userID;
+	private String userID;
 
-	TabPanel tab;
+	private TabPanel tab;
 
-	DockPanel vendorPage;
-	Tree eventFolders;
-	TreeItem pendingEvent;
-	TreeItem acceptedEvent;
-	TreeItem ignoredEvent;
-	FlexTable events;
+	private DockPanel vendorPage;
+	private Tree eventFolders;
+	private TreeItem pendingEvent;
+	private TreeItem acceptedEvent;
+	private TreeItem ignoredEvent;
+	private FlexTable events;
 	// TreeItem eventHistory;
 	// CAN DO
 
-	DockPanel vendorService;
-	FlexTable existingService;
-	HorizontalPanel addPanel;
-	ListBox category;
-	// TODO
-	TextBox service;
-	TextArea description;
-	TextBox price;
-	Button addService;
+	private DockPanel vendorService;
+	private FlexTable existingService;
+	private HorizontalPanel addPanel;
+	private ListBox category;
+	private TextBox service;
+	private TextArea description;
+	private TextBox price;
+	private Button addService;
 
-	Hyperlink acceptHyperlink[];
-	Hyperlink ignoreHyperlink[];
-	Hyperlink viewHyperlink[];
-	ArrayList<String> serviceRequestID;
-	// ArrayList<String> categoryList;
+	private Hyperlink acceptHyperlink[];
+	private Hyperlink ignoreHyperlink[];
+	private Hyperlink viewHyperlink[];
+	private ArrayList<String> serviceRequestID;
 
-	Hyperlink deleteHyperlink[];
-	String[] deleteServiceID;
-	String[] displayCategoryID;
-	String categoryName;
+	private Hyperlink deleteHyperlink[];
+	private String[] deleteServiceID;
+	private String[] displayCategoryID;
+	//private String categoryName;
 
 	public VendorHomePage(String usrID) {
 
@@ -98,7 +92,6 @@ public class VendorHomePage extends Composite {
 		// CAN DO
 
 		eventFolders.setWidth("150px");
-		// size issue to be done
 		eventFolders.addItem(pendingEvent);
 		eventFolders.addItem(acceptedEvent);
 		eventFolders.addItem(ignoredEvent);
@@ -109,13 +102,8 @@ public class VendorHomePage extends Composite {
 		events.getColumnFormatter().setWidth(0, "100px");
 		events.getColumnFormatter().setWidth(1, "100px");
 		events.getColumnFormatter().setWidth(3, "100px");
-		// size issue to be done
 
 		existingService = new FlexTable(); // table for service management page
-		// initializeServiceTable(); //new method to initialize the service
-		// table
-		// refreshExistingService();
-		// refreshExistingService();
 
 		vendorPage.add(eventFolders, DockPanel.WEST);
 		vendorPage.add(events, DockPanel.EAST);
@@ -126,7 +114,6 @@ public class VendorHomePage extends Composite {
 		service = new TextBox();
 		description = new TextArea();
 		price = new TextBox();
-		// description.setCharacterWidth(80); optional size method
 		description.setWidth("600px");
 		description.setVisibleLines(1);
 		addService = new Button("ADD");
@@ -142,10 +129,6 @@ public class VendorHomePage extends Composite {
 
 					@Override
 					public void onSuccess(List<Category> result) {
-						// get userID from the cookie:
-						// String userID =
-						// Cookies.getCookie("USERNAME");
-						// String userID = "lzhen";
 
 						int sentCategory = category.getSelectedIndex();
 
@@ -166,13 +149,12 @@ public class VendorHomePage extends Composite {
 
 									@Override
 									public void onSuccess(Void result) {
-										RootPanel.get("ZhenLong").setVisible(false);
+										RootPanel.get("divVendor").setVisible(false);
 										refreshExistingService();
 										service.setText("");
 										description.setText("");
 										price.setText("");
-										RootPanel.get("ZhenLong").setVisible(true);
-										// TODO
+										RootPanel.get("divVendor").setVisible(true);
 
 									}
 
@@ -202,11 +184,8 @@ public class VendorHomePage extends Composite {
 		addService.setWidth("100px");
 		addPanel.setCellWidth(addService, "150px");
 
-		tab.add(vendorPage, "Vendor");
+		tab.add(vendorPage, "Request");
 		tab.add(vendorService, "Service");
-		// RootPanel.get("ZhenLong").add(tab);
-		// // add operations
-		//
 		eventFolders.addSelectionHandler(new treeHandler<TreeItem>());
 		// add listeners
 
@@ -214,6 +193,7 @@ public class VendorHomePage extends Composite {
 		tab.selectTab(0);
 		tab.setSize("100%", "100%");
 		// tab initialization
+
 		initWidget(tab);
 	}
 
@@ -230,41 +210,30 @@ public class VendorHomePage extends Composite {
 		existingService.setWidget(0, 1, new HTML("<b>Service</b>"));
 		existingService.setWidget(0, 2, new HTML("<b>Description</b>"));
 		existingService.setWidget(0, 3, new HTML("<b>Price</b>"));
-		existingService.setWidget(0, 4, new HTML("<b>Option</b>"));
+		existingService.setWidget(0, 4, new HTML("&nbsp"));
 
-		// String userID = Cookies.getCookie("USERNAME");
-		// String userID = "lzhen";
-		// DialogBox a = new DialogBox();
-		// a.setText("Remote Procedure Call - Failure");
-		// a.show();
 		vendorServiceProvider.getServiceByVendorId(userID,
 				new AsyncCallback<List<Pair<String, Service>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO
+
 					}
 
 					public void onSuccess(List<Pair<String, Service>> result) {
 						deleteHyperlink = new Hyperlink[result.size()];
 						deleteServiceID = new String[result.size()];
 						displayCategoryID = new String[result.size()];
-						// categoryList = new ArrayList<String>();
 
 						for (int i = 0; i < result.size(); i++) {
 							deleteServiceID[i] = result.get(i).getB().getServiceId();
 							displayCategoryID[i] = result.get(i).getB().getCategoryId();
-							// categoryList.add(new
-							// String(categoryFromidToname(result.get(i)
-							// .getCategoryId())));
 						}
 
 						for (int i = 0; i < result.size(); i++) {
 
 							existingService.setWidget(i + 1, 0, new Label(result.get(i).getA()));
-							// category
-							// name
 
-							deleteHyperlink[i] = new Hyperlink("delete", Integer.toString(i));
+							deleteHyperlink[i] = new Hyperlink("Delete", Integer.toString(i));
 							existingService.setWidget(i + 1, 1, new Label(result.get(i).getB()
 									.getName()));
 							existingService.setWidget(i + 1, 2, new Label(result.get(i).getB()
@@ -284,19 +253,18 @@ public class VendorHomePage extends Composite {
 										}
 									}
 
-									// TODO deleteServiceID[i - 1]
 									vendorServiceProvider.deleteService(deleteServiceID[i - 1],
 											new AsyncCallback<Void>() {
 												@Override
 												public void onFailure(Throwable caught) {
-													// TODO
+
 												}
 
 												@Override
 												public void onSuccess(Void result) {
-													RootPanel.get("ZhenLong").setVisible(false);
-													refreshExistingService();// TODO
-													RootPanel.get("ZhenLong").setVisible(true);
+													RootPanel.get("divVendor").setVisible(false);
+													refreshExistingService();
+													RootPanel.get("divVendor").setVisible(true);
 												}
 											});
 								}
@@ -308,8 +276,6 @@ public class VendorHomePage extends Composite {
 	}
 
 	public void initializeCategory() {
-		// ArrayList<Category> allCategories;
-
 		// get information from server
 		categoryService.getAllCategory(new AsyncCallback<List<Category>>() {
 			@Override
@@ -332,10 +298,6 @@ public class VendorHomePage extends Composite {
 	public class treeHandler<TreeItem> implements SelectionHandler<TreeItem> {
 		public void onSelection(SelectionEvent<TreeItem> event) {
 			Object tmp = event.getSelectedItem();
-			// TODO cookie userID
-			// String userID = "lzhen";
-			// String userID = Cookies.getCookie("USERNAME");
-			// TODO all status should be integer
 
 			if (tmp == pendingEvent) {
 				vendorServiceProvider.getServiceRequestByStatus(userID, ServiceRequest.PENDING,
@@ -397,7 +359,6 @@ public class VendorHomePage extends Composite {
 											}
 
 											// pop up the current event
-											// info
 											final DialogBox currentEvent = new DialogBox();
 
 											currentEvent.setAnimationEnabled(true);
@@ -418,7 +379,6 @@ public class VendorHomePage extends Composite {
 											dialogVPanel.add(new HTML("<b>Detail: </b>"));
 											dialogVPanel.add(new Label(requestName));
 
-											// TODO display request
 											// detail info
 											dialogVPanel
 													.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -426,7 +386,6 @@ public class VendorHomePage extends Composite {
 											currentEvent.setWidget(dialogVPanel);
 
 											// Add a handler to close
-											// the DialogBox
 											closeButton.addClickHandler(new ClickHandler() {
 												public void onClick(ClickEvent event) {
 													currentEvent.hide();
@@ -448,19 +407,18 @@ public class VendorHomePage extends Composite {
 												}
 											}
 											// remove from pending
-											// folder
-											// communication to server,
+											// communication to server
 											vendorServiceProvider.updateServiceRequestStatus(
 													serviceRequestID.get(i - 1), 1,
 													new AsyncCallback<Void>() {
 														@Override
 														public void onFailure(Throwable caught) {
-															// TODO
+
 														}
 
 														@Override
 														public void onSuccess(Void result) {
-															// TODO
+
 														}
 													});
 
@@ -479,19 +437,18 @@ public class VendorHomePage extends Composite {
 												}
 											}
 											// remove from pending
-											// folder
-											// communication to server,
+											// communication to server
 											vendorServiceProvider.updateServiceRequestStatus(
 													serviceRequestID.get(i - 1), 2,
 													new AsyncCallback<Void>() {
 														@Override
 														public void onFailure(Throwable caught) {
-															// TODO
+
 														}
 
 														@Override
 														public void onSuccess(Void result) {
-															// TODO
+
 														}
 													});
 
@@ -553,7 +510,6 @@ public class VendorHomePage extends Composite {
 											}
 
 											// pop up the current event
-											// info
 											final DialogBox currentEvent = new DialogBox();
 
 											currentEvent.setAnimationEnabled(true);
@@ -573,7 +529,7 @@ public class VendorHomePage extends Composite {
 											dialogVPanel.add(new HTML("<br>"));
 											dialogVPanel.add(new HTML("<b>Detail: </b>"));
 											dialogVPanel.add(new Label(requestName));
-											// TODO display request
+
 											// detail info
 											dialogVPanel
 													.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
@@ -645,7 +601,7 @@ public class VendorHomePage extends Composite {
 											}
 
 											// pop up the current event
-											// info
+
 											final DialogBox currentEvent = new DialogBox();
 
 											currentEvent.setAnimationEnabled(true);
@@ -665,7 +621,7 @@ public class VendorHomePage extends Composite {
 											dialogVPanel.add(new HTML("<br>"));
 											dialogVPanel.add(new HTML("<b>Detail: </b>"));
 											dialogVPanel.add(new Label(requestName));
-											// TODO display request
+
 											// detail info
 											dialogVPanel
 													.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
