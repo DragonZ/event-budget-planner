@@ -18,7 +18,6 @@ import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -26,9 +25,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -48,7 +47,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
-public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
+public class EventBudgetPanel extends Composite{
 
 	public TabPanel t_panel;
 	public String organizerId;
@@ -77,8 +76,7 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	private Button draw1;
 	private Button draw2;
 	private Button draw3;
-	private FlexTable existingRequest;
-	Button trash;
+
 
 	private String sentBudgetID;
 
@@ -87,11 +85,11 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 	
 
 	@SuppressWarnings("deprecation")
-	@Override
-	public void onModuleLoad() {
+	public EventBudgetPanel(String usrID) {
 		// TODO Auto-generated method stub
+		super();
 
-		organizerId = "YuanXia";
+		organizerId = usrID;
 
 		// HorizontalSplitPanel event_h_panel=new HorizontalSplitPanel();
 		final HorizontalPanel event_h_panel = new HorizontalPanel();
@@ -130,61 +128,6 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		budget_h_panel.setBorderWidth(1);
 		budget_h_panel.setSize("100%", "500px");
 		VerticalPanel budget_right_v_panel = new VerticalPanel();
-
-		// final FlexTable budget_table = new FlexTable();
-		//
-		// budget_table.setSize("1000px", "100%");
-		// budget_table.setText(0, 0, "Budget ID");
-		// budget_table.getCellFormatter().setWidth(0, 0, "20%");
-		// budget_table.setText(0, 1, "Budget Name");
-		// budget_table.getCellFormatter().setWidth(0, 1, "20%");
-		// budget_table.setText(0, 2, "Event Name");
-		// budget_table.getCellFormatter().setWidth(0, 2, "20%");
-		// budget_table.setText(0, 3, "Limit");
-		// budget_table.getCellFormatter().setWidth(0, 3, "20%");
-		// budget_table.setText(0, 4, "Modify");
-		// budget_table.getCellFormatter().setWidth(0, 4, "20%");
-		// budget_table.setText(0, 5, "Delete");
-		// budget_table.getCellFormatter().setWidth(0, 5, "20%");
-		//
-		// int budget_row = 3;
-		// for (int i = 1; i <= budget_row; i++) {
-		// budget_table.setWidget(i, 0, new Label("Budget ID from Server"));
-		// budget_table.setWidget(i, 1, new Label("Budget Name from Server"));
-		// budget_table.setWidget(i, 2, new Label("Event Name from Server"));
-		// budget_table.setWidget(i, 3, new Label("Budget Limit from Server"));
-		//
-		//
-		// final Button budget_mod = new Button("Modify");
-		// budget_table.setWidget(i, 4, budget_mod);
-		// final Button budget_del = new Button("Delete");
-		// budget_table.setWidget(i, 5, budget_del);
-		//
-		// budget_mod.addClickHandler(new ClickHandler() {
-		// public void onClick(ClickEvent event) {
-		// int row;
-		// int total_event = budget_table.getRowCount();
-		// for (row = 1; row <= total_event; row++) {
-		// if (budget_table.getWidget(row, 4).equals(budget_mod))
-		// break;
-		// }
-		// budget_pop_up(1, row, budget_table);
-		// }
-		// });
-		//
-		// budget_del.addClickHandler(new ClickHandler() {
-		// public void onClick(ClickEvent event) {
-		// int temp_r;
-		// int total_r = budget_table.getRowCount();
-		// for (temp_r = 1; temp_r <= total_r; temp_r++) {
-		// if (budget_table.getWidget(temp_r, 5)
-		// .equals(budget_del))
-		// break;
-		// }
-		// budget_table.removeRow(temp_r);
-		// }
-		// });
-		// }
 
 		// Create a static tree and a container to hold it
 		treeBudget = new Tree();
@@ -295,10 +238,12 @@ public class EventBudgetPanel extends VerticalPanel implements EntryPoint {
 		t_panel = new TabPanel();
 		t_panel.add(event_h_panel, "Event");
 		t_panel.add(budget_h_panel, "Budget");
-		RootPanel.get("XiaYuan").add(t_panel);
+		//RootPanel.get("XiaYuan").add(t_panel);
 		t_panel.setSize("100%", "100%");
 
 		t_panel.selectTab(0);
+//		this.add(t_panel);
+		initWidget(t_panel);
 
 	}
 
