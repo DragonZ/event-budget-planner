@@ -36,37 +36,37 @@ public class AttendeeRegistration implements EntryPoint {
 	 */
 	final static AttendeeServiceAsync attendeeService = GWT
 			.create(AttendeeService.class);
-	final Label emailLabel = new Label("*Email:");
+	final HTML emailLabel = new HTML("<h4>*</h4><b>Email:</b>");
 	final static TextBox emailBox = new TextBox();
-	final Label firstNameLabel = new Label("*First Name:");
+	final HTML firstNameLabel = new HTML("<h4>*</h4><b>First Name:</b>");
 	final static TextBox firstNameBox = new TextBox();
-	final Label midNameLabel = new Label("Mid Name:");
+	final HTML midNameLabel = new HTML("<b>Mid Name:</b>");
 	final TextBox midNameBox = new TextBox();
-	final Label lastNameLabel = new Label("*Last Name:");
+	final HTML lastNameLabel = new HTML("<h4>*</h4><b>Last Name:</b>");
 	final TextBox lastNameBox = new TextBox();
-	final Label jobTitleLabel = new Label("Job Title:");
+	final HTML jobTitleLabel = new HTML("<b>Job Title:</b>");
 	final static TextBox jobTitleBox = new TextBox();
-	final Label companyLabel = new Label("Company:");
+	final HTML companyLabel = new HTML("<b>Company:</b>");
 	final static TextBox companyBox = new TextBox();
-	final Label address1Label = new Label("*Address 1:");
+	final HTML address1Label = new HTML("<h4>*</h4><b>Address 1:</b>");
 	final static TextBox address1Box = new TextBox();
-	final Label address2Label = new Label("Address 2:");
+	final HTML address2Label = new HTML("<b>Address 2:</b>");
 	final static TextBox address2Box = new TextBox();
-	final Label cityLabel = new Label("*City:");
+	final HTML cityLabel = new HTML("<h4>*</h4><b>City:</b>");
 	final static TextBox cityBox = new TextBox();
-	final Label stateLabel = new Label("*State:");
+	final HTML stateLabel = new HTML("<h4>*</h4><b>State:</b>");
 	final static TextBox stateBox = new TextBox();
-	final Label zipLabel = new Label("*Zip:");
+	final HTML zipLabel = new HTML("<h4>*</h4><b>Zip:</B>");
 	final static TextBox zipBox = new TextBox();
-	final Label phoneLabel = new Label("*Phone Number:");
+	final HTML phoneLabel = new HTML("<h4>*</h4><b>Phone Number:</b>");
 	final static TextBox phoneBox = new TextBox();
-	final Button submit = new Button("submit");
+	final Button submit = new Button();
 	final DialogBox dialogBox = new DialogBox();
-	final Button closeButton = new Button("Close");
+	final Button closeButton = new Button();
 	VerticalPanel dialogVPanel = new VerticalPanel();
 	private static String attendeeID = null;
 	final ListBox status = new ListBox();
-	Label statusLabel=new Label("Are You Going To Attendee:");
+	final HTML statusLabel=new HTML("<b>Are You Going To Attend:<b>");
 	/**
 	 * This is the entry point method.
 	 */
@@ -118,6 +118,8 @@ public class AttendeeRegistration implements EntryPoint {
 		RootPanel.get("phone").add(phoneLabel);
 		RootPanel.get("phoneBox").add(phoneBox);
 
+	    submit.setHTML("<h2>Submit</h2>");
+	    closeButton.setHTML("<h2>Close</h2>");
 		RootPanel.get("submit").add(submit);
 
 		// dialog box
