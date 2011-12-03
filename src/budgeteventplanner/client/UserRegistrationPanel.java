@@ -34,8 +34,8 @@ public class UserRegistrationPanel extends Composite {
   final TextBox txtCity = new TextBox();
   final TextBox txtState = new TextBox();
   final TextBox txtZipCode = new TextBox();
-  final Button btnSubmit = new Button("Submit");
-  final Button btnCancel = new Button("Cancel");
+  final Button btnSubmit = new Button();
+  final Button btnCancel = new Button();
   
   public UserRegistrationPanel() {
     super();
@@ -51,26 +51,28 @@ public class UserRegistrationPanel extends Composite {
     txtState.setWidth("40px");
     txtZipCode.setWidth("60px");
     txtZipCode.setMaxLength(5);
+    btnSubmit.setHTML("<h2>Submit</h2>");
     btnSubmit.getElement().setId("btnSubmit");
+    btnCancel.setHTML("<h2>Cancel</h2>");
     btnCancel.getElement().setId("btnCancel");
     
     final VerticalPanel signupVPanel = new VerticalPanel();
     //signupVPanel.add(new HTML("<h1>Registration</h1>"));
-    signupVPanel.add(new HTML("<b>*Username:</b>"));
+    signupVPanel.add(new HTML("<h4>*</h4><b>Username:</b>"));
     signupVPanel.add(txtEmail);
-    signupVPanel.add(new HTML("<br><b>*User Type:</b>"));
+    signupVPanel.add(new HTML("<h4>*</h4><b>User Type:</b>"));
     signupVPanel.add(listUserType);
-    signupVPanel.add(new HTML("<br><b>*Password:</b>"));
+    signupVPanel.add(new HTML("<h4>*</h4><b>Password:</b>"));
     signupVPanel.add(first_pw);
-    signupVPanel.add(new HTML("<br><b>*Retype Password:</b>"));
+    signupVPanel.add(new HTML("<h4>*</h4><b>Retype Password:</b>"));
     signupVPanel.add(second_pw);
-    signupVPanel.add(new HTML("<br><b>Address:</b>"));
+    signupVPanel.add(new HTML("<b>Address:</b>"));
     signupVPanel.add(txtAddress);
-    signupVPanel.add(new HTML("<br><b>City:</b>"));
+    signupVPanel.add(new HTML("<b>City:</b>"));
     signupVPanel.add(txtCity);
-    signupVPanel.add(new HTML("<br><b>State:</b>"));
+    signupVPanel.add(new HTML("<b>State:</b>"));
     signupVPanel.add(txtState);
-    signupVPanel.add(new HTML("<br><b>Zip Code:</b>"));
+    signupVPanel.add(new HTML("<b>Zip Code:</b>"));
     signupVPanel.add(txtZipCode);
     signupVPanel.add(new HTML(""));
     signupVPanel.add(new HTML(""));
