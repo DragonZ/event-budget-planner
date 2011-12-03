@@ -101,6 +101,9 @@ public class BudgetEventPlanner implements EntryPoint {
         
         attendeeField.setText("");
         attendeeField.setFocus(true);
+        btnLogin.setEnabled(true);
+        btnSign.setEnabled(true);
+        btnAttendee.setEnabled(true);
       }
     });
 
@@ -149,13 +152,13 @@ public class BudgetEventPlanner implements EntryPoint {
               @Override
               public void onSuccess(Integer result) {
                 String typeTurn = new String();
-                if (result == 0) { // Event Manager
+                if (result == 1) { // Event Manager
                   typeTurn = "XiaYuan";
-                } else if (result == 1) { // Vendor
+                } else if (result == 2) { // Vendor
                   typeTurn = "ZhenLong";
-                } else if (result == 2) { // Attendee
-                  typeTurn = "XuXuan";
                 } else if (result == 3) { // Attendee
+                  typeTurn = "XuXuan";
+                } else if (result == 4) { // Attendee
                   typeTurn = "XuXuan2";
                 } else {
                   showDialog("Login", "Incorrect Username or Password!");
@@ -172,6 +175,8 @@ public class BudgetEventPlanner implements EntryPoint {
                 nameField.setText("");
                 pwField.setText("");
                 attendeeField.setText("");
+                
+                
               }
             });
           } catch (NoSuchAlgorithmException e) {

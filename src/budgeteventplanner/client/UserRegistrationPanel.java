@@ -55,7 +55,7 @@ public class UserRegistrationPanel extends Composite {
     btnCancel.getElement().setId("btnCancel");
     
     final VerticalPanel signupVPanel = new VerticalPanel();
-    signupVPanel.add(new HTML("<h1>Registration</h1>"));
+    //signupVPanel.add(new HTML("<h1>Registration</h1>"));
     signupVPanel.add(new HTML("<b>*Username:</b>"));
     signupVPanel.add(txtEmail);
     signupVPanel.add(new HTML("<br><b>*User Type:</b>"));
