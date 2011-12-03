@@ -10,6 +10,18 @@ h1 {
   text-align: center;
 }
 
+h2 {
+	font-size: 0.8em;
+	color: #6881ff;
+}
+
+h3 {
+	font-size: 1em;
+	font-weight: bold;
+	color: #6881ff;	
+	margin: 0px 0px 0px;
+}
+
 .sendButton {
   display: block;
   font-size: 16pt;
