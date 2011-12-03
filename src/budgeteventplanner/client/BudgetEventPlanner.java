@@ -19,6 +19,8 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -46,7 +48,7 @@ public class BudgetEventPlanner implements EntryPoint {
 		btnAttendee.setWidth("80px");
 		final TextBox attendeeField = new TextBox();
 		attendeeField.setText("");
-		attendeeField.setWidth("210px");
+		attendeeField.setWidth("190px");
 		final Button btnAttendeeSubmit = new Button();
 		btnAttendeeSubmit.setHTML("<h2>Submit</h2>");
 		btnAttendeeSubmit.setWidth("80px");
@@ -70,8 +72,9 @@ public class BudgetEventPlanner implements EntryPoint {
 		attendeeHPanel.addStyleName("attendeeHPanel");
 		attendeePanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		attendeePanel.add(attendeeField);
+		attendeeHPanel.add(attendeeField);
 		attendeeHPanel.add(btnAttendeeSubmit);
-		attendeeHPanel.add(btnAttendeeCancel);
+		//attendeeHPanel.add(btnAttendeeCancel);
 		attendeePanel.add(attendeeHPanel);
 		attendeePanel.setSpacing(5);
 		attendeeBox.setWidget(attendeePanel);
@@ -79,8 +82,16 @@ public class BudgetEventPlanner implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("pwFieldContainer").add(pwField);
 		RootPanel.get("loginButtonContainer").add(btnLogin);
-		RootPanel.get("attendeePartButtonContainer").add(btnAttendee);
+		//RootPanel.get("attendeePartButtonContainer").add(btnAttendee);
 		RootPanel.get("signButtonContainer").add(btnSign);
+		
+		@SuppressWarnings("deprecation")
+		final DisclosurePanel attendeeDP = new DisclosurePanel("Registration Code", false);
+		attendeeDP.addStyleName("attendeeDP");
+		attendeeDP.setAnimationEnabled(true);
+		attendeeDP.add(attendeeHPanel);
+		//RootPanel.get("divHome").add(attendeeDP);
+		RootPanel.get("attendeeDPContainer").add(attendeeDP);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.addFocusHandler(new FocusHandler() {
