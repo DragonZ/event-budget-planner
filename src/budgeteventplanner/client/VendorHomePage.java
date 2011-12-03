@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -53,6 +54,8 @@ public class VendorHomePage implements EntryPoint {
    * 
    * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
    */
+  //String userID;
+  
   TabPanel tab;
 
   DockPanel vendorPage;
@@ -138,18 +141,18 @@ public class VendorHomePage implements EntryPoint {
       public void onClick(ClickEvent event) {
 
         // check the categoryID
-        categoryService.getAllCategory(new AsyncCallback<List<Category>>() {
+        categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
           @Override
           public void onFailure(Throwable caught) {
             new DialogBox().setText("Remote Procedure Call - Failure");
           }
 
           @Override
-          public void onSuccess(List<Category> result) {
+          public void onSuccess(ArrayList<Category> result) {
             // get userID from the cookie:
-            // String userID =
-            // Cookies.getCookie("USERNAME");
-            String userID = "lzhen";
+             String userID =
+             Cookies.getCookie("USERNAME");
+            //String userID = "lzhen";
 
             int sentCategory = category.getSelectedIndex();
 
@@ -237,8 +240,8 @@ public class VendorHomePage implements EntryPoint {
     existingService.setWidget(0, 3, new HTML("<b>Price</b>"));
     existingService.setWidget(0, 4, new HTML("<b>Option</b>"));
 
-    // String userID = Cookies.getCookie("USERNAME");
-    String userID = "lzhen";
+     String userID = Cookies.getCookie("USERNAME");
+    //String userID = "lzhen";
     // DialogBox a = new DialogBox();
     // a.setText("Remote Procedure Call - Failure");
     // a.show();
@@ -314,14 +317,14 @@ public class VendorHomePage implements EntryPoint {
     // ArrayList<Category> allCategories;
 
     // get information from server
-    categoryService.getAllCategory(new AsyncCallback<List<Category>>() {
+    categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
       @Override
       public void onFailure(Throwable caught) {
         new DialogBox().setText("Remote Procedure Call - Failure");
       }
 
       @Override
-      public void onSuccess(List<Category> result) {
+      public void onSuccess(ArrayList<Category> result) {
         for (Category c : result) {
           category.addItem(c.getName());
         }
@@ -336,7 +339,8 @@ public class VendorHomePage implements EntryPoint {
     public void onSelection(SelectionEvent<TreeItem> event) {
       Object tmp = event.getSelectedItem();
       // TODO cookie userID
-      String userID = "lzhen";
+      //String userID = "lzhen";
+      String userID = Cookies.getCookie("USERNAME");
       // TODO all status should be integer
 
       if (tmp == pendingEvent) {
@@ -405,7 +409,7 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + requestQuatity));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
@@ -549,7 +553,7 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + requestQuatity));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
@@ -633,7 +637,7 @@ public class VendorHomePage implements EntryPoint {
                       dialogVPanel.addStyleName("dialogVPanel");
 
                       dialogVPanel.add(new HTML("<b>Request Service Name: </b>" + requestService));
-                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + "10"/*+ requestQuatity*/));
+                      dialogVPanel.add(new HTML("<b>Quantity: </b>" + requestQuatity));
                       dialogVPanel.add(new HTML("<b>Due Date: </b>" + requestDate));
                       dialogVPanel.add(new HTML("<br>"));
                       dialogVPanel.add(new HTML("<b>Detail: </b>"));
