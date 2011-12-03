@@ -141,14 +141,14 @@ public class VendorHomePage implements EntryPoint {
       public void onClick(ClickEvent event) {
 
         // check the categoryID
-        categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+        categoryService.getAllCategory(new AsyncCallback<List<Category>>() {
           @Override
           public void onFailure(Throwable caught) {
             new DialogBox().setText("Remote Procedure Call - Failure");
           }
 
           @Override
-          public void onSuccess(ArrayList<Category> result) {
+          public void onSuccess(List<Category> result) {
             // get userID from the cookie:
              String userID =
              Cookies.getCookie("USERNAME");
@@ -317,14 +317,14 @@ public class VendorHomePage implements EntryPoint {
     // ArrayList<Category> allCategories;
 
     // get information from server
-    categoryService.getAllCategory(new AsyncCallback<ArrayList<Category>>() {
+    categoryService.getAllCategory(new AsyncCallback<List<Category>>() {
       @Override
       public void onFailure(Throwable caught) {
         new DialogBox().setText("Remote Procedure Call - Failure");
       }
 
       @Override
-      public void onSuccess(ArrayList<Category> result) {
+      public void onSuccess(List<Category> result) {
         for (Category c : result) {
           category.addItem(c.getName());
         }
