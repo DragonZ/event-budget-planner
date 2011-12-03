@@ -25,11 +25,9 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.events.SelectHandler;
-import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
-import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class BudgetBarChart extends Composite {
 
@@ -46,11 +44,11 @@ public class BudgetBarChart extends Composite {
 
 	public BudgetBarChart(final String budgetId, String eventId) {
 		super();
-
-		final Button btnDraw = new Button("Draw");
+		panel.clear();
+		final Button btnDraw = new Button("Draw BudgetBarChart");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
-
+		modificationBox.setEnabled(false);
 		initializeServiceRequestList(eventId);
 		budgetService.getLimitsByBudgetId(budgetId,
 				new AsyncCallback<List<Pair<String, BudgetItem>>>() {
@@ -62,6 +60,7 @@ public class BudgetBarChart extends Composite {
 			public void onSuccess(List<Pair<String, BudgetItem>> result) {
 				catBitPairList.addAll(result);
 				btnDraw.setEnabled(true);
+				modificationBox.setEnabled(true);
 			}
 		});
 
@@ -219,7 +218,7 @@ public class BudgetBarChart extends Composite {
 		Options options = Options.create();
 		options.setWidth(400);
 		options.setHeight(240);
-		options.setTitle("My Daily Activities");
+		options.setTitle("My Budget");
 		options.set("is3D", true);
 		return options;
 	}

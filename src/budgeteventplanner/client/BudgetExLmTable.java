@@ -22,9 +22,6 @@ import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.events.SelectHandler;
 import com.google.gwt.visualization.client.visualizations.Table;
-import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
-import com.google.gwt.visualization.client.visualizations.corechart.Options;
-import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class BudgetExLmTable extends Composite {
 
@@ -43,8 +40,9 @@ public class BudgetExLmTable extends Composite {
 	
 	public BudgetExLmTable(String budgetId, String eventId) {
 		super();
+		panel.clear();
 		budgetIdGLB = budgetId;
-		final Button btnDraw = new Button("Draw");
+		final Button btnDraw = new Button("Draw BudgetExLmTable");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 		
@@ -108,6 +106,7 @@ public class BudgetExLmTable extends Composite {
 						exLmTable = new Table(dataTable, Table.Options.create());
 						exLmTable.addSelectHandler(createSelectHandler(exLmTable));
 						panel.add(exLmTable);
+						
 					}
 				};
 				VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
