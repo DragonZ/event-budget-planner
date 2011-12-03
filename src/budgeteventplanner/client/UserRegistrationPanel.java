@@ -102,7 +102,7 @@ public class UserRegistrationPanel extends Composite {
     btnSubmit.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         final String EMAIL_VALIDATION_REGEX = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        if (txtEmail.getText().matches(EMAIL_VALIDATION_REGEX)) {
+        if (!txtEmail.getText().matches(EMAIL_VALIDATION_REGEX)) {
           showDialog("Error", "Invalid email address");
           return;
         } else if (first_pw.getText().isEmpty() || first_pw.getText().length() < 6) {
