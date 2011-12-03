@@ -1,11 +1,13 @@
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pent;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -36,4 +38,7 @@ public interface EventServiceAsync {
 			AsyncCallback<Void> callback);
 
 	void deleteEventByEventId(String eventId, AsyncCallback<Void> callback);
+	
+	void getAllCostInfoByEventId(String eventId,
+			AsyncCallback<List<Pent<String, String, String, Integer, Double>>> callback);
 }

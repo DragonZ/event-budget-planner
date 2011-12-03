@@ -1,11 +1,13 @@
 package budgeteventplanner.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pent;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -33,4 +35,6 @@ public interface EventService extends RemoteService {
 	void changeEventStatusByEventId(String eventId, Integer status);
 
 	void deleteEventByEventId(String eventId);
+	
+	List<Pent<String, String, String, Integer, Double>> getAllCostInfoByEventId(String eventId);
 }

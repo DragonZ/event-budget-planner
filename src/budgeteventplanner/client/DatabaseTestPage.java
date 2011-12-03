@@ -3,8 +3,9 @@ package budgeteventplanner.client;
 import java.util.List;
 
 import budgeteventplanner.client.entity.BudgetItem;
-import budgeteventplanner.client.entity.ServiceRequest;
 import budgeteventplanner.shared.Pair;
+import budgeteventplanner.shared.Pent;
+
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.EntryPoint;
@@ -45,16 +46,28 @@ public class DatabaseTestPage implements EntryPoint {
 	
 	List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
 	List<Pair<String, Double>> catCostPairList;	// <CategoryId, cost>
+	//List<Trio<String, Double>> catCostPairList;	//
+	
+	List<Pent<String, String, String, Integer, Double>> expenseList = Lists.newArrayList();
+	// name | categoryName | serviceName | qty | price
+	
+	String budgetIdTEST = "09A59AEA-9F0B-49F0-A8D7-6404227787BA";	// "7C1A90FE-A1A2-41A5-8A48-AB7746201829"
+	String eventIdTEST = "D9ED21CC-3AD8-4514-AB2A-A1A400189716";
+	
 	DataTable coreChartData;
+	DataTable alTableData;		// The Table showing actual expense and limits
+	DataTable detailExpenseTableData;	
 	PieChart pie;
 	BarChart bar;
-	Table table;
+	Table alTable;
+	Table totalExptable;
 	TextBox changeValueBox;
 	Button modifyButton;
 	int selectionID;
 	DialogBox promptModifyBox = new DialogBox();
 	boolean promptModifyBoxFLOP = false;
 	TextBox modificationBox = new TextBox();
+	String eventName = "Test";
 	@Override
 	public void onModuleLoad() {
 
@@ -95,12 +108,21 @@ public class DatabaseTestPage implements EntryPoint {
 		reloadButton.setEnabled(false);
 		RootPanel.get("databaseContainer").add(reloadButton);
 
+		final Button exportButton = new Button("export");
+		exportButton.setEnabled(false);
+		RootPanel.get("databaseContainer").add(exportButton);
+		
+		final Button drawTotalExpButton = new Button("drawToalExpButton");
+		drawTotalExpButton.setEnabled(false);
+		RootPanel.get("databaseContainer").add(drawTotalExpButton);
+		
+		
 		budgetService.getLimitsByBudgetId(
-				"7C1A90FE-A1A2-41A5-8A48-AB7746201829",
+				budgetIdTEST,
 				new AsyncCallback<List<Pair<String, BudgetItem>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert("failure");
+						Window.alert("budgetService.getLimitsByBudgetId - failure");
 					}
 
 					@Override
@@ -108,11 +130,12 @@ public class DatabaseTestPage implements EntryPoint {
 						catBitPairList.addAll(result);
 						drawButton.setEnabled(true);
 						sheetButton.setEnabled(true);
+						exportButton.setEnabled(true);
 					}
 
 				});
 		
-		initializeServiceRequestList("09320BA8-961D-434B-85F1-6014F24DB9EC");
+		initializeServiceRequestList(eventIdTEST);
 		
 		
 		
@@ -214,32 +237,32 @@ public class DatabaseTestPage implements EntryPoint {
 				Runnable onLoadCallback = new Runnable() {
 					public void run() {
 						try{
-							RootPanel.get("databaseContainer").remove(table);
+							RootPanel.get("databaseContainer").remove(alTable);
 						}catch(Exception e){}
 						
 						
-						coreChartData = DataTable.create();
+						alTableData = DataTable.create();
 
-						if (coreChartData.getNumberOfColumns() == 0) {
-							coreChartData.addColumn(ColumnType.STRING, "Category");
-							coreChartData.addColumn(ColumnType.NUMBER, "Quantity");
-							coreChartData.addColumn(ColumnType.NUMBER, "Limit");
+						if (alTableData.getNumberOfColumns() == 0) {
+							alTableData.addColumn(ColumnType.STRING, "Category");
+							alTableData.addColumn(ColumnType.NUMBER, "Quantity");
+							alTableData.addColumn(ColumnType.NUMBER, "Limit");
 						}
 
 						for (Pair<String, BudgetItem> pair : catBitPairList) {
-							coreChartData.addRow();
-							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 0,
+							alTableData.addRow();
+							alTableData.setValue(alTableData.getNumberOfRows() - 1, 0,
 									pair.getA());
-							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 1,
+							alTableData.setValue(alTableData.getNumberOfRows() - 1, 1,
 									mapToServiceRequestList(pair.getA()));
-							coreChartData.setValue(coreChartData.getNumberOfRows() - 1, 2,
+							alTableData.setValue(alTableData.getNumberOfRows() - 1, 2,
 									pair.getB().getLimit());
 						}
 
 						Panel panel = RootPanel.get("databaseContainer");
 						
-						table = new Table(coreChartData, Table.Options.create());
-						panel.add(table);
+						alTable = new Table(alTableData, Table.Options.create());
+						panel.add(alTable);
 					}
 				};
 				VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
@@ -273,39 +296,104 @@ public class DatabaseTestPage implements EntryPoint {
 		reloadButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				budgetService.getLimitsByBudgetId("7C1A90FE-A1A2-41A5-8A48-AB7746201829",
+				budgetService.getLimitsByBudgetId(budgetIdTEST,
 						new AsyncCallback<List<Pair<String, BudgetItem>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert("failure");
+						Window.alert("budgetService.getLimitsByBudgetId - failure");
 					}
 
 					@Override
 					public void onSuccess(List<Pair<String, BudgetItem>> result) {
 						catBitPairList.clear();
 						catBitPairList.addAll(result);
-//						DomEvent.fireNativeEvent(nativeEvent, this);
-//						NativeEvent createClickEvent = new GwtEvent();
-						Panel panel = RootPanel.get("databaseContainer");
-						
 					}
 				});
 			}
 		});
 		
+		exportButton.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event){
+				eventService.getAllCostInfoByEventId(eventIdTEST, 
+						new AsyncCallback<List<Pent<String, String, String, Integer, Double>>>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("eventService.getAllCostInfoByEventId - failure");
+								
+							}
+
+							@Override
+							public void onSuccess(
+									List<Pent<String, String, String, Integer, Double>> result) {
+								expenseList = result;
+								Window.alert("TRACK: expenseList.size() = " + expenseList.size()+"\n" +
+										"With EventId = " + eventIdTEST);
+								drawTotalExpButton.setEnabled(true);
+							}
+					
+				});
+			}
+		});
 		
-		
+		drawTotalExpButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Runnable onLoadCallback = new Runnable() {
+					public void run() {
+						try{
+							RootPanel.get("databaseContainer").remove(totalExptable);
+						}catch(Exception e){}
+						
+						
+						detailExpenseTableData = DataTable.create();
+						// eventName | categoryName | serviceName | qty | price
+						if (detailExpenseTableData.getNumberOfColumns() == 0) {
+							detailExpenseTableData.addColumn(ColumnType.STRING, "Event");
+							detailExpenseTableData.addColumn(ColumnType.STRING, "Category");
+							detailExpenseTableData.addColumn(ColumnType.STRING, "Service");
+							detailExpenseTableData.addColumn(ColumnType.NUMBER, "Quantity");
+							detailExpenseTableData.addColumn(ColumnType.NUMBER, "price");
+						}
+						
+						for (Pent<String, String, String, Integer, Double> pent : expenseList) {
+							Window.alert("TRACK: Pent.getB() = " + pent.getB());
+							detailExpenseTableData.addRow();
+							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 0,
+									pent.getA());
+							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 1,
+									pent.getB());
+							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 2,
+									pent.getC());
+							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 3,
+									pent.getD());
+							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 4,
+									pent.getE());
+						}
+
+						Panel panel = RootPanel.get("databaseContainer");
+						
+						totalExptable = new Table(detailExpenseTableData, Table.Options.create());
+						panel.add(totalExptable);
+					}
+				};
+				VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
+				
+				reloadButton.setEnabled(true);
+			}
+		});
 		
 		
 		
 	}
 
 	
-	private com.google.gwt.visualization.client.visualizations.Table.Options createTableOptions() {
-		com.google.gwt.visualization.client.visualizations.Table.Options options = com.google.gwt.visualization.client.visualizations.Table.Options.create();
-
-		return options;
-	}
+//	private com.google.gwt.visualization.client.visualizations.Table.Options createTableOptions() {
+//		com.google.gwt.visualization.client.visualizations.Table.Options options = com.google.gwt.visualization.client.visualizations.Table.Options.create();
+//
+//		return options;
+//	}
 	
 	private Options createOptions() {
 		Options options = Options.create();
@@ -371,7 +459,7 @@ public class DatabaseTestPage implements EntryPoint {
 				new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("server update failure");
+				Window.alert("updateEntryToServer -> budgetService.updateBudgetItemLimit - failure\n");
 			}
 
 			@Override
@@ -385,14 +473,14 @@ public class DatabaseTestPage implements EntryPoint {
 	
 	void initializeServiceRequestList(String eventId)
 	{
-		
+		Window.alert("Using eventId: \n" + eventId);
 		budgetService.getSubtotalsByEventId(eventId, 
 				new AsyncCallback<List<Pair<String, Double>>>()
 				{
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert("server update failure");						
+						Window.alert("initializeServiceRequestList -> budgetService.getSubtotalsByEventId - failure\n");					
 					}
 
 					@Override
@@ -403,17 +491,18 @@ public class DatabaseTestPage implements EntryPoint {
 				});
 
 	}
-	private AbstractDataTable createTesetTable() {
-		DataTable coreChartData = DataTable.create();
-		coreChartData.addColumn(ColumnType.STRING, "Task");
-		coreChartData.addColumn(ColumnType.NUMBER, "Hours per Day");
-		coreChartData.addRows(2);
-		coreChartData.setValue(0, 0, "Work");
-		coreChartData.setValue(0, 1, 14);
-		coreChartData.setValue(1, 0, "Sleep");
-		coreChartData.setValue(1, 1, 10);
-		return coreChartData;
-	}
+	
+//	private AbstractDataTable createTesetTable() {
+//		DataTable coreChartData = DataTable.create();
+//		coreChartData.addColumn(ColumnType.STRING, "Task");
+//		coreChartData.addColumn(ColumnType.NUMBER, "Hours per Day");
+//		coreChartData.addRows(2);
+//		coreChartData.setValue(0, 0, "Work");
+//		coreChartData.setValue(0, 1, 14);
+//		coreChartData.setValue(1, 0, "Sleep");
+//		coreChartData.setValue(1, 1, 10);
+//		return coreChartData;
+//	}
 	
 	private Double mapToServiceRequestList(String catId)
 	{

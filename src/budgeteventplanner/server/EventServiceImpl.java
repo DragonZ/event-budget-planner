@@ -5,10 +5,13 @@ import java.util.List;
 
 import budgeteventplanner.client.EventService;
 import budgeteventplanner.client.entity.Attendee;
+import budgeteventplanner.client.entity.Category;
 import budgeteventplanner.client.entity.Event;
 import budgeteventplanner.client.entity.Service;
 import budgeteventplanner.client.entity.ServiceRequest;
+import budgeteventplanner.shared.Pent;
 
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -102,6 +105,32 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 	public void deleteEventByEventId(String eventId) {
 		Objectify ofy = ObjectifyService.begin();
 		ofy.delete(new Key<Event>(Event.class, eventId));
+	}
+
+	@Override
+	public List<Pent<String, String, String, Integer, Double>> getAllCostInfoByEventId(
+			String eventId) {
+		Objectify ofy = ObjectifyService.begin();
+		
+		// name | categoryName | serviceName | qty | price
+		List<Pent<String, String, String, Integer, Double>> list = Lists.newArrayList();
+				
+		//String eventName = ofy.get(new Key<Event>(Event.class, eventId)).getName();
+		Query<ServiceRequest> q = ofy.query(ServiceRequest.class).filter(
+				"eventId", eventId);
+		for (ServiceRequest request : q) 
+		{
+			Service svc = ofy.get(new Key<Service>(Service.class, request.getServiceId()));
+			String catName = ofy.get(new Key<Category>(Category.class, svc.getCategoryId())).getName();
+			list.add(
+					new Pent<String, String, String, Integer, Double>
+					(request.getName(), catName, svc.getName(), request.getQuantity(), svc.getPrice())
+					);
+		}
+		
+
+		//
+		return list;
 	}
 
 }
