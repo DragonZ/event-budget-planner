@@ -68,9 +68,12 @@ public class DatabaseTestPage implements EntryPoint {
 	boolean promptModifyBoxFLOP = false;
 	TextBox modificationBox = new TextBox();
 	String eventName = "Test";
+	boolean entered = false;
+
 	@Override
 	public void onModuleLoad() {
-
+		
+		
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -93,13 +96,23 @@ public class DatabaseTestPage implements EntryPoint {
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
+
 			}
 		});
 
+
+			RootPanel.get("databaseContainer").add(new BudgetPieChart(budgetIdTEST));
+
+			RootPanel.get("databaseContainer").add(new BudgetExLmTable(budgetIdTEST, eventIdTEST));
+
+			RootPanel.get("databaseContainer").add(new BudgetBarChart(budgetIdTEST, eventIdTEST));
+
+
+		/*
 		final Button drawButton = new Button("Draw");
 		drawButton.setEnabled(false);
 		RootPanel.get("databaseContainer").add(drawButton);
-		
+
 		final Button sheetButton = new Button("Sheet");
 		sheetButton.setEnabled(false);
 		RootPanel.get("databaseContainer").add(sheetButton);
@@ -115,6 +128,8 @@ public class DatabaseTestPage implements EntryPoint {
 		final Button drawTotalExpButton = new Button("drawToalExpButton");
 		drawTotalExpButton.setEnabled(false);
 		RootPanel.get("databaseContainer").add(drawTotalExpButton);
+		
+		
 		
 		
 		budgetService.getLimitsByBudgetId(
@@ -358,7 +373,6 @@ public class DatabaseTestPage implements EntryPoint {
 						}
 						
 						for (Pent<String, String, String, Integer, Double> pent : expenseList) {
-							Window.alert("TRACK: Pent.getB() = " + pent.getB());
 							detailExpenseTableData.addRow();
 							detailExpenseTableData.setValue(detailExpenseTableData.getNumberOfRows() - 1, 0,
 									pent.getA());
@@ -385,7 +399,7 @@ public class DatabaseTestPage implements EntryPoint {
 		});
 		
 		
-		
+		*/
 	}
 
 	
