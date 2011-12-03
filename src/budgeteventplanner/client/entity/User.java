@@ -19,38 +19,42 @@ public class User implements Serializable {
 	private String name;
 	private String company;
 	private String address;
-  
+
 	public enum UserType {
-	  ORGANIZER (1, "Organizer"),
-	  VENDOR (2, "Vendor");
-	  
-	  private final Integer roleId;
-    private final String roleText;
-    
-	  UserType(int roleId, String roleText) {
-	    this.roleId = roleId;
-	    this.roleText = roleText;
-	  }
-	  
-	  public Integer getRoleId() {
-	    return roleId;
-	  }
-	  
-	  public String getRoleText() {
-	    return roleText;
-	  }
-	  
-    public static Integer getRoleIdByText(String roleText) {
-	    for (UserType type : UserType.values()) {
-	      if (type.getRoleText().equals(roleText)) {
-	        return type.getRoleId();
-	      }
-	    }
-	    return 0;
-	  }
+		ORGANIZER(1, "Organizer"),
+		VENDOR(2, "Vendor");
+
+		private final Integer roleId;
+		private final String roleText;
+
+		UserType(int roleId, String roleText) {
+			this.roleId = roleId;
+			this.roleText = roleText;
+		}
+
+		public Integer getRoleId() {
+			return roleId;
+		}
+
+		public String getRoleText() {
+			return roleText;
+		}
+
+		public static Integer getRoleIdByText(String roleText) {
+			for (UserType type : UserType.values()) {
+				if (type.getRoleText().equals(roleText)) {
+					return type.getRoleId();
+				}
+			}
+			return 0;
+		}
 	}
 
-	public User() {}
+	public final static Integer ORGANIZER = 1;
+	public final static Integer VENDOR = 2;
+	
+	public User() {
+	}
 
 	public static class Builder {
 		private User user;
@@ -86,9 +90,11 @@ public class User implements Serializable {
 			return this.user;
 		}
 	}
+
 	public String getUserId() {
 		return userId;
 	}
+
 	public String getEmail() {
 		return email;
 	}

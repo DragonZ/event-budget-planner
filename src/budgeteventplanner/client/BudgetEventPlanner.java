@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import budgeteventplanner.client.entity.Attendee;
+import budgeteventplanner.client.entity.User;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -27,217 +28,219 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class BudgetEventPlanner implements EntryPoint {
 
-  private final UserServiceAsync userService = GWT.create(UserService.class);
-  private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
+	private final UserServiceAsync userService = GWT.create(UserService.class);
+	private final AttendeeServiceAsync attendeeService = GWT.create(AttendeeService.class);
 
-  public void onModuleLoad() {
-    //final UserRegistrationPanel userRegistrationPanel = new UserRegistrationPanel();
-    
-    final TextBox nameField = new TextBox();
-    nameField.setText("");
-    nameField.setWidth("210px");
-    final PasswordTextBox pwField = new PasswordTextBox();
-    pwField.setText("");
-    pwField.setWidth("210px");
-    final Button btnAttendee = new Button("Attendee");
-    btnAttendee.setWidth("80px");
-    final TextBox attendeeField = new TextBox();
-    attendeeField.setText("");
-    attendeeField.setWidth("210px");
-    final Button btnAttendeeSubmit = new Button("Submit");
-    btnAttendeeSubmit.setWidth("80px");
-    final Button btnAttendeeCancel = new Button("Cancel");
-    btnAttendeeCancel.setWidth("80px");
+	public void onModuleLoad() {
+		// final UserRegistrationPanel userRegistrationPanel = new
+		// UserRegistrationPanel();
 
-    final Button btnLogin = new Button("Login");
-    btnLogin.setWidth("80px");
-    final Button btnSign = new Button("Sign Up");
-    btnLogin.setWidth("80px");
+		final TextBox nameField = new TextBox();
+		nameField.setText("");
+		nameField.setWidth("210px");
+		final PasswordTextBox pwField = new PasswordTextBox();
+		pwField.setText("");
+		pwField.setWidth("210px");
+		final Button btnAttendee = new Button("Attendee");
+		btnAttendee.setWidth("80px");
+		final TextBox attendeeField = new TextBox();
+		attendeeField.setText("");
+		attendeeField.setWidth("210px");
+		final Button btnAttendeeSubmit = new Button("Submit");
+		btnAttendeeSubmit.setWidth("80px");
+		final Button btnAttendeeCancel = new Button("Cancel");
+		btnAttendeeCancel.setWidth("80px");
 
-    final DialogBox attendeeBox = new DialogBox();
-    attendeeBox.setText("Registration code");
-    VerticalPanel attendeePanel = new VerticalPanel();
-    HorizontalPanel attendeeHPanel = new HorizontalPanel();
-    attendeePanel.addStyleName("attendeePanel");
-    attendeeHPanel.addStyleName("attendeeHPanel");
-    attendeePanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    attendeePanel.add(attendeeField);
-    attendeeHPanel.add(btnAttendeeSubmit);
-    attendeeHPanel.add(btnAttendeeCancel);
-    attendeePanel.add(attendeeHPanel);
-    attendeePanel.setSpacing(5);
-    attendeeBox.setWidget(attendeePanel);
+		final Button btnLogin = new Button("Login");
+		btnLogin.setWidth("80px");
+		final Button btnSign = new Button("Sign Up");
+		btnLogin.setWidth("80px");
 
-    RootPanel.get("nameFieldContainer").add(nameField);
-    RootPanel.get("pwFieldContainer").add(pwField);
-    RootPanel.get("loginButtonContainer").add(btnLogin);
-    RootPanel.get("attendeePartButtonContainer").add(btnAttendee);
-    RootPanel.get("signButtonContainer").add(btnSign);
+		final DialogBox attendeeBox = new DialogBox();
+		attendeeBox.setText("Registration code");
+		VerticalPanel attendeePanel = new VerticalPanel();
+		HorizontalPanel attendeeHPanel = new HorizontalPanel();
+		attendeePanel.addStyleName("attendeePanel");
+		attendeeHPanel.addStyleName("attendeeHPanel");
+		attendeePanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		attendeePanel.add(attendeeField);
+		attendeeHPanel.add(btnAttendeeSubmit);
+		attendeeHPanel.add(btnAttendeeCancel);
+		attendeePanel.add(attendeeHPanel);
+		attendeePanel.setSpacing(5);
+		attendeeBox.setWidget(attendeePanel);
 
-    // Focus the cursor on the name field when the app loads
-    nameField.addFocusHandler(new FocusHandler() {
-      @Override
-      public void onFocus(FocusEvent event) {
-        nameField.selectAll();
-      }
-    });
-    nameField.setFocus(true);
+		RootPanel.get("nameFieldContainer").add(nameField);
+		RootPanel.get("pwFieldContainer").add(pwField);
+		RootPanel.get("loginButtonContainer").add(btnLogin);
+		RootPanel.get("attendeePartButtonContainer").add(btnAttendee);
+		RootPanel.get("signButtonContainer").add(btnSign);
 
-    btnAttendee.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        attendeeField.setText("");
-        attendeeBox.show();
-        attendeeBox.center();
-        attendeeField.setFocus(true);
-        btnLogin.setEnabled(false);
-        btnSign.setEnabled(false);
-        btnAttendee.setEnabled(false);
-      }
-    });
+		// Focus the cursor on the name field when the app loads
+		nameField.addFocusHandler(new FocusHandler() {
+			@Override
+			public void onFocus(FocusEvent event) {
+				nameField.selectAll();
+			}
+		});
+		nameField.setFocus(true);
 
-    btnAttendeeCancel.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        attendeeBox.hide();
-        
-        attendeeField.setText("");
-        attendeeField.setFocus(true);
-        btnLogin.setEnabled(true);
-        btnSign.setEnabled(true);
-        btnAttendee.setEnabled(true);
-      }
-    });
+		btnAttendee.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				attendeeField.setText("");
+				attendeeBox.show();
+				attendeeBox.center();
+				attendeeField.setFocus(true);
+				btnLogin.setEnabled(false);
+				btnSign.setEnabled(false);
+				btnAttendee.setEnabled(false);
+			}
+		});
 
-    // Add a handler to open the registration form
-    btnSign.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        RootPanel.get("divPopup").clear();
-        RootPanel.get("divPopup").add(new UserRegistrationPanel());
-        RootPanel.get("divHome").setVisible(false);
-        RootPanel.get("divPopup").setVisible(true);
-      }
-    });
+		btnAttendeeCancel.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				attendeeBox.hide();
 
+				attendeeField.setText("");
+				attendeeField.setFocus(true);
+			}
+		});
 
+		// Add a handler to open the registration form
+		btnSign.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("divPopup").clear();
+				RootPanel.get("divPopup").add(new UserRegistrationPanel());
+				RootPanel.get("divHome").setVisible(false);
+				RootPanel.get("divPopup").setVisible(true);
+			}
+		});
 
-    class LoginHandler implements ClickHandler, KeyUpHandler {
-      public void onClick(ClickEvent event) {
-        login();
-      }
+		class LoginHandler implements ClickHandler, KeyUpHandler {
+			public void onClick(ClickEvent event) {
+				login();
+			}
 
-      public void onKeyUp(KeyUpEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-          login();
-        }
-      }
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					login();
+				}
+			}
 
-      private void login() {
-        if (nameField.getText().equals("XuXuan") || nameField.getText().equals("XuXuan2")
-            || nameField.getText().equals("XiaYuan") || nameField.getText().equals("ZhenLong")
-            || nameField.getText().equals("dbtest")) {
-          RootPanel.get(nameField.getText()).setVisible(true);
-          RootPanel.get("divHome").setVisible(false);
-          nameField.setText("");
-          pwField.setText("");
-          attendeeField.setText("");
-        } else if (nameField.getText().isEmpty()) {
+			private void login() {
+				if (nameField.getText().equals("XuXuan") || nameField.getText().equals("XuXuan2")
+						|| nameField.getText().equals("XiaYuan")
+						|| nameField.getText().equals("divVendor")
+						|| nameField.getText().equals("dbtest")) {
+					RootPanel.get(nameField.getText()).setVisible(true);
+					RootPanel.get("divHome").setVisible(false);
 
-        } else {
-          try {
-            userService.login(nameField.getText(), pwField.getText(), new AsyncCallback<Integer>() {
-              @Override
-              public void onFailure(Throwable caught) {
-                showDialog("Login", "RPC Call Failed!");
-              }
+					RootPanel.get("divVendor").clear();
+					RootPanel.get("divVendor").add(new VendorHomePage("lzhen"));
 
-              @Override
-              public void onSuccess(Integer result) {
-                String typeTurn = new String();
-                if (result == 1) { // Event Manager
-                  typeTurn = "XiaYuan";
-                } else if (result == 2) { // Vendor
-                  typeTurn = "ZhenLong";
-                } else if (result == 3) { // Attendee
-                  typeTurn = "XuXuan";
-                } else if (result == 4) { // Attendee
-                  typeTurn = "XuXuan2";
-                } else {
-                  showDialog("Login", "Incorrect Username or Password!");
-                }
-                RootPanel.get(typeTurn).setVisible(true);
-                RootPanel.get("divHome").setVisible(false);
+					nameField.setText("");
+					pwField.setText("");
+					attendeeField.setText("");
+				} else if (nameField.getText().isEmpty()) {
 
-                Date exp = new Date();
-                exp = new Date(exp.getTime() + 60 * 60 * 24);
+				} else {
+					try {
+						userService.login(nameField.getText(), pwField.getText(),
+								new AsyncCallback<Integer>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										showDialog("Login", "RPC Call Failed!");
+									}
 
-                Cookies.setCookie("USERNAME", nameField.getText());
-                Cookies.setCookie("USERTYPE", result.toString());
-                Cookies.setCookie("TIME", exp.toString());
-                nameField.setText("");
-                pwField.setText("");
-                attendeeField.setText("");
-                
-                
-              }
-            });
-          } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-          }
-        }
-        nameField.setFocus(true);
-      }
-    }
+									@Override
+									public void onSuccess(Integer result) {
+										Date exp = new Date();
+										exp = new Date(exp.getTime() + 60 * 60 * 24);
 
-    // add LoginHandler
-    btnLogin.addClickHandler(new LoginHandler());
-    nameField.addKeyUpHandler(new LoginHandler());
-    pwField.addKeyUpHandler(new LoginHandler());
+										Cookies.setCookie("USERNAME", nameField.getText());
+										Cookies.setCookie("USERTYPE", result.toString());
+										Cookies.setCookie("TIME", exp.toString());
 
-    btnAttendeeSubmit.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        attendeeService.getAttendeeByAttendeeId(attendeeField.getText(),
-            new AsyncCallback<Attendee>() {
-              @Override
-              public void onFailure(Throwable caught) {
-                showDialog("Attendee Registration", "RPC Call Failed!");
-              }
+										if (result.equals(User.ORGANIZER)) {
+											RootPanel.get("divHome").setVisible(false);
+											RootPanel.get("XiaYuan").setVisible(true);
+										} else if (result.equals(User.VENDOR)) {
+											RootPanel.get("divVendor").clear();
+											RootPanel.get("divVendor").add(
+													new VendorHomePage(nameField.getText()));
+											RootPanel.get("divHome").setVisible(false);
+											RootPanel.get("divVendor").setVisible(true);
+										} else if (result == 3) { // Attendee
+											RootPanel.get("divHome").setVisible(false);
+											RootPanel.get("XuXuan").setVisible(true);
+										} else if (result == 4) { // Attendee
+											RootPanel.get("divHome").setVisible(false);
+											RootPanel.get("XuXuan2").setVisible(true);
+										} else {
+											showDialog("Login", "Incorrect username or password!");
+										}
+									}
+								});
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
+				}
+				nameField.setFocus(true);
+			}
+		}
 
-              @Override
-              public void onSuccess(Attendee result) {
-                if (!result.equals(null)) {
-                  attendeeBox.hide();
-                  AttendeeRegistration.setAttendeeID(attendeeField.getText());
-                  RootPanel.get("XuXuan2").setVisible(true);
-                  RootPanel.get("divHome").setVisible(false);
-                  nameField.setText("");
-                  pwField.setText("");
-                  attendeeField.setText("");
-                } else {
-                  showDialog("Attendee Registration", "Invalid Registration Code!");
-                }
-              }
-            });
-      }
-    });
-  }
+		// add LoginHandler
+		btnLogin.addClickHandler(new LoginHandler());
+		nameField.addKeyUpHandler(new LoginHandler());
+		pwField.addKeyUpHandler(new LoginHandler());
 
-  public void showDialog(String title, String text) {
-    final DialogBox dialogError = new DialogBox();
-    final Button btnClose = new Button("Close");
-    dialogError.setText(title);
-    dialogError.setAnimationEnabled(true);
-    btnClose.getElement().setId("btnClose");
-    VerticalPanel panelError = new VerticalPanel();
-    panelError.add(new Label(text));
-    panelError.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    panelError.add(btnClose);
-    dialogError.setWidget(panelError);
-    btnClose.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        dialogError.hide();
-      }
-    });
-    dialogError.center();
-    btnClose.setFocus(true);
-  }
+		btnAttendeeSubmit.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				attendeeService.getAttendeeByAttendeeId(attendeeField.getText(),
+						new AsyncCallback<Attendee>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								showDialog("Attendee Registration", "RPC Call Failed!");
+							}
+
+							@Override
+							public void onSuccess(Attendee result) {
+								if (!result.equals(null)) {
+									attendeeBox.hide();
+									AttendeeRegistration.setAttendeeID(attendeeField.getText());
+									RootPanel.get("XuXuan2").setVisible(true);
+									RootPanel.get("divHome").setVisible(false);
+									nameField.setText("");
+									pwField.setText("");
+									attendeeField.setText("");
+								} else {
+									showDialog("Attendee Registration",
+											"Invalid Registration Code!");
+								}
+							}
+						});
+			}
+		});
+	}
+
+	public void showDialog(String title, String text) {
+		final DialogBox dialogError = new DialogBox();
+		final Button btnClose = new Button("Close");
+		dialogError.setText(title);
+		dialogError.setAnimationEnabled(true);
+		btnClose.getElement().setId("btnClose");
+		VerticalPanel panelError = new VerticalPanel();
+		panelError.add(new Label(text));
+		panelError.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		panelError.add(btnClose);
+		dialogError.setWidget(panelError);
+		btnClose.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dialogError.hide();
+			}
+		});
+		dialogError.center();
+		btnClose.setFocus(true);
+	}
 }
