@@ -32,7 +32,8 @@ public class UserRegistrationPanel extends Composite {
   final ListBox listUserType = new ListBox();
   final PasswordTextBox first_pw = new PasswordTextBox();
   final PasswordTextBox second_pw = new PasswordTextBox();
-  final TextArea txtAddress = new TextArea();
+  final TextBox txtAddress = new TextBox();
+  final TextBox txtAddress2 = new TextBox();
   final TextBox txtCity = new TextBox();
   final TextBox txtState = new TextBox();
   final TextBox txtZipCode = new TextBox();
@@ -47,7 +48,8 @@ public class UserRegistrationPanel extends Composite {
     }
     first_pw.setWidth("200px");
     second_pw.setWidth("200px");
-    txtAddress.setSize("200px", "50px");
+    txtAddress.setWidth("200px");
+    txtAddress2.setWidth("200px");
     txtCity.setWidth("120px");
     txtState.setMaxLength(2);
     txtState.setWidth("40px");
@@ -68,8 +70,10 @@ public class UserRegistrationPanel extends Composite {
     signupVPanel.add(first_pw);
     signupVPanel.add(new HTML("<h4>*</h4><b>Retype Password:</b>"));
     signupVPanel.add(second_pw);
-    signupVPanel.add(new HTML("<b>Address:</b>"));
+    signupVPanel.add(new HTML("<b>Address Line 1:</b>"));
     signupVPanel.add(txtAddress);
+    signupVPanel.add(new HTML("<b>Address Line 2:</b>"));
+    signupVPanel.add(txtAddress2);
     signupVPanel.add(new HTML("<b>City:</b>"));
     signupVPanel.add(txtCity);
     signupVPanel.add(new HTML("<b>State:</b>"));
