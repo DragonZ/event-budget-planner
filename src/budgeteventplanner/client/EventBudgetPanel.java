@@ -883,9 +883,8 @@ public class EventBudgetPanel extends Composite{
 	}
 
 	public void attendee_pop_up(String event_id, String event_name) {
-		// set cookie for organizer id and event id
-
-		AttendeeManager.edittingAttendees(event_id, event_name, "YuanXia");
+		RootPanel.get("XuXuan").clear();
+		RootPanel.get("XuXuan").add(new AttendeeManagementPanel(event_name, event_id, "YuanXia"));
 		RootPanel.get("XiaYuan").setVisible(false);
 		RootPanel.get("XuXuan").setVisible(true);
 
@@ -904,12 +903,12 @@ public class EventBudgetPanel extends Composite{
 
 		// get all attendee by eventId
 		attendeeService.getAttendeeListByEventId(eventId,
-				new AsyncCallback<ArrayList<Attendee>>() {
+				new AsyncCallback<List<Attendee>>() {
 					public void onFailure(Throwable caught) {
 
 					}
 
-					public void onSuccess(ArrayList<Attendee> result) {
+					public void onSuccess(List<Attendee> result) {
 						int i = -1;
 						for (Attendee a : result) {
 							i++;
