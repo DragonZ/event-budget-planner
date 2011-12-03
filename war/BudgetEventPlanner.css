@@ -12,7 +12,7 @@ h1 {
 
 h2 {
 	font-size: 0.8em;
-	color: #6881ff;
+	color: #0084ff;
 }
 
 h3 {
@@ -20,6 +20,14 @@ h3 {
 	font-weight: bold;
 	color: #6881ff;	
 	margin: 0px 0px 0px;
+}
+
+h4 {
+	font-size: 1em;
+	font-weight: bold;
+	color: #ff0000;
+	margin: 0px 0px 0px;
+	display: inline;
 }
 
 .sendButton {
