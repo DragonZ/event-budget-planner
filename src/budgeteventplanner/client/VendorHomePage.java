@@ -204,17 +204,17 @@ public class VendorHomePage extends Composite {
 
 		tab.add(vendorPage, "Vendor");
 		tab.add(vendorService, "Service");
-		RootPanel.get("ZhenLong").add(tab);
-		// add operations
-
-		// eventFolders.addSelectionHandler(new treeHandler<TreeItem>());
+		// RootPanel.get("ZhenLong").add(tab);
+		// // add operations
+		//
+		eventFolders.addSelectionHandler(new treeHandler<TreeItem>());
 		// add listeners
 
 		refreshExistingService();
 		tab.selectTab(0);
 		tab.setSize("100%", "100%");
 		// tab initialization
-		initWidget(vendorPage);
+		initWidget(tab);
 	}
 
 	@SuppressWarnings("deprecation")
