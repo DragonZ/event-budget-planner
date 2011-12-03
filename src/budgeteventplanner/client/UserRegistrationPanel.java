@@ -12,7 +12,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -80,8 +82,15 @@ public class UserRegistrationPanel extends Composite {
     signupVPanel.add(new HTML(""));
     signupVPanel.add(new HTML(""));
     signupVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    signupVPanel.add(btnSubmit);
-    signupVPanel.add(btnCancel);
+    final FlexTable signButtonTable = new FlexTable();
+    signButtonTable.setWidget(0, 0, btnSubmit);
+    signButtonTable.setWidget(0, 2, btnCancel);
+	signButtonTable.getColumnFormatter().setWidth(0, "50px");
+	signButtonTable.getColumnFormatter().setWidth(1, "80px");
+	signButtonTable.getColumnFormatter().setWidth(2, "50px");
+	signupVPanel.add(signButtonTable);
+//    signupVPanel.add(btnSubmit);
+//    signupVPanel.add(btnCancel);
     signupVPanel.setSpacing(5);
 
     // register RPC call
