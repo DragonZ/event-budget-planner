@@ -166,7 +166,10 @@ public class UserRegistrationPanel extends Composite {
     dialogError.setAnimationEnabled(true);
     btnClose.getElement().setId("btnClose");
     VerticalPanel panelError = new VerticalPanel();
-    panelError.add(new Label(text));
+    final HTML errorText = new HTML();
+    errorText.setHTML(text);
+    errorText.setStyleName("errorText");
+    panelError.add(errorText);
     panelError.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
     panelError.add(btnClose);
     dialogError.setWidget(panelError);

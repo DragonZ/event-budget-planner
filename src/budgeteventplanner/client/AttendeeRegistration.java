@@ -228,7 +228,7 @@ public class AttendeeRegistration implements EntryPoint {
 	boolean checkForm() {
 		if (emailBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input your email address</b>");
+					.setHTML("<h4>Be sure input your email address</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
@@ -236,63 +236,63 @@ public class AttendeeRegistration implements EntryPoint {
 		if (!(emailBox.getText().contains("@") && emailBox.getText().contains(
 				"."))) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input a legal email address</b>");
+					.setHTML("<h4>Be sure input a legal email address</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (firstNameBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input your first name</b>");
+					.setHTML("<h4>Be sure input your first name</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (lastNameBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input your last name</b>");
+					.setHTML("<h4>Be sure input your last name</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (address1Box.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input your address</b>");
+					.setHTML("<h4>Be sure input your address</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (cityBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input the city you live in</b>");
+					.setHTML("<h4>Be sure input the city you live in</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (stateBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input the state you live in</b>");
+					.setHTML("<h4>Be sure input the state you live in</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (zipBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input the ZIP code</b>");
+					.setHTML("<h4>Be sure input the ZIP code</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (phoneBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input your phone number</b>");
+					.setHTML("<h4>Be sure input your phone number</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
 		}
 		if (phoneBox.getText().length()!=10) {
 			((HTML) dialogVPanel.getWidget(0))
-					.setHTML("<b>Be sure input ten digits phone number</b>");
+					.setHTML("<h4>Be sure input ten digits phone number</h4>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;

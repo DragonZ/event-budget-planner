@@ -216,11 +216,14 @@ public class BudgetEventPlanner implements EntryPoint {
 
 		btnAttendeeSubmit.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				attendeeService.getAttendeeByAttendeeId(attendeeField.getText(),
+				if(attendeeField.getText().isEmpty()){
+				}
+				else{
+					attendeeService.getAttendeeByAttendeeId(attendeeField.getText(),
 						new AsyncCallback<Attendee>() {
 							@Override
 							public void onFailure(Throwable caught) {
-								showDialog("Attendee Registration", "RPC Call Failed!");
+								showDialog("Attendee Registration", "Invalid Registration Code");
 							}
 
 							@Override
@@ -239,6 +242,7 @@ public class BudgetEventPlanner implements EntryPoint {
 								}
 							}
 						});
+				}
 			}
 		});
 	}
@@ -250,7 +254,10 @@ public class BudgetEventPlanner implements EntryPoint {
 		dialogError.setAnimationEnabled(true);
 		btnClose.getElement().setId("btnClose");
 		VerticalPanel panelError = new VerticalPanel();
-		panelError.add(new Label(text));
+	    final HTML errorText = new HTML();
+	    errorText.setHTML(text);
+	    errorText.setStyleName("errorText");
+	    panelError.add(errorText);
 		panelError.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		panelError.add(btnClose);
 		dialogError.setWidget(panelError);
