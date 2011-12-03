@@ -137,8 +137,8 @@ public class AttendeeRegistration implements EntryPoint {
 				dialogBox.hide();
 				submit.setEnabled(true);
 				submit.setFocus(true);
-				RootPanel.get("XuXuan2").setVisible(false);
-				RootPanel.get("main").setVisible(true);
+				RootPanel.get("XuXuan2").setVisible(true);
+				//RootPanel.get("main").setVisible(true);
 			}
 		});
 		// emailBox.setFocus(true);
@@ -147,8 +147,9 @@ public class AttendeeRegistration implements EntryPoint {
 
 			public void onClick(ClickEvent event) {
 
-				if (!checkForm())
+				if (!checkForm()){
 					return;
+				}
 
 				attendeeService.updateAttendeeInfo(
 						attendeeID,
@@ -243,6 +244,13 @@ public class AttendeeRegistration implements EntryPoint {
 		if (firstNameBox.getText().compareTo("") == 0) {
 			((HTML) dialogVPanel.getWidget(0))
 					.setHTML("<b>Be sure input your first name</b>");
+			dialogBox.center();
+			closeButton.setFocus(true);
+			return false;
+		}
+		if (lastNameBox.getText().compareTo("") == 0) {
+			((HTML) dialogVPanel.getWidget(0))
+					.setHTML("<b>Be sure input your last name</b>");
 			dialogBox.center();
 			closeButton.setFocus(true);
 			return false;
