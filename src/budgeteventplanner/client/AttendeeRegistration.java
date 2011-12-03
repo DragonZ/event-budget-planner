@@ -118,8 +118,8 @@ public class AttendeeRegistration implements EntryPoint {
 		RootPanel.get("phone").add(phoneLabel);
 		RootPanel.get("phoneBox").add(phoneBox);
 
-	    submit.setHTML("<h2>Submit</h2>");
-	    closeButton.setHTML("<h2>Close</h2>");
+	    submit.setHTML("Submit");
+	    closeButton.setHTML("Close");
 		RootPanel.get("submit").add(submit);
 
 		// dialog box

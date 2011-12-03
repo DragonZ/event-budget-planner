@@ -44,24 +44,24 @@ public class BudgetEventPlanner implements EntryPoint {
 		pwField.setText("");
 		pwField.setWidth("210px");
 		final Button btnAttendee = new Button();
-		btnAttendee.setHTML("<h2>Attendee</h2>");
+		btnAttendee.setHTML("Attendee");
 		btnAttendee.setWidth("80px");
 		final TextBox attendeeField = new TextBox();
 		attendeeField.setText("");
 		attendeeField.setWidth("190px");
 		final Button btnAttendeeSubmit = new Button();
-		btnAttendeeSubmit.setHTML("<h2>Submit</h2>");
+		btnAttendeeSubmit.setHTML("Submit");
 		btnAttendeeSubmit.setWidth("80px");
 		final Button btnAttendeeCancel = new Button();
-		btnAttendeeCancel.setHTML("<h2>Cancel</h2>");
+		btnAttendeeCancel.setHTML("Cancel");
 		btnAttendeeCancel.setWidth("80px");
 
 		final Button btnLogin = new Button();
-		btnLogin.setHTML("<h2>Login</h2>");
+		btnLogin.setHTML("Login");
 		
 		btnLogin.setWidth("80px");
 		final Button btnSign = new Button();
-		btnSign.setHTML("<h2>Sign Up</h2>");
+		btnSign.setHTML("Sign Up");
 		btnSign.setWidth("80px");
 
 		final DialogBox attendeeBox = new DialogBox();

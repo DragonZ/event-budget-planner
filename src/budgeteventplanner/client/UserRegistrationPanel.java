@@ -55,9 +55,9 @@ public class UserRegistrationPanel extends Composite {
     txtState.setWidth("40px");
     txtZipCode.setWidth("60px");
     txtZipCode.setMaxLength(5);
-    btnSubmit.setHTML("<h2>Submit</h2>");
+    btnSubmit.setHTML("Submit");
     btnSubmit.getElement().setId("btnSubmit");
-    btnCancel.setHTML("<h2>Cancel</h2>");
+    btnCancel.setHTML("Cancel");
     btnCancel.getElement().setId("btnCancel");
     
     final VerticalPanel signupVPanel = new VerticalPanel();

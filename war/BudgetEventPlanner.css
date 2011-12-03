@@ -72,3 +72,10 @@ h4 {
 	color: #ff0000;
 	margin: 0px 0px 0px;
 }
+
+.gwt-Button {
+	font-size: 0.8em;
+	color: #1b4585;
+	font-weight: bold;
+	margin: 0px 0px 0px;
+}
