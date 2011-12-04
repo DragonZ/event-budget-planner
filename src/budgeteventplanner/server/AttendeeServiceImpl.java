@@ -1,6 +1,8 @@
 package budgeteventplanner.server;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -30,7 +32,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 
 	public static final Integer EMAIL_REMOVE = -1;
 	public static final Integer EMAIL_INVITE = 1;
-
+	public static final int STATUS_NONE = 100;
 	static {
 		try {
 			ObjectifyService.register(Event.class);
@@ -44,10 +46,11 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = new Attendee.Builder(eventId, name, email).build();
 		ofy.put(attendee);
-		sendEmail(attendee, this.EMAIL_INVITE);
+		sendEmail(attendee, EMAIL_INVITE);
 		return attendee;
 	}
 
+	
 	@Override
 	public List<Attendee> getAttendeeListByOrganizerId(String organizerId) {
 		Objectify ofy = ObjectifyService.begin();
@@ -79,8 +82,11 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		List<Event> listEvent = new EventServiceImpl().getEventsByOrganizerIdAndStatus(organizerId,
 				Event.ACTIVE);
 		for (Event event : listEvent) {
-			List<Attendee> listAttendee = getAttendeeListByEventId(event.getEventId());
-			multimap.putAll(event.getName(), listAttendee);
+			if (!event.getEventId().equals(excludedEventId)) {
+				List<Attendee> listAttendee = getAttendeeListByEventId(event.getEventId());
+				Collections.sort(listAttendee, new AttendeeComparator());
+				multimap.putAll(event.getName(), listAttendee);
+			}
 		}
 
 		return multimap;
@@ -90,13 +96,21 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 	public void updateAttendeeInfo(String attendeeId, String name, String email, String jobTitle,
 			String companyName, String address, String phoneNumber, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-
+		if(status.equals(STATUS_NONE)){
 		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
 		Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name).setEmail(email)
 				.setJobTitle(jobTitle).setCompanyName(companyName).setAddress(address)
-				.setPhoneNumber(phoneNumber).setStatus(status).build();
+				.setPhoneNumber(phoneNumber).build();
 		ofy.put(updatedAttendee);
-		sendEmail(updatedAttendee, status);
+		sendEmail(updatedAttendee);
+		}else{
+			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+			Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name).setEmail(email)
+					.setJobTitle(jobTitle).setCompanyName(companyName).setAddress(address)
+					.setPhoneNumber(phoneNumber).setStatus(status).build();
+			ofy.put(updatedAttendee);
+			sendEmail(updatedAttendee);
+		}
 	}
 
 	@Override
@@ -104,7 +118,8 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		return 1;
 	}
 
-	private void sendEmail(Attendee attendee, Integer status) {
+	///This only send accept email
+	private void sendEmail(Attendee attendee) {
 		Session session = Session.getDefaultInstance(new Properties(), null);
 		String msgBody = "Dear " + attendee.getName() + ":\n\nYour submission is accepted!"
 				+ attendee.toString() + "\n\n\n Team XYZs";
@@ -123,7 +138,23 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 
 		}
 	}
-
+//this will send invite or remove
+	private void sendEmail(Attendee attendee, Integer status) {
+		if (status.equals(EMAIL_REMOVE)) // -1 means deleted by organizer
+		{
+			String subject = "You Have been Removed From Event";
+			String msgBody = "You Have been Removed From Event.";
+			sendCustomizedEmail(attendee, subject, msgBody);
+		}
+		if (status.equals(EMAIL_INVITE)) // 1 means send inviting letter
+		{
+			String subject = "You are invited to a new Event";
+			String msgBody = "Your Registration code is:" + attendee.getAttendeeId()
+					+ "\n Please go to purduebep.appspot.com for registration";
+			sendCustomizedEmail(attendee, subject, msgBody);
+		}
+		
+	}
 	public void sendEmail(String attendeeId, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
@@ -234,5 +265,35 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		
 		sendEmailBatchByOrganizer(newattendeeIdList, EMAIL_INVITE);
 		return newattendeeList;
+	}
+
+
+	@Override
+	public SetMultimap<Integer, Attendee> getSortedEventAttendeeByStatus(String eventId) {
+		SetMultimap<Integer, Attendee> multimap = HashMultimap.create();
+		
+		multimap.putAll(Attendee.YES, getEventAttendeeByStatus(eventId, Attendee.YES));
+		multimap.putAll(Attendee.NO, getEventAttendeeByStatus(eventId, Attendee.NO));
+		multimap.putAll(Attendee.MAYBE, getEventAttendeeByStatus(eventId, Attendee.MAYBE));
+		multimap.putAll(Attendee.PENDING, getEventAttendeeByStatus(eventId, Attendee.PENDING));
+		
+		return multimap;
+	}
+
+
+	@Override
+	public List<Attendee> getEventAttendeeByStatus(String eventId, Integer status) {
+		Objectify ofy = ObjectifyService.begin();
+		Query<Attendee> q = ofy.query(Attendee.class).filter("eventId", eventId).filter("status", status);
+		List<Attendee> sorted = q.list();
+		Collections.sort(sorted, new AttendeeComparator());
+		return sorted;
+	}
+
+	class AttendeeComparator implements Comparator<Attendee> {
+		@Override
+		public int compare(Attendee o1, Attendee o2) {
+			return (o1.getName().compareToIgnoreCase(o2.getName()));
+		}
 	}
 }
