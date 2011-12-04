@@ -13,7 +13,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -21,7 +23,6 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -64,12 +65,12 @@ public class VendorHomePage extends Composite {
 	private TextBox price;
 	private Button addService;
 
-	private Hyperlink acceptHyperlink[];
-	private Hyperlink ignoreHyperlink[];
-	private Hyperlink viewHyperlink[];
+	private Anchor acceptHyperlink[];
+	private Anchor ignoreHyperlink[];
+	private Anchor viewHyperlink[];
 	private ArrayList<String> serviceRequestID;
 
-	private Hyperlink deleteHyperlink[];
+	private Anchor deleteHyperlink[];
 	private String[] deleteServiceID;
 	private String[] displayCategoryID;
 	//private String categoryName;
@@ -197,7 +198,6 @@ public class VendorHomePage extends Composite {
 		initWidget(tab);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void refreshExistingService() {
 		existingService.clear();
 
@@ -220,7 +220,7 @@ public class VendorHomePage extends Composite {
 					}
 
 					public void onSuccess(List<Pair<String, Service>> result) {
-						deleteHyperlink = new Hyperlink[result.size()];
+						deleteHyperlink = new Anchor[result.size()];
 						deleteServiceID = new String[result.size()];
 						displayCategoryID = new String[result.size()];
 
@@ -233,7 +233,7 @@ public class VendorHomePage extends Composite {
 
 							existingService.setWidget(i + 1, 0, new Label(result.get(i).getA()));
 
-							deleteHyperlink[i] = new Hyperlink("Delete", Integer.toString(i));
+							deleteHyperlink[i] = new Anchor("Delete");
 							existingService.setWidget(i + 1, 1, new Label(result.get(i).getB()
 									.getName()));
 							existingService.setWidget(i + 1, 2, new Label(result.get(i).getB()
@@ -308,16 +308,15 @@ public class VendorHomePage extends Composite {
 
 							}
 
-							@SuppressWarnings("deprecation")
 							@Override
 							public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 								events.clear();
 								// 3 hyberlinks: view/accept/ignore
 								// read from sever the number of entries
 
-								acceptHyperlink = new Hyperlink[result.size()];
-								ignoreHyperlink = new Hyperlink[result.size()];
-								viewHyperlink = new Hyperlink[result.size()];
+								acceptHyperlink = new Anchor[result.size()];
+								ignoreHyperlink = new Anchor[result.size()];
+								viewHyperlink = new Anchor[result.size()];
 								serviceRequestID = new ArrayList<String>();
 
 								vendorPage.setBorderWidth(1);
@@ -328,24 +327,21 @@ public class VendorHomePage extends Composite {
 								}
 
 								events.setWidget(0, 0, new HTML("<b>Requests</b>"));
-								events.setWidget(0, 3, new HTML("<b>Options</b>"));
+								events.setWidget(0, 3, new HTML("<b>Actions</b>"));
 								for (int i = 0; i < result.size(); i++) {
 									events.setWidget(i + 1, 0, new Label(result.get(i).getB()
 											.getName()));
 									events.getCellFormatter().setWidth(i, 0, "90%");
-									viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
-									ignoreHyperlink[i] = new Hyperlink("Ignore", Integer
-											.toString(i));
-									acceptHyperlink[i] = new Hyperlink("Accept", Integer
-											.toString(i));
+									viewHyperlink[i] = new Anchor("[View]");
+									ignoreHyperlink[i] = new Anchor("[Ignore]");
+									acceptHyperlink[i] = new Anchor("[Accept]");
 									events.setWidget(i + 1, 1, viewHyperlink[i]);
 									events.setWidget(i + 1, 2, acceptHyperlink[i]);
 									events.setWidget(i + 1, 3, ignoreHyperlink[i]);
 
 									final String requestService = result.get(i).getA();
 									final String requestName = result.get(i).getB().getName();
-									final String requestDate = result.get(i).getB().getDueDate()
-											.toString();
+									final String requestDate = DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(result.get(i).getB().getDueDate());
 									final String requestQuatity = result.get(i).getB()
 											.getQuantity().toString();
 									// listener add
@@ -472,31 +468,29 @@ public class VendorHomePage extends Composite {
 
 							}
 
-							@SuppressWarnings("deprecation")
 							@Override
 							public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 
 								events.clear();
 								// 2 buttons: view(/ignore)
 								// ignoreHyperlink = new Hyperlink[3];
-								viewHyperlink = new Hyperlink[result.size()];
+								viewHyperlink = new Anchor[result.size()];
 
 								vendorPage.setBorderWidth(1);
 								// border display
 
 								events.setWidget(0, 0, new HTML("<b>Requests</b>"));
-								events.setWidget(0, 1, new HTML("<b>Options</b>"));
+								events.setWidget(0, 1, new HTML("<b>Actions</b>"));
 								for (int i = 0; i < result.size(); i++) {
 									events.setWidget(i + 1, 0, new Label(result.get(i).getB()
 											.getName()));
 									events.getCellFormatter().setWidth(i, 0, "90%");
-									viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
+									viewHyperlink[i] = new Anchor("[View]");
 									events.setWidget(i + 1, 1, viewHyperlink[i]);
 
 									final String requestService = result.get(i).getA();
 									final String requestName = result.get(i).getB().getName();
-									final String requestDate = result.get(i).getB().getDueDate()
-											.toString();
+									final String requestDate = DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(result.get(i).getB().getDueDate());
 									final String requestQuatity = result.get(i).getB()
 											.getQuantity().toString();
 									// listener add
@@ -563,31 +557,29 @@ public class VendorHomePage extends Composite {
 
 							}
 
-							@SuppressWarnings("deprecation")
 							@Override
 							public void onSuccess(List<Pair<String, ServiceRequest>> result) {
 
 								events.clear();
 								// 2 buttons: view(/accept)
 								// ignoreHyperlink = new Hyperlink[3];
-								viewHyperlink = new Hyperlink[result.size()];
+								viewHyperlink = new Anchor[result.size()];
 
 								vendorPage.setBorderWidth(1);
 								// border display
 
 								events.setWidget(0, 0, new HTML("<b>Requests</b>"));
-								events.setWidget(0, 1, new HTML("<b>Options</b>"));
+								events.setWidget(0, 1, new HTML("<b>Actions</b>"));
 								for (int i = 0; i < result.size(); i++) {
 									events.setWidget(i + 1, 0, new Label(result.get(i).getB()
 											.getName()));
 									events.getCellFormatter().setWidth(i, 0, "90%");
-									viewHyperlink[i] = new Hyperlink("View", Integer.toString(i));
+									viewHyperlink[i] = new Anchor("[View]");
 									events.setWidget(i + 1, 1, viewHyperlink[i]);
 
 									final String requestService = result.get(i).getA();
 									final String requestName = result.get(i).getB().getName();
-									final String requestDate = result.get(i).getB().getDueDate()
-											.toString();
+									final String requestDate = DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(result.get(i).getB().getDueDate()); 
 									final String requestQuatity = result.get(i).getB()
 											.getQuantity().toString();
 									// listener add
