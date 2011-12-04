@@ -78,9 +78,10 @@ public class BudgetServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public List<Pair<String, Double>> getSubtotalsByEventId(String eventId) {
+	public List<Pair<String, Double>> getSubtotalsByBudgetId(String budgetId) {
 		List<Pair<String, Double>> list = Lists.newArrayList();
 		Objectify ofy = ObjectifyService.begin();
+		String eventId = ofy.get(new Key<Budget>(Budget.class, budgetId)).getEventId();
 		Query<ServiceRequest> queryServiceRequest = ofy.query(
 				ServiceRequest.class).filter("eventId", eventId);
 		for (ServiceRequest request : queryServiceRequest) {

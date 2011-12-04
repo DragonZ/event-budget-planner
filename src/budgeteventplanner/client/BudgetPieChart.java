@@ -14,7 +14,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -45,7 +45,7 @@ public class BudgetPieChart extends Composite {
 	public BudgetPieChart(final String budgetId) {
 		super();
 		panel.clear();
-		final Button btnDraw = new Button("Draw BudgetPieChart");
+		final Anchor btnDraw = new Anchor("Draw BudgetPieChart");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 		modificationBox.setEnabled(false);

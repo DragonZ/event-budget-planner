@@ -12,7 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,15 +38,15 @@ public class BudgetExLmTable extends Composite {
 	
 	String budgetIdGLB = "";
 	
-	public BudgetExLmTable(String budgetId, String eventId) {
+	public BudgetExLmTable(String budgetId) {
 		super();
 		panel.clear();
 		budgetIdGLB = budgetId;
-		final Button btnDraw = new Button("Draw BudgetExLmTable");
+		final Anchor btnDraw = new Anchor("Draw BudgetExLmTable");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 		
-		initializeServiceRequestList(eventId);
+		initializeServiceRequestList(budgetId);
 		
 		budgetService.getLimitsByBudgetId(budgetId,
 				new AsyncCallback<List<Pair<String, BudgetItem>>>() {
@@ -177,10 +177,10 @@ public class BudgetExLmTable extends Composite {
 		
 	}
 	
-	void initializeServiceRequestList(String eventId)
+	void initializeServiceRequestList(String budgetId)
 	{
 		//Window.alert("Using eventId: \n" + eventId);
-		budgetService.getSubtotalsByEventId(eventId, 
+		budgetService.getSubtotalsByBudgetId(budgetId, 
 				new AsyncCallback<List<Pair<String, Double>>>()
 				{
 
