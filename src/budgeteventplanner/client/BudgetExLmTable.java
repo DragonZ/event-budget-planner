@@ -170,7 +170,7 @@ public class BudgetExLmTable extends Composite {
 	private Double mapToServiceRequestList(String catId)
 	{
 		for (Pair<String, Double> e: catCostPairList) {
-			if(e.getA().endsWith(catId))
+			if(e.getA().equals(catId))
 				return e.getB();
 		}
 		return 0.0;
