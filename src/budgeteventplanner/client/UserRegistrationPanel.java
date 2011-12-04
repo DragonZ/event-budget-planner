@@ -37,8 +37,8 @@ public class UserRegistrationPanel extends Composite {
   final TextBox txtCity = new TextBox();
   final TextBox txtState = new TextBox();
   final TextBox txtZipCode = new TextBox();
-  final Button btnSubmit = new Button();
-  final Button btnCancel = new Button();
+  final Button btnSubmit = new Button("Submit");
+  final Button btnCancel = new Button("Cancel");
   
   public UserRegistrationPanel() {
     super();
@@ -55,9 +55,7 @@ public class UserRegistrationPanel extends Composite {
     txtState.setWidth("40px");
     txtZipCode.setWidth("60px");
     txtZipCode.setMaxLength(5);
-    btnSubmit.setHTML("Submit");
     btnSubmit.getElement().setId("btnSubmit");
-    btnCancel.setHTML("Cancel");
     btnCancel.getElement().setId("btnCancel");
     
     final VerticalPanel signupVPanel = new VerticalPanel();

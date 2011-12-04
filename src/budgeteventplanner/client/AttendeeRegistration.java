@@ -60,9 +60,9 @@ public class AttendeeRegistration implements EntryPoint {
 	final static TextBox zipBox = new TextBox();
 	final HTML phoneLabel = new HTML("<h4>*</h4><b>Phone Number:</b>");
 	final static TextBox phoneBox = new TextBox();
-	final Button submit = new Button();
+	final Button submit = new Button("Submit");
 	final DialogBox dialogBox = new DialogBox();
-	final Button closeButton = new Button();
+	final Button closeButton = new Button("Close");
 	VerticalPanel dialogVPanel = new VerticalPanel();
 	private static String attendeeID = null;
 	final ListBox status = new ListBox();
@@ -118,8 +118,6 @@ public class AttendeeRegistration implements EntryPoint {
 		RootPanel.get("phone").add(phoneLabel);
 		RootPanel.get("phoneBox").add(phoneBox);
 
-	    submit.setHTML("Submit");
-	    closeButton.setHTML("Close");
 		RootPanel.get("submit").add(submit);
 
 		// dialog box
