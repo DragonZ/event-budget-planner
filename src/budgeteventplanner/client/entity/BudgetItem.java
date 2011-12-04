@@ -45,7 +45,7 @@ public class BudgetItem implements Serializable {
 			return this;
 		}
 
-		public Builder setLimit(double limit) {
+		public Builder setLimit(Double limit) {
 			this.budgetItem.limit = limit;
 			return this;
 		}
