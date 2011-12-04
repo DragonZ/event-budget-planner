@@ -182,6 +182,9 @@ public class BudgetEventPlanner implements EntryPoint {
 										Cookies.setCookie("TIME", exp.toString());
 
 										if (result.equals(User.ORGANIZER)) {
+											RootPanel.get("XiaYuan").clear();
+											RootPanel.get("XiaYuan").add(
+													new EventBudgetPanel(nameField.getText()));
 											RootPanel.get("divHome").setVisible(false);
 											RootPanel.get("XiaYuan").setVisible(true);
 										} else if (result.equals(User.VENDOR)) {
