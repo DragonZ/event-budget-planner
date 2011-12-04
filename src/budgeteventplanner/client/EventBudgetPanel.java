@@ -649,7 +649,7 @@ public class EventBudgetPanel extends Composite{
 		itemList.setWidget(3, 0, new HTML("<strong>Service Price: </strong>"));
 		itemList.setWidget(4, 0, new HTML("<strong>Quantity: </strong>"));
 		itemList.setWidget(5, 0, new HTML("<strong>Due Date: </strong>"));
-		itemList.setWidget(6, 0, new HTML("<strong>Request Details: </strong>"));
+		//itemList.setWidget(6, 0, new HTML("<strong>Request Details: </strong>"));
 
 		// sdfasdfasdfasdfasdfasdfasdf
 		final ArrayList<Category> categoryList = new ArrayList<Category>();
@@ -723,9 +723,9 @@ public class EventBudgetPanel extends Composite{
 		dueDate.setText("");
 		dueDate.setWidth("100px");
 
-		final TextArea details = new TextArea();
-		details.setText("");
-		details.setWidth("100px");
+		//final TextArea details = new TextArea();
+		//details.setText("");
+		//details.setWidth("100px");
 
 		itemList.setWidget(0, 1, name);
 		itemList.setWidget(1, 1, category);
@@ -733,7 +733,7 @@ public class EventBudgetPanel extends Composite{
 		itemList.setWidget(3, 1, price);
 		itemList.setWidget(4, 1, quantity);
 		itemList.setWidget(5, 1, dueDate);
-		itemList.setWidget(6, 1, details);
+		//itemList.setWidget(6, 1, details);
 
 		panel.add(itemList);
 		// final Button addNew = new Button("Add New");
@@ -748,6 +748,7 @@ public class EventBudgetPanel extends Composite{
 		d.show();
 
 		update.addClickHandler(new ClickHandler() {
+			@SuppressWarnings("deprecation")
 			public void onClick(ClickEvent event) {
 				int i = service.getSelectedIndex();
 				eventService.addServiceRequest(serviceList.get(i)
