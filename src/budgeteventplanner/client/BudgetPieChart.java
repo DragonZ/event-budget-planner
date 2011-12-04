@@ -35,7 +35,6 @@ public class BudgetPieChart extends Composite {
 
 	private final List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
 
-	private final DecoratorPanel panelTop = new DecoratorPanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	PieChart pieChart;
 	int selectionID;
@@ -159,8 +158,7 @@ public class BudgetPieChart extends Composite {
 			}
 		});
 
-		panelTop.add(panel);
-		initWidget(panelTop);
+		initWidget(panel);
 	}
 
 	private SelectHandler createSelectHandler(final CoreChart chart) {

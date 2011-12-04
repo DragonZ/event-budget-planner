@@ -5,6 +5,7 @@ import java.util.List;
 import budgeteventplanner.client.entity.Budget;
 import budgeteventplanner.client.entity.BudgetItem;
 import budgeteventplanner.shared.Pair;
+import budgeteventplanner.shared.Pent;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -24,4 +25,6 @@ public interface BudgetService extends RemoteService {
   List<Budget> getBudgetByOrganizerId(String organizerId);
 
   void updateBudgetItemLimit(String budgetItemId, Double limit);
+  
+  List<Pent<String, String, String, Integer, Double>> getAllCostInfoByBudgetId(String budgetId);
 }

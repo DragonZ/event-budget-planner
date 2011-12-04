@@ -97,6 +97,10 @@ public class DatabaseTestPage implements EntryPoint {
 
     RootPanel.get("databaseContainer").add(new SingleGaugeChart("TEST", 150.0, 200.0, 500, 300));
 
+    RootPanel.get("databaseContainer").add(new BudgetDetailsTable(budgetIdTEST));
+    
+    
+    
     /*
      * final Button drawButton = new Button("Draw");
      * drawButton.setEnabled(false);

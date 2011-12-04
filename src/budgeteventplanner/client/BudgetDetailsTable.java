@@ -2,9 +2,7 @@ package budgeteventplanner.client;
 
 import java.util.List;
 
-import budgeteventplanner.client.entity.BudgetItem;
-import budgeteventplanner.shared.Pair;
-
+import budgeteventplanner.shared.Pent;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -23,41 +21,42 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.events.SelectHandler;
 import com.google.gwt.visualization.client.visualizations.Table;
 
-public class BudgetExLmTable extends Composite {
+public class BudgetDetailsTable extends Composite {
 
 	private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
+	
+	// Svc Req name | categoryName | serviceName | qty | price
+	List<Pent<String, String, String, Integer, Double>> detailList = Lists.newArrayList();
 
-	private final List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
-	private List<Pair<String, Double>> catCostPairList = Lists.newArrayList();
 	private final DecoratorPanel panelTop = new DecoratorPanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	
 	int[] coordinate = new int[2];
 	
-	Table exLmTable;
+	Table detailsTable;
 	
-	String budgetIdGLB = "";
+	String budgetId = "";
 	
-	public BudgetExLmTable(String budgetId) {
+	public BudgetDetailsTable(final String budgetId) {
 		super();
 		panel.clear();
-		budgetIdGLB = budgetId;
-		final Anchor btnDraw = new Anchor("Draw BudgetExLmTable");
+		this.budgetId = budgetId;
+		final Anchor btnDraw = new Anchor("Draw BudgetDetailsTable");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
+
 		
-		initializeServiceRequestList(budgetId);
-		
-		budgetService.getLimitsByBudgetId(budgetId,
-				new AsyncCallback<List<Pair<String, BudgetItem>>>() {
+		budgetService.getAllCostInfoByBudgetId(budgetId,
+				new AsyncCallback<List<Pent<String, String, String, Integer, Double>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 					}
 
 					@Override
-					public void onSuccess(List<Pair<String, BudgetItem>> result) {
-						catBitPairList.addAll(result);
+					public void onSuccess(List<Pent<String, String, String, Integer, Double>> result) {
+						detailList.addAll(result);
 						btnDraw.setEnabled(true);
+						
 					}
 				});
 
@@ -67,45 +66,49 @@ public class BudgetExLmTable extends Composite {
 				Runnable onLoadCallback = new Runnable() {
 					public void run() {
 						try{
-							panel.remove(exLmTable);
+							panel.remove(detailsTable);
 						}catch(Exception e){}
 						
 						// Synchronize with server
-						budgetService.getLimitsByBudgetId(budgetIdGLB,
-								new AsyncCallback<List<Pair<String, BudgetItem>>>() {
+						budgetService.getAllCostInfoByBudgetId(budgetId,
+								new AsyncCallback<List<Pent<String, String, String, Integer, Double>>>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								Window.alert("budgetService.getLimitsByBudgetId - failure");
 							}
 
 							@Override
-							public void onSuccess(List<Pair<String, BudgetItem>> result) {
-								catBitPairList.clear();
-								catBitPairList.addAll(result);
+							public void onSuccess(
+									List<Pent<String, String, String, Integer, Double>> result) {
+								detailList.clear();
+								detailList.addAll(result);
+								
 							}
 						});
 						
 						DataTable dataTable = DataTable.create();
-
+						// Svc Req name | categoryName | serviceName | qty | price
+						
 						if (dataTable.getNumberOfColumns() == 0) {
-							dataTable.addColumn(ColumnType.STRING, "Category");
+							dataTable.addColumn(ColumnType.STRING, "Service Request");
+							dataTable.addColumn(ColumnType.STRING, "Category Name");
+							dataTable.addColumn(ColumnType.STRING, "Service Name");
+							dataTable.addColumn(ColumnType.NUMBER, "Quantity");
 							dataTable.addColumn(ColumnType.NUMBER, "Expense");
-							dataTable.addColumn(ColumnType.NUMBER, "Limit");
 						}
 
-						for (Pair<String, BudgetItem> pair : catBitPairList) {
+						for (Pent<String, String, String, Integer, Double> pent : detailList) {
 							dataTable.addRow();
-							dataTable.setValue(dataTable.getNumberOfRows() - 1, 0,
-									pair.getA());
-							dataTable.setValue(dataTable.getNumberOfRows() - 1, 1,
-									mapToServiceRequestList(pair.getA()));
-							dataTable.setValue(dataTable.getNumberOfRows() - 1, 2,
-									pair.getB().getLimit());
+							dataTable.setValue(dataTable.getNumberOfRows() - 1, 0, pent.getA());
+							dataTable.setValue(dataTable.getNumberOfRows() - 1, 1, pent.getB());
+							dataTable.setValue(dataTable.getNumberOfRows() - 1, 2, pent.getC());
+							dataTable.setValue(dataTable.getNumberOfRows() - 1, 3, pent.getD());
+							dataTable.setValue(dataTable.getNumberOfRows() - 1, 4, pent.getD()*pent.getE());
 						}
 						
-						exLmTable = new Table(dataTable, Table.Options.create());
-						exLmTable.addSelectHandler(createSelectHandler(exLmTable));
-						panel.add(exLmTable);
+						detailsTable = new Table(dataTable, Table.Options.create());
+						detailsTable.addSelectHandler(createSelectHandler(detailsTable));
+						panel.add(detailsTable);
 						
 					}
 				};
@@ -126,10 +129,6 @@ public class BudgetExLmTable extends Composite {
 				// May be multiple selections.
 				JsArray<Selection> selections = table.getSelections();
 
-
-				
-				
-				
 				for (int i = 0; i < selections.length(); i++) {
 					// add a new line for each selection
 					message += i == 0 ? "" : "\n";
@@ -167,36 +166,5 @@ public class BudgetExLmTable extends Composite {
 	}
 
 	
-	private Double mapToServiceRequestList(String catId)
-	{
-		Double subtotal = 0.0;
-		
-		for (Pair<String, Double> e: catCostPairList) {
-			if(e.getA().equals(catId))
-				subtotal += e.getB();
-		}
-		return subtotal;
-		
-	}
 	
-	void initializeServiceRequestList(String budgetId)
-	{
-		//Window.alert("Using eventId: \n" + eventId);
-		budgetService.getSubtotalsByBudgetId(budgetId, 
-				new AsyncCallback<List<Pair<String, Double>>>()
-				{
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("initializeServiceRequestList -> budgetService.getSubtotalsByEventId - failure\n");					
-					}
-
-					@Override
-					public void onSuccess(List<Pair<String, Double>> result) {
-			//			Window.alert("server responds");
-						catCostPairList = result;					
-					}
-				});
-
-	}
 }

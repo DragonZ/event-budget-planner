@@ -112,7 +112,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 			String eventId) {
 		Objectify ofy = ObjectifyService.begin();
 		
-		// name | categoryName | serviceName | qty | price
+		// SvcReq name | categoryName | serviceName | qty | price
 		List<Pent<String, String, String, Integer, Double>> list = Lists.newArrayList();
 				
 		//String eventName = ofy.get(new Key<Event>(Event.class, eventId)).getName();

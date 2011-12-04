@@ -260,11 +260,13 @@ public class BudgetGaugeChart extends Composite {
   }
 
   private Double mapToServiceRequestList(String catId) {
-    for (Pair<String, Double> e : catCostPairList) {
-      if (e.getA().endsWith(catId))
-        return e.getB();
-    }
-    return 0.0;
+	  Double subtotal = 0.0;
+		
+		for (Pair<String, Double> e: catCostPairList) {
+			if(e.getA().equals(catId))
+				subtotal += e.getB();
+		}
+		return subtotal;
 
   }
 

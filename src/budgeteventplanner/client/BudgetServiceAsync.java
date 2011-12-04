@@ -5,6 +5,7 @@ import java.util.List;
 import budgeteventplanner.client.entity.Budget;
 import budgeteventplanner.client.entity.BudgetItem;
 import budgeteventplanner.shared.Pair;
+import budgeteventplanner.shared.Pent;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -23,4 +24,7 @@ public interface BudgetServiceAsync {
   void getBudgetByOrganizerId(String organizerId, AsyncCallback<List<Budget>> callback);
 
   void updateBudgetItemLimit(String budgetItemId, Double limit, AsyncCallback<Void> callback);
+  
+  void getAllCostInfoByBudgetId(String budgetId,
+			AsyncCallback<List<Pent<String, String, String, Integer, Double>>> callback);
 }
