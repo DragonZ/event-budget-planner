@@ -3,10 +3,10 @@
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  color: #1b4585;
+  margin: 20px 0px 20px;
   text-align: center;
 }
 
@@ -84,4 +84,20 @@ h5 {
 	color: #1b4585;
 	font-weight: bold;
 	margin: 0px 0px 0px;
+}
+
+.gwt-TextBox{
+  padding: 5px 4px;
+  border: 1px solid #ccc;
+  border-top: 1px solid #999;
+  font-size: small;
+  font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+disabledTextBox {
+	border: 0;
+}
+
+enabledTextBox {
+	border: 1px;
 }
