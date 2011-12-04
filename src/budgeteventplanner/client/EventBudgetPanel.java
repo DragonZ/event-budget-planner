@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
@@ -299,8 +300,8 @@ public class EventBudgetPanel extends Composite{
 							event_table.setWidget(i, 4,
 									new Label(e.getAddress()));
 
-							final Button itemMod = new Button("Add New");
-							itemMod.setWidth("100px");
+							final Anchor itemMod = new Anchor("New Service Request");
+							//itemMod.setWidth("100px");
 							event_table.setWidget(i, 5, itemMod);
 
 							itemMod.addClickHandler(new ClickHandler() {
