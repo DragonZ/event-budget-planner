@@ -22,9 +22,10 @@ public class Attendee implements Serializable {
 	private String phoneNumber;
 	private Integer status;
 	
-	public final static Integer YES = 0;
-	public final static Integer NO = 1;
-	public final static Integer MAYBE = 2;
+	public final static int YES = 0;
+	public final static int NO = 1;
+	public final static int MAYBE = 2;
+	public final static int PENDING = 4;
 
 	public Attendee() {
 	}
@@ -41,6 +42,7 @@ public class Attendee implements Serializable {
 			this.attendee = attendee;
 			this.attendee.eventId = eventId;
 			this.attendee.attendeeId = UUID.randomUUID();
+			this.attendee.status = PENDING;
 		}
 		
 		public Builder(String eventId, String name, String email) {
@@ -49,6 +51,7 @@ public class Attendee implements Serializable {
 			this.attendee.eventId = eventId;
 			this.attendee.name = name;
 			this.attendee.email = email;
+			this.attendee.status = PENDING;
 		}
 
 		public Builder setName(String name) {
