@@ -38,4 +38,8 @@ public interface AttendeeService extends RemoteService {
 	List<Attendee> fillAttendeesInEvent(String eventId, List<Attendee> attendeeIdList);
 
 	SetMultimap<String, Attendee> getSortedAttendeeList(String organizerId, String excludedEventId);
+	
+	SetMultimap<Integer, Attendee> getSortedEventAttendeeByStatus (String eventId);
+	
+	List<Attendee> getEventAttendeeByStatus (String eventId, Integer status);
 }

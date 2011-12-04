@@ -42,4 +42,8 @@ public interface AttendeeServiceAsync {
 
 	void getSortedAttendeeList(String organizerId, String excludedEventId,
 			AsyncCallback<SetMultimap<String, Attendee>> callback);
+	
+	void getSortedEventAttendeeByStatus (String eventId, AsyncCallback<SetMultimap<Integer, Attendee>> result);
+	
+	void getEventAttendeeByStatus (String eventId, Integer status, AsyncCallback<List<Attendee>> result);
 }

@@ -12,14 +12,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -40,22 +44,48 @@ public class AttendeeManagementPanel extends Composite {
 	final Tree treeEventAttendee = new Tree();
 
 	private final String eventId;
-	private final String organizerId;
 
-	public AttendeeManagementPanel(String eventName, final String eventId, final String organizerId) {
+	public AttendeeManagementPanel(final String eventName, final String eventId, final String organizerId) {
 		this.eventId = eventId;
-		this.organizerId = organizerId;
 
 		DockPanel panelMain = new DockPanel();
-
 		// Top panels
+		VerticalPanel hpanelToolBoxTitle = new VerticalPanel();
+		HorizontalPanel hpanelTitle = new HorizontalPanel();
 		HorizontalPanel hpanelToolBox = new HorizontalPanel();
 		VerticalPanel vpanelAllAttendee = new VerticalPanel();
 		VerticalPanel vpanelEventAttendee = new VerticalPanel();
+		HorizontalPanel hpanelTopEventAll = new HorizontalPanel();
+		
 		final VerticalPanel vpanelAttendeeInfo = new VerticalPanel();
+		Button btnEdit = new Button("Edit");
+		Button btnCanceledit = new Button("Cancel");
+		HorizontalPanel hpanelEdit = new HorizontalPanel();
+		HorizontalPanel hpanelEditInner = new HorizontalPanel();
+		hpanelEdit.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		hpanelEdit.setSize("100%", "100%");
+		hpanelEditInner.add(btnEdit);
+		hpanelEditInner.add(btnCanceledit);
+		hpanelEditInner.setSpacing(5);
+		hpanelEdit.add(hpanelEditInner);
+		
+		btnEdit.addClickHandler( new ClickHandler(){
 
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				listToBeDupicate.clear();
+				listToBeRemove.clear();
+				uncheckCheckBox(treeAllAttendee);
+				uncheckCheckBox(treeEventAttendee);
+				AttendeeInfoPanel at = (AttendeeInfoPanel)vpanelAttendeeInfo.getWidget(0);
+				at.setEnable(true);
+			}});
+		
 		// ToolBox
-		Button btnCreateAttendee = new Button("Create");
+	
+		final Button btnCreateAttendee = new Button("Create");
+		btnCreateAttendee.setEnabled(false);
 		btnCreateAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -63,7 +93,9 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		Button btnDuplicateAttendee = new Button("Duplicate");
+		final Button btnDuplicateAttendee = new Button("Duplicate");
+		btnDuplicateAttendee.setEnabled(false);
+		
 		btnDuplicateAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -86,7 +118,8 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		Button btnRemoveAttendee = new Button("Remove");
+		final Button btnRemoveAttendee = new Button("Remove");
+		btnRemoveAttendee.setEnabled(false);
 		btnRemoveAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -105,7 +138,8 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		Button btnApplyAttendee = new Button("Apply");
+		final Button btnApplyAttendee = new Button("Apply");
+		btnApplyAttendee.setEnabled(false);
 		btnApplyAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -115,9 +149,11 @@ public class AttendeeManagementPanel extends Composite {
 							public void onSuccess(List<Attendee> result) {
 								// Duplicate Attendee
 								for (Attendee a : listToBeDupicate) {
+									
 									removeAttendeeInTree(a.getAttendeeId(), treeEventAttendee);
 								}
 								for (Attendee a : result) {
+									//listEventAttendee.add(a);
 									putAttendeeInTree(a, treeEventAttendee);
 								}
 								listToBeDupicate.clear();
@@ -145,27 +181,110 @@ public class AttendeeManagementPanel extends Composite {
 			}
 
 		});
+		
+		Button btnBack = new Button("Go Back");
+		btnBack.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				RootPanel.get("XiaYuan").setVisible(true);
+				RootPanel.get("XuXuan").setVisible(false);
+			}
+		});
+		
+		Button btnLoad = new Button("Load Attendees");
+		btnLoad.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//load all
+				attendeeService.getSortedAttendeeList(organizerId, eventId,
+						new AsyncCallback<SetMultimap<String, Attendee>>() {
+							public void onFailure(Throwable caught) {
+								showDialog("Attendee Management", "Error while load attendee list.");
+							}
 
+							public void onSuccess(
+									SetMultimap<String, Attendee> multimapEventAttendee) {
+								treeAllAttendee.clear();
+								listAllAttendee.clear();
+
+								for (String eventName : multimapEventAttendee.keySet()) {
+									treeAllAttendee.add(new Label(eventName));
+									for (Attendee attendee : multimapEventAttendee.get(eventName)) {
+										CheckBox cb = new CheckBox(attendee.getName());
+										cb.setTitle(attendee.getAttendeeId());
+										treeAllAttendee.add(cb);
+										listAllAttendee.add(attendee);
+									}
+								}
+							}
+						});
+				//load current event
+				attendeeService.getSortedEventAttendeeByStatus(eventId,new AsyncCallback<SetMultimap<Integer,Attendee>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+
+					@Override
+					public void onSuccess(SetMultimap<Integer, Attendee> result) {
+						listEventAttendee.clear();
+						treeEventAttendee.clear();
+						treeEventAttendee.add(new Label(eventName));
+						for (Integer status : result.keySet()) {
+							switch (status) {
+							case Attendee.YES:
+								  treeEventAttendee.add(new Label("Will Attend"));
+								  break;
+							case Attendee.NO:
+								  treeEventAttendee.add(new Label("Not Attend"));
+								  break;
+							case Attendee.MAYBE:
+								  treeEventAttendee.add(new Label("May Attend"));
+								  break;
+							case Attendee.PENDING:
+								  treeEventAttendee.add(new Label("Pending"));
+								  break;
+							  default:
+							}
+							
+							for (Attendee a : result.get(status)) {
+								putAttendeeInTree(a, treeEventAttendee);
+							}
+							listEventAttendee.addAll(result.get(status));
+						}
+					}
+				});
+				// setenable
+				btnCreateAttendee.setEnabled(true);
+				btnDuplicateAttendee.setEnabled(true);
+				btnRemoveAttendee.setEnabled(true);
+				btnApplyAttendee.setEnabled(true);
+			}
+		});
+		hpanelToolBox.add(btnLoad);
 		hpanelToolBox.add(btnCreateAttendee);
 		hpanelToolBox.add(btnDuplicateAttendee);
 		hpanelToolBox.add(btnRemoveAttendee);
 		hpanelToolBox.add(btnApplyAttendee);
+		hpanelToolBox.add(btnBack);
 
 		// All Attendee
-		Button btnLoadAllAttendee = new Button("Load All Attendee");
+		//Anchor btnLoadAllAttendee = new Anchor("Load All Attendee");
 
 		vpanelAllAttendee.add(treeAllAttendee);
 
 		treeAllAttendee.addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
-				showDialog("Clicked All Attendee", event.getSelectedItem().getWidget().getTitle());
-				CheckBox cb = (CheckBox) (event.getSelectedItem().getWidget());
-				cb.setValue(!cb.getValue());
+				vpanelAttendeeInfo.clear();
+				vpanelAttendeeInfo.add(new AttendeeInfoPanel(event.getSelectedItem().getWidget().getTitle()));
 			}
 		});
 
-		btnLoadAllAttendee.addClickHandler(new ClickHandler() {
+/*		btnLoadAllAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				attendeeService.getSortedAttendeeList(organizerId, eventId,
@@ -191,57 +310,87 @@ public class AttendeeManagementPanel extends Composite {
 							}
 						});
 			}
-		});
-		vpanelAllAttendee.add(btnLoadAllAttendee);
+		});*/
+		//vpanelAllAttendee.add(btnLoadAllAttendee);
 		vpanelAllAttendee.add(treeAllAttendee);
 
-		Button btnLoadEventAttendee = new Button("Load Event Attendee");
+		/*Anchor btnLoadEventAttendee = new Anchor("Load Event Attendee");
 
 		btnLoadEventAttendee.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				attendeeService.getAttendeeListByEventId(eventId,
-						new AsyncCallback<List<Attendee>>() {
-							public void onFailure(Throwable caught) {
-							}
+				attendeeService.getSortedEventAttendeeByStatus(eventId,new AsyncCallback<SetMultimap<Integer,Attendee>>() {
 
-							public void onSuccess(List<Attendee> result) {
-								listEventAttendee.clear();
-								treeEventAttendee.clear();
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
 
-								listEventAttendee.addAll(result);
-								for (Attendee attendee : result) {
-									CheckBox cb = new CheckBox(attendee.getName());
-									cb.setTitle(attendee.getAttendeeId());
-									treeEventAttendee.add(cb);
-								}
+					@Override
+					public void onSuccess(SetMultimap<Integer, Attendee> result) {
+						listEventAttendee.clear();
+						treeEventAttendee.clear();
+
+						for (Integer status : result.keySet()) {
+							switch (status) {
+							case Attendee.YES:
+								  treeEventAttendee.add(new Label("Yes"));
+								  break;
+							case Attendee.NO:
+								  treeEventAttendee.add(new Label("No"));
+								  break;
+							case Attendee.MAYBE:
+								  treeEventAttendee.add(new Label("Maybe"));
+								  break;
+							case Attendee.PENDING:
+								  treeEventAttendee.add(new Label("Pending"));
+								  break;
+							  default:
 							}
-						});
+							
+							for (Attendee a : result.get(status)) {
+								putAttendeeInTree(a, treeEventAttendee);
+							}
+							listEventAttendee.addAll(result.get(status));
+						}
+					}
+				});
 			}
-		});
+		});*/
 
 		treeEventAttendee.addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
-				showDialog("Clicked Event Attendee", event.getSelectedItem().getWidget().getTitle());
-				CheckBox cb = (CheckBox) (event.getSelectedItem().getWidget());
-				cb.setValue(!cb.getValue());
+				vpanelAttendeeInfo.clear();
+				vpanelAttendeeInfo.add(new AttendeeInfoPanel(event.getSelectedItem().getWidget().getTitle()));
 			}
 		});
 
-		vpanelEventAttendee.add(btnLoadEventAttendee);
+		//vpanelEventAttendee.add(btnLoadEventAttendee);
+	
+		hpanelTitle.add(new HTML("<p align=\"center\"><h1>"+eventName+"</h1></p>"));
 		vpanelEventAttendee.add(treeEventAttendee);
-
-		TextArea txtAttendeeInfo = new TextArea();
-
-		txtAttendeeInfo.setReadOnly(true);
-		vpanelAttendeeInfo.add(txtAttendeeInfo);
-
-		panelMain.add(hpanelToolBox, DockPanel.NORTH);
-		panelMain.add(vpanelAllAttendee, DockPanel.WEST);
-		panelMain.add(vpanelEventAttendee, DockPanel.CENTER);
-		panelMain.add(vpanelAttendeeInfo, DockPanel.EAST);
-
+		hpanelTopEventAll.add(vpanelAllAttendee);
+		hpanelTopEventAll.add(vpanelEventAttendee);
+		hpanelTopEventAll.setSize("400px","300px");
+		hpanelTopEventAll.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		hpanelTopEventAll.setSpacing(5);
+		panelMain.setSpacing(10);
+		vpanelAttendeeInfo.setSize("400px","300px");
+		vpanelAttendeeInfo.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		hpanelToolBoxTitle.add(hpanelTitle);
+		hpanelToolBoxTitle.add(hpanelToolBox);
+		hpanelToolBoxTitle.setSize("100%","100%");
+		hpanelToolBox.setSize("100%","50px");
+		hpanelToolBoxTitle.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		hpanelTitle.setSize("100%","100%");
+		hpanelTitle.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		panelMain.add(hpanelToolBoxTitle, DockPanel.NORTH);
+		panelMain.add(hpanelTopEventAll, DockPanel.WEST);
+		panelMain.add(vpanelAttendeeInfo, DockPanel.CENTER);
+		panelMain.add(hpanelEdit,DockPanel.NORTH);
+		//panelMain.add(vpanelAttendeeInfo, DockPanel.EAST);
+		vpanelAttendeeInfo.add(new AttendeeInfoPanel("0FAA1D5F-EA29-448B-BC4C-D8C1B4D708B2"));
 		initWidget(panelMain);
 	}
 
@@ -357,7 +506,7 @@ public class AttendeeManagementPanel extends Composite {
 	private void removeAttendeeInTree(String attendeeId, Tree tree) {
 		for (Widget w : tree) {
 			if (w instanceof CheckBox) {
-				if (((CheckBox) w).getValue()) {
+				if (((CheckBox) w).getTitle().equals(attendeeId)) {
 					tree.remove(w);
 				}
 			}
