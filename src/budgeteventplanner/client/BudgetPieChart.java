@@ -16,7 +16,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,7 +43,7 @@ public class BudgetPieChart extends Composite {
 	public BudgetPieChart(final String budgetId) {
 		super();
 		panel.clear();
-		final Anchor btnDraw = new Anchor("Draw BudgetPieChart");
+		final Anchor btnDraw = new Anchor("Draw PieChart");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 		modificationBox.setEnabled(false);
@@ -210,7 +209,7 @@ public class BudgetPieChart extends Composite {
 		Options options = Options.create();
 		options.setWidth(400);
 		options.setHeight(240);
-		options.setTitle("My Budget");
+		options.setTitle("Pie Chart");
 		options.set("is3D", true);
 		return options;
 	}

@@ -16,7 +16,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -25,7 +24,7 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.events.SelectHandler;
-import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 
@@ -35,9 +34,8 @@ public class BudgetBarChart extends Composite {
 
   private final List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
   private List<Pair<String, Double>> catCostPairList = Lists.newArrayList();
-  private final DecoratorPanel panelTop = new DecoratorPanel();
   private final VerticalPanel panel = new VerticalPanel();
-  BarChart barChart;
+  ColumnChart columnChart;
   int selectionID;
   DialogBox promptModifyBox = new DialogBox();
   TextBox modificationBox = new TextBox();
@@ -45,7 +43,7 @@ public class BudgetBarChart extends Composite {
   public BudgetBarChart(final String budgetId) {
     super();
     panel.clear();
-    final Anchor btnDraw = new Anchor("Draw BudgetBarChart");
+    final Anchor btnDraw = new Anchor("Draw ColumnChart");
     btnDraw.setEnabled(false);
     panel.add(btnDraw);
     modificationBox.setEnabled(false);
@@ -108,7 +106,7 @@ public class BudgetBarChart extends Composite {
         Runnable onLoadCallback = new Runnable() {
           public void run() {
             try {
-              panel.remove(barChart);
+              panel.remove(columnChart);
             } catch (Exception e) {
             }
 
@@ -143,10 +141,10 @@ public class BudgetBarChart extends Composite {
               dataTable.setValue(dataTable.getNumberOfRows() - 1, 2, pair.getB().getLimit());
             }
 
-            barChart = new BarChart(dataTable, createOptions());
+            columnChart = new ColumnChart(dataTable, createOptions());
 
-            barChart.addSelectHandler(createSelectHandler(barChart));
-            panel.add(barChart);
+            columnChart.addSelectHandler(createSelectHandler(columnChart));
+            panel.add(columnChart);
           }
         };
         VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
@@ -154,8 +152,7 @@ public class BudgetBarChart extends Composite {
       }
     });
 
-    panelTop.add(panel);
-    initWidget(panelTop);
+    initWidget(panel);
   }
 
   private SelectHandler createSelectHandler(final CoreChart chart) {
@@ -207,7 +204,7 @@ public class BudgetBarChart extends Composite {
     Options options = Options.create();
     options.setWidth(400);
     options.setHeight(240);
-    options.setTitle("My Budget");
+    options.setTitle("Column Chart");
     options.set("is3D", true);
     return options;
   }
@@ -216,16 +213,12 @@ public class BudgetBarChart extends Composite {
     budgetService.updateBudgetItemLimit(budgetItemId, limit, new AsyncCallback<Void>() {
       @Override
       public void onFailure(Throwable caught) {
-        Window.alert("updateEntryToServer -> budgetService.updateBudgetItemLimit - failure\n");
       }
 
       @Override
       public void onSuccess(Void result) {
-        // Window.alert("server responds");
       }
-
     });
-
   }
 
   private Double mapToServiceRequestList(String catId) {

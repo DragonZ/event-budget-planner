@@ -3,6 +3,7 @@ package budgeteventplanner.client;
 import java.util.List;
 
 import budgeteventplanner.shared.Pent;
+
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -12,7 +13,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
@@ -28,7 +28,6 @@ public class BudgetDetailsTable extends Composite {
 	// Svc Req name | categoryName | serviceName | qty | price
 	List<Pent<String, String, String, Integer, Double>> detailList = Lists.newArrayList();
 
-	private final DecoratorPanel panelTop = new DecoratorPanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	
 	int[] coordinate = new int[2];
@@ -41,7 +40,7 @@ public class BudgetDetailsTable extends Composite {
 		super();
 		panel.clear();
 		this.budgetId = budgetId;
-		final Anchor btnDraw = new Anchor("Draw BudgetDetailsTable");
+		final Anchor btnDraw = new Anchor("Draw Service Requests");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 
@@ -116,9 +115,8 @@ public class BudgetDetailsTable extends Composite {
 				
 			}
 		});
-
-		panelTop.add(panel);
-		initWidget(panelTop);
+		
+		initWidget(panel);
 	}
 
 	private SelectHandler createSelectHandler(final Table table) {

@@ -12,19 +12,16 @@ public class BudgetPanel extends Composite{
     VerticalPanel vpanelTable = new VerticalPanel();
     vpanelTable.clear();
     vpanelTable.add(new BudgetExLmTable(budgetId));
+    vpanelTable.add(new BudgetDetailsTable(budgetId));
     
     DockPanel dpanelCharts = new DockPanel();
-    HorizontalPanel hpanelPieChart = new HorizontalPanel();    
-    HorizontalPanel hpanelBarChart = new HorizontalPanel();
+    HorizontalPanel hpanePieBarChart = new HorizontalPanel();    
     HorizontalPanel hpanelGauges = new HorizontalPanel();
     
-    hpanelPieChart.clear();
-    hpanelPieChart.add(new BudgetPieChart(budgetId));
-    dpanelCharts.add(hpanelPieChart, DockPanel.NORTH);
-    
-    hpanelBarChart.clear();
-    hpanelBarChart.add(new BudgetBarChart(budgetId));
-    dpanelCharts.add(hpanelBarChart, DockPanel.CENTER);
+    hpanePieBarChart.clear();
+    hpanePieBarChart.add(new BudgetPieChart(budgetId));
+    hpanePieBarChart.add(new BudgetBarChart(budgetId));
+    dpanelCharts.add(hpanePieBarChart, DockPanel.NORTH);    
     
     hpanelGauges.clear();
     hpanelGauges.add(new BudgetGaugeChart(budgetId));

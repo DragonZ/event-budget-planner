@@ -68,9 +68,6 @@ public class EventBudgetPanel extends Composite {
   // private Button deleteBudget;
   private HorizontalPanel chartPanel;
   private HorizontalPanel buttonPanel;
-  private Button draw1;
-  private Button draw2;
-  private Button draw3;
 
   private String sentBudgetID;
 
@@ -126,7 +123,6 @@ public class EventBudgetPanel extends Composite {
     // Wrap the static tree in a DecoratorPanel
     DecoratorPanel staticDecorator = new DecoratorPanel();
     staticDecorator.setWidget(treeBudgetWrapper);
-    final TreeItem budgetName = treeBudget.addItem("Budget Name");
 
     budgetService.getBudgetByOrganizerId(organizerId, new AsyncCallback<List<Budget>>() {
       @Override
@@ -136,13 +132,10 @@ public class EventBudgetPanel extends Composite {
       @Override
       public void onSuccess(List<Budget> result) {
         for (Budget b : result) {
-
           TreeItem item = new TreeItem(b.getName());
           item.setTitle(b.getBudgetId());
-          budgetName.addItem(item);
-
+          treeBudget.addItem(item);
         }
-
       }
     });
 
@@ -171,15 +164,6 @@ public class EventBudgetPanel extends Composite {
     buttonPanel = new HorizontalPanel();
     chartPanel = new HorizontalPanel();
     modifyBudget = new Button("Add Item");
-    // deleteBudget = new Button("Delete");
-    draw1 = new Button("Draw_1");
-    draw2 = new Button("Draw_2");
-    draw3 = new Button("Draw_3");
-    buttonPanel.add(modifyBudget);
-    // buttonPanel.add(deleteBudget);
-    buttonPanel.add(draw1);
-    buttonPanel.add(draw2);
-    buttonPanel.add(draw3);
     chartField.add(buttonPanel, DockPanel.NORTH);
     chartField.add(chartPanel, DockPanel.CENTER);
 

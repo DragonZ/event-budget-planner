@@ -14,7 +14,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
@@ -29,7 +28,6 @@ public class BudgetExLmTable extends Composite {
 
 	private final List<Pair<String, BudgetItem>> catBitPairList = Lists.newArrayList();
 	private List<Pair<String, Double>> catCostPairList = Lists.newArrayList();
-	private final DecoratorPanel panelTop = new DecoratorPanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	
 	int[] coordinate = new int[2];
@@ -42,7 +40,7 @@ public class BudgetExLmTable extends Composite {
 		super();
 		panel.clear();
 		budgetIdGLB = budgetId;
-		final Anchor btnDraw = new Anchor("Draw BudgetExLmTable");
+		final Anchor btnDraw = new Anchor("Draw Budget Table");
 		btnDraw.setEnabled(false);
 		panel.add(btnDraw);
 		
@@ -114,8 +112,7 @@ public class BudgetExLmTable extends Composite {
 			}
 		});
 
-		panelTop.add(panel);
-		initWidget(panelTop);
+		initWidget(panel);
 	}
 
 	private SelectHandler createSelectHandler(final Table table) {
@@ -125,10 +122,6 @@ public class BudgetExLmTable extends Composite {
 				String message = "";
 				// May be multiple selections.
 				JsArray<Selection> selections = table.getSelections();
-
-
-				
-				
 				
 				for (int i = 0; i < selections.length(); i++) {
 					// add a new line for each selection

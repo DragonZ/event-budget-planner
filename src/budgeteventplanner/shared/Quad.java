@@ -2,18 +2,20 @@ package budgeteventplanner.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Trio<A, B, C> implements IsSerializable{
+public class Quad<A, B, C, D> implements IsSerializable{
 
-    private A value1 = null;
-    private B value2 = null;
-    private C value3 = null;
+    A value1 = null;
+    B value2 = null;
+    C value3 = null;
+    D value4 = null;
     
-    public Trio() {}
+    public Quad() {}
     
-    public Trio(A value1, B value2, C value3) {
+    public Quad(A value1, B value2, C value3, D value4) {
         this.value1 = value1;
         this.value2 = value2;
         this.value3 = value3;
+        this.value4 = value4;
     }
 
     public A getA() {
@@ -28,8 +30,12 @@ public class Trio<A, B, C> implements IsSerializable{
         return value3;
     }
     
+    public D getD() {
+        return value4;
+    }
+    
     @SuppressWarnings("rawtypes")
-	@Override
+  @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -38,7 +44,7 @@ public class Trio<A, B, C> implements IsSerializable{
             return false;
         }
 
-        Trio pair = (Trio) o;
+        Pent pair = (Pent) o;
 
         if (value1 != null ? !value1.equals(pair.value1)
                 : pair.value1 != null) {
@@ -52,6 +58,11 @@ public class Trio<A, B, C> implements IsSerializable{
                 : pair.value3 != null) {
             return false;
         }
+        if (value4 != null ? !value4.equals(pair.value4)
+                : pair.value4 != null) {
+            return false;
+        }
+
 
         return true;
     }
@@ -61,6 +72,7 @@ public class Trio<A, B, C> implements IsSerializable{
         int result = value1 != null ? value1.hashCode() : 0;
         result = 31 * result + (value2 != null ? value2.hashCode() : 0);
         result = 31 * result + (value3 != null ? value3.hashCode() : 0);
+        result = 31 * result + (value4 != null ? value4.hashCode() : 0);
         return result;
     }
 }

@@ -4,11 +4,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Pent<A, B, C, D, E> implements IsSerializable{
 
-    private A value1 = null;
-    private B value2 = null;
-    private C value3 = null;
-    private D value4 = null;
-    private E value5 = null;
+    A value1 = null;
+    B value2 = null;
+    C value3 = null;
+    D value4 = null;
+    E value5 = null;
     
     public Pent() {}
     
@@ -80,6 +80,9 @@ public class Pent<A, B, C, D, E> implements IsSerializable{
     public int hashCode() {
         int result = value1 != null ? value1.hashCode() : 0;
         result = 31 * result + (value2 != null ? value2.hashCode() : 0);
+        result = 31 * result + (value3 != null ? value3.hashCode() : 0);
+        result = 31 * result + (value4 != null ? value4.hashCode() : 0);
+        result = 31 * result + (value5 != null ? value5.hashCode() : 0);
         return result;
     }
 }
