@@ -211,7 +211,7 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 		
-		Button btnLoad = new Button("Load Attendees");
+		Button btnLoad = new Button("ReLoad Attendees");
 		btnLoad.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -349,6 +349,7 @@ public class AttendeeManagementPanel extends Composite {
 		panelMain.add(hpanelEdit,DockPanel.NORTH);
 		//panelMain.add(vpanelAttendeeInfo, DockPanel.EAST);
 		vpanelAttendeeInfo.add(new AttendeeInfoPanel("0FAA1D5F-EA29-448B-BC4C-D8C1B4D708B2"));
+		loadAttendees(organizerId,eventName);
 		initWidget(panelMain);
 	}
 

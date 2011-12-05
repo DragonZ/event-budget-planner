@@ -102,6 +102,7 @@ public class AttendeeInfoPanel extends Composite {
 							public void onSuccess(Void result) {
 								showDialog("Attendee managerMent", "Update Successful");
 								btnUpdate.setEnabled(false);
+								setEnable(false);
 							}
 						});
 			}
