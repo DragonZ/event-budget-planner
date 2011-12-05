@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -251,8 +252,10 @@ public class EventBudgetPanel extends Composite {
               event_table.setWidget(i, 0, new Label(e.getEventId()));
               event_table.getCellFormatter().setVisible(i, 0, false);
               event_table.setWidget(i, 1, new Label(e.getName()));
-              event_table.setWidget(i, 2, new Label(e.getStartTime().toString()));
-              event_table.setWidget(i, 3, new Label(e.getEndTime().toString()));
+              String startDate = DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(e.getStartTime());
+			  event_table.setWidget(i, 2, new Label(startDate));
+			  String endDate = DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(e.getEndTime());
+			  event_table.setWidget(i, 3, new Label(endDate));
               event_table.setWidget(i, 4, new Label(e.getAddress()));
 
               final Anchor itemMod = new Anchor("New Service Request");
@@ -280,11 +283,11 @@ public class EventBudgetPanel extends Composite {
               attend_list.setWidth("120px");
               event_table.setWidget(i, 7, attend_list);
 
-              final Anchor view_info = new Anchor("View All");
+              final Anchor view_info = new Anchor("View All Information");
               view_info.setWidth("100px");
               event_table.setWidget(i, 8, view_info);
 
-              final Anchor event_del = new Anchor("Delete");
+              final Anchor event_del = new Anchor("Delete Event");
               event_table.setWidget(i, 9, event_del);
 
               event_mod.addClickHandler(new ClickHandler() {
@@ -363,33 +366,34 @@ public class EventBudgetPanel extends Composite {
     event_right_v_panel.add(event_add);
 
     final FlexTable event_table = new FlexTable();
-    event_table.setSize("1100px", "100%");
-    event_table.setWidget(0, 0, new HTML("<strong>Event ID</strong>"));
-    // event_table.getCellFormatter().setWidth(0, 0, "0px");
-    event_table.getCellFormatter().setVisible(0, 0, false);
-    event_table.setWidget(0, 1, new HTML("<strong>Event Title</strong>"));
-    event_table.getCellFormatter().setWidth(0, 1, "20%");
-    event_table.setWidget(0, 2, new HTML("<strong>Start Date</strong>"));
-    event_table.getCellFormatter().setWidth(0, 2, "20%");
-    event_table.setWidget(0, 3, new HTML("<strong>End Date</strong>"));
-    event_table.getCellFormatter().setWidth(0, 3, "20%");
-    event_table.setWidget(0, 4, new HTML("<strong>Location</strong>"));
-    event_table.getCellFormatter().setWidth(0, 4, "20%");
+	event_table.setSize("100%", "100%");
+	event_table.setWidget(0, 0, new HTML("<strong>Event ID</strong>"));
+	// event_table.getCellFormatter().setWidth(0, 0, "0px");
+	event_table.getCellFormatter().setVisible(0, 0, false);
+	event_table.setWidget(0, 1, new HTML("<strong>Event Title</strong>"));
+	event_table.getColumnFormatter().setWidth( 0, "150px");
+	event_table.getColumnFormatter().setWidth( 1, "150px");
+	event_table.setWidget(0, 2, new HTML("<strong>Start Date</strong>"));
+	event_table.getColumnFormatter().setWidth( 2, "150px");
+	event_table.setWidget(0, 3, new HTML("<strong>End Date</strong>"));
+	event_table.getColumnFormatter().setWidth( 3, "150px");
+	event_table.setWidget(0, 4, new HTML("<strong>Location</strong>"));
+	event_table.getColumnFormatter().setWidth( 4, "150px");
 
-    event_table.setWidget(0, 5, new HTML("<strong>Service</strong>"));
-    event_table.getCellFormatter().setWidth(0, 5, "100%");
+	event_table.setWidget(0, 5, new HTML(""));
+	event_table.getColumnFormatter().setWidth( 5, "150px");
 
-    event_table.setWidget(0, 6, new HTML("<strong>Modify</strong>"));
-    event_table.getCellFormatter().setWidth(0, 6, "100%");
+	event_table.setWidget(0, 6, new HTML(""));
+	event_table.getColumnFormatter().setWidth( 6, "150px");
 
-    event_table.setWidget(0, 7, new HTML("<strong>Attendee</strong>"));
-    event_table.getCellFormatter().setWidth(0, 7, "30%");
+	event_table.setWidget(0, 7, new HTML(""));
+	event_table.getColumnFormatter().setWidth( 7, "150px");
 
-    event_table.setWidget(0, 8, new HTML("<strong>Event Info</strong>"));
-    event_table.getCellFormatter().setWidth(0, 8, "20%");
+	event_table.setWidget(0, 8, new HTML(""));
+	event_table.getColumnFormatter().setWidth( 8, "150px");
 
-    event_table.setWidget(0, 9, new HTML("<strong>Delete</strong>"));
-    event_table.getCellFormatter().setWidth(0, 9, "20%");
+	event_table.setWidget(0, 9, new HTML(""));
+	event_table.getColumnFormatter().setWidth( 9, "150px");
 
     EventTableRefresh(event_table);
 
@@ -420,24 +424,25 @@ public class EventBudgetPanel extends Composite {
     VerticalPanel panel = new VerticalPanel();
 
     final FlexTable eventTable = new FlexTable();
-    eventTable.setSize("1100px", "100%");
-    eventTable.setWidget(0, 0, new HTML("<strong>Event ID</strong>"));
-    eventTable.getCellFormatter().setVisible(0, 0, false);
-    eventTable.setWidget(0, 1, new HTML("<strong>Event Title</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 1, "20%");
-    eventTable.setWidget(0, 2, new HTML("<strong>Start Date</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 2, "20%");
-    eventTable.setWidget(0, 3, new HTML("<strong>End Date</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 3, "20%");
+    eventTable.setSize("100%", "100%");
+	eventTable.setWidget(0, 0, new HTML("<strong>Event ID</strong>"));
+	eventTable.getCellFormatter().setVisible(0, 0, false);
+	eventTable.setWidget(0, 1, new HTML("<strong>Event Title</strong>"));
+	eventTable.getColumnFormatter().setWidth( 0, "150px");
+	eventTable.getColumnFormatter().setWidth( 1, "150px");
+	eventTable.setWidget(0, 2, new HTML("<strong>Start Date</strong>"));
+	eventTable.getColumnFormatter().setWidth( 2, "150px");
+	eventTable.setWidget(0, 3, new HTML("<strong>End Date</strong>"));
+	eventTable.getColumnFormatter().setWidth( 3, "150px");
 
-    eventTable.setWidget(0, 4, new HTML("<strong>View Info</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 4, "20%");
+	eventTable.setWidget(0, 4, new HTML(""));
+	eventTable.getColumnFormatter().setWidth( 4, "150px");
 
-    eventTable.setWidget(0, 5, new HTML("<strong>Restore Info</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 5, "20%");
+	eventTable.setWidget(0, 5, new HTML(""));
+	eventTable.getColumnFormatter().setWidth( 5, "150px");
 
-    eventTable.setWidget(0, 6, new HTML("<strong>Delete</strong>"));
-    eventTable.getCellFormatter().setWidth(0, 6, "20%");
+	eventTable.setWidget(0, 6, new HTML(""));
+	eventTable.getColumnFormatter().setWidth( 6, "150px");
 
     eventService.getEventsByOrganizerIdAndStatus(organizerId, Event.INACTIVE,
         new AsyncCallback<List<Event>>() {
@@ -451,17 +456,17 @@ public class EventBudgetPanel extends Composite {
               i++;
               eventTable.setWidget(i, 0, new Label(e.getEventId()));
               eventTable.setWidget(i, 1, new Label(e.getName()));
-              eventTable.setWidget(i, 2, new Label(e.getStartTime().toString()));
-              eventTable.setWidget(i, 3, new Label(e.getEndTime().toString()));
+				eventTable.setWidget(i, 2, new Label(DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(e.getStartTime())));
+				eventTable.setWidget(i, 3, new Label(DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(e.getEndTime())));
 
-              final Button view_info = new Button("View All");
+              final Anchor view_info = new Anchor("View All Information");
               view_info.setWidth("100px");
               eventTable.setWidget(i, 4, view_info);
 
-              final Button event_del = new Button("Delete");
+              final Anchor event_del = new Anchor("Delete");
               eventTable.setWidget(i, 6, event_del);
 
-              final Button restore = new Button("Restore");
+              final Anchor restore = new Anchor("Restore");
               eventTable.setWidget(i, 5, restore);
 
               view_info.addClickHandler(new ClickHandler() {
@@ -567,11 +572,11 @@ public class EventBudgetPanel extends Composite {
     // HTML("<strong>View Service Details</strong>"));
     // itemList.getColumnFormatter().setWidth(2, "10%");
     itemList.setWidget(3, 0, new HTML("<strong>Service Price: </strong>"));
-    itemList.setWidget(4, 0, new HTML("<strong>Quantity: </strong>"));
-    itemList.setWidget(5, 0, new HTML("<strong>Due Date: </strong>"));
+	itemList.setWidget(4, 0, new HTML("<strong>Service Description: </strong>"));
+	itemList.setWidget(5, 0, new HTML("<strong>Quantity: </strong>"));
+	itemList.setWidget(6, 0, new HTML("<strong>Due Date: </strong>"));
     // itemList.setWidget(6, 0, new HTML("<strong>Request Details: </strong>"));
 
-    // sdfasdfasdfasdfasdfasdfasdf
     final ArrayList<Category> categoryList = new ArrayList<Category>();
     final ArrayList<Service> serviceList = new ArrayList<Service>();
 
@@ -619,13 +624,15 @@ public class EventBudgetPanel extends Composite {
     });
 
     final Label price = new Label("");
-
+    final Label description = new Label("");
+    
     service.addChangeHandler(new ChangeHandler() {
 
       @Override
       public void onChange(ChangeEvent event) {
         int i = service.getSelectedIndex();
         price.setText(serviceList.get(i).getPrice().toString());
+        description.setText(serviceList.get(i).getDescription());
       }
     });
     final TextBox name = new TextBox();
@@ -636,16 +643,16 @@ public class EventBudgetPanel extends Composite {
     quantity.setText("");
     quantity.setWidth("100px");
 
-    final TextBox dueDate = new TextBox();
-    dueDate.setText("");
+    final DatePicker dueDate = new DatePicker();
     dueDate.setWidth("100px");
 
     itemList.setWidget(0, 1, name);
     itemList.setWidget(1, 1, category);
     itemList.setWidget(2, 1, service);
-    itemList.setWidget(3, 1, price);
-    itemList.setWidget(4, 1, quantity);
-    itemList.setWidget(5, 1, dueDate);
+    itemList.setWidget(3, 1, price);	
+    itemList.setWidget(4, 1, description);
+	itemList.setWidget(5, 1, quantity);
+	itemList.setWidget(6, 1, dueDate);
 
     panel.add(itemList);
     // final Button addNew = new Button("Add New");
@@ -664,7 +671,7 @@ public class EventBudgetPanel extends Composite {
       public void onClick(ClickEvent event) {
         int i = service.getSelectedIndex();
         eventService.addServiceRequest(serviceList.get(i).getServiceId(), eventId, name.getText(),
-            Integer.parseInt(quantity.getText()), new Date(dueDate.getText()),
+            Integer.parseInt(quantity.getText()), dueDate.getValue(),
             new AsyncCallback<Void>() {
               public void onFailure(Throwable caught) {
               }
@@ -841,14 +848,14 @@ public class EventBudgetPanel extends Composite {
           final ServiceRequest s = sr;
           serviceList.add(s);
           itemList.setWidget(i, 0, new Label(s.getName()));
-          itemList.setWidget(i, 1, new Label(s.getDueDate().toString()));
+          itemList.setWidget(i, 1, new Label(DateTimeFormat.getFormat("EEE, MMM dd, yyyy").format(s.getDueDate())));
           itemList.setWidget(i, 2, new Label(s.getQuantity().toString()));
           String status;
           if (s.getStatus() == ServiceRequest.ACCEPTED) {
-            status = "Accepted";
+            status = "ACCEPTED";
             itemList.setWidget(i, 3, new Label(status));
           } else if (s.getStatus() == ServiceRequest.PENDING) {
-            status = "Pending";
+            status = "PENDING";
             Anchor delete = new Anchor(status);
             itemList.setWidget(i, 3, delete);
 
@@ -868,7 +875,7 @@ public class EventBudgetPanel extends Composite {
               }
             });
           } else {
-            status = "Igored";
+            status = "IGNORED";
             itemList.setWidget(i, 3, new Label(status));
           }
 
