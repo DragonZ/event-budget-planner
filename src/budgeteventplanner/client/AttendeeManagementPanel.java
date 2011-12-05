@@ -11,9 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -97,7 +95,7 @@ public class AttendeeManagementPanel extends Composite {
 				if(!listToBeDupicate.contains(attendee))
 				showDialogForEditting(at);
 				else{
-				Window.alert("You need to apply changes before editting this attendee." );
+				//Window.alert("You need to apply changes before editting this attendee." );
 				showDialog("Attendee Manager","You need to apply changes before editting this attendee.");
 				}
 			}});

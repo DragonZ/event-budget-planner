@@ -37,6 +37,7 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		try {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Attendee.class);
+			//ObjectifyService.register(User.class);
 		} catch (Exception e) {
 		}
 	}
@@ -50,7 +51,6 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		return attendee;
 	}
 
-	
 	@Override
 	public List<Attendee> getAttendeeListByOrganizerId(String organizerId) {
 		Objectify ofy = ObjectifyService.begin();
@@ -96,14 +96,14 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 	public void updateAttendeeInfo(String attendeeId, String name, String email, String jobTitle,
 			String companyName, String address, String phoneNumber, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		if(status.equals(STATUS_NONE)){
-		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
-		Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name).setEmail(email)
-				.setJobTitle(jobTitle).setCompanyName(companyName).setAddress(address)
-				.setPhoneNumber(phoneNumber).build();
-		ofy.put(updatedAttendee);
-		sendEmail(updatedAttendee);
-		}else{
+		if (status.equals(STATUS_NONE)) {
+			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+			Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name).setEmail(email)
+					.setJobTitle(jobTitle).setCompanyName(companyName).setAddress(address)
+					.setPhoneNumber(phoneNumber).build();
+			ofy.put(updatedAttendee);
+			sendEmail(updatedAttendee);
+		} else {
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
 			Attendee updatedAttendee = new Attendee.Builder(attendee).setName(name).setEmail(email)
 					.setJobTitle(jobTitle).setCompanyName(companyName).setAddress(address)
@@ -118,18 +118,20 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		return 1;
 	}
 
-	///This only send accept email
+	// /This only send accept email
 	private void sendEmail(Attendee attendee) {
+		Objectify ofy = ObjectifyService.begin();
+		Event event = ofy.get(new Key<Event>(Event.class, attendee.getEventId()));
+		//User user = ofy.get(new Key<User>(User.class, event.getOrganizerId()));
 		Session session = Session.getDefaultInstance(new Properties(), null);
-		String msgBody = "Dear " + attendee.getName() + ":\n\nYour submission is accepted!"
-				+ attendee.toString() + "\n\n\n Team XYZs";
-
+		String msgBody = getConfirmationEmailBody(attendee, event);
 		try {
 			Message msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress("yezhuen@gmail.com", "XYZs"));
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(attendee.getEmail(),
 					attendee.getName()));
-			msg.setSubject("Your submission on Budget Event Planner");
+			msg.setSubject("[Budget Event Planner] You have successfully updated your information for event: "
+					+ event.getName() + " started on " + event.getStartTime());
 			msg.setText(msgBody);
 			Transport.send(msg);
 		} catch (AddressException e) {
@@ -138,23 +140,29 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 
 		}
 	}
-//this will send invite or remove
+
+	// this will send invite or remove
 	private void sendEmail(Attendee attendee, Integer status) {
+		Objectify ofy = ObjectifyService.begin();
+		Event event = ofy.get(new Key<Event>(Event.class, attendee.getEventId()));
+		//User user = ofy.get(new Key<User>(User.class, event.getOrganizerId()));
 		if (status.equals(EMAIL_REMOVE)) // -1 means deleted by organizer
 		{
-			String subject = "You Have been Removed From Event";
-			String msgBody = "You Have been Removed From Event.";
+			String subject = "[Budget Event Planner] You've been removed from " + event.getName()
+					+ " started on " + event.getStartTime();
+			String msgBody = getRemoveEmailBody(attendee, event);
 			sendCustomizedEmail(attendee, subject, msgBody);
 		}
 		if (status.equals(EMAIL_INVITE)) // 1 means send inviting letter
 		{
-			String subject = "You are invited to a new Event";
-			String msgBody = "Your Registration code is:" + attendee.getAttendeeId()
-					+ "\n Please go to purduebep.appspot.com for registration";
+			String subject = "[Budget Event Planner] invitation to " + event.getName()
+					+ " started on " + event.getStartTime();
+			String msgBody = getInvitationEmailBody(attendee, event);
 			sendCustomizedEmail(attendee, subject, msgBody);
 		}
-		
+
 	}
+
 	public void sendEmail(String attendeeId, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
 		Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
@@ -166,18 +174,21 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 
 		for (String attendeeId : attendeeIdList) {
 			Attendee attendee = ofy.get(new Key<Attendee>(Attendee.class, attendeeId));
+			Event event = ofy.get(new Key<Event>(Event.class, attendee.getEventId()));
+			//User user = ofy.get(new Key<User>(User.class, event.getOrganizerId()));
 
 			if (status.equals(EMAIL_REMOVE)) // -1 means deleted by organizer
 			{
-				String subject = "You Have been Removed From Event";
-				String msgBody = "You Have been Removed From Event.";
+				String subject = "[Budget Event Planner] You've been removed from "
+						+ event.getName() + " started on " + event.getStartTime();
+				String msgBody = getRemoveEmailBody(attendee, event);
 				sendCustomizedEmail(attendee, subject, msgBody);
 			}
 			if (status.equals(EMAIL_INVITE)) // 1 means send inviting letter
 			{
-				String subject = "You are invited to a new Event";
-				String msgBody = "Your Registration code is:" + attendee.getAttendeeId()
-						+ "\n Please go to purduebep.appspot.com for registration";
+				String subject = "[Budget Event Planner] invitation to " + event.getName()
+						+ " started on " + event.getStartTime();
+				String msgBody = getInvitationEmailBody(attendee, event);
 				sendCustomizedEmail(attendee, subject, msgBody);
 			}
 		}
@@ -214,7 +225,6 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 
 	public void sendCustomizedEmail(Attendee attendee, String subject, String msgBody) {
 		Session session = Session.getDefaultInstance(new Properties(), null);
-		msgBody = "Dear " + attendee.getName() + "\n" + msgBody + "\n\n\n Team XYZs";
 
 		try {
 			Message msg = new MimeMessage(session);
@@ -262,29 +272,28 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 			newattendeeList.add(newAttendee);
 			newattendeeIdList.add(newAttendee.getAttendeeId());
 		}
-		
+
 		sendEmailBatchByOrganizer(newattendeeIdList, EMAIL_INVITE);
 		return newattendeeList;
 	}
 
-
 	@Override
 	public SetMultimap<Integer, Attendee> getSortedEventAttendeeByStatus(String eventId) {
 		SetMultimap<Integer, Attendee> multimap = HashMultimap.create();
-		
+
 		multimap.putAll(Attendee.YES, getEventAttendeeByStatus(eventId, Attendee.YES));
 		multimap.putAll(Attendee.NO, getEventAttendeeByStatus(eventId, Attendee.NO));
 		multimap.putAll(Attendee.MAYBE, getEventAttendeeByStatus(eventId, Attendee.MAYBE));
 		multimap.putAll(Attendee.PENDING, getEventAttendeeByStatus(eventId, Attendee.PENDING));
-		
+
 		return multimap;
 	}
-
 
 	@Override
 	public List<Attendee> getEventAttendeeByStatus(String eventId, Integer status) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Attendee> q = ofy.query(Attendee.class).filter("eventId", eventId).filter("status", status);
+		Query<Attendee> q = ofy.query(Attendee.class).filter("eventId", eventId)
+				.filter("status", status);
 		List<Attendee> sorted = q.list();
 		Collections.sort(sorted, new AttendeeComparator());
 		return sorted;
@@ -295,5 +304,52 @@ public class AttendeeServiceImpl extends RemoteServiceServlet implements Attende
 		public int compare(Attendee o1, Attendee o2) {
 			return (o1.getName().compareToIgnoreCase(o2.getName()));
 		}
+	}
+
+	private String getInvitationEmailBody(Attendee attendee, Event event) {
+		String result = "Dear " + attendee.getName() + ":\n\n";
+		result += "The event organizer of Event " + event.getName()
+				+ " invites you to attendee the event:\n";
+		result += "Event Name: " + event.getName() + "\n";
+		result += "Event Start Date: " + event.getStartTime() + "\n";
+		result += "Event End Date: " + event.getEndTime()  + "\n\n";
+		result += "you may use this regustration code " + attendee.getAttendeeId()
+				+ " to RSVP this invitation through purduebep.appspot.com.\n";
+	//	result += "If you have any question please contact the event organizer: "
+	//			+ organizer.getEmail() + "\n";
+		result += "Thank you\n\n";
+		result += "Team XYZs\n\nPurdue Budget Event Planner\n";
+		return result;
+	}
+
+	private String getRemoveEmailBody(Attendee attendee, Event event) {
+		String result = "Dear " + attendee.getName() + ":\n\n";
+		result += "The event organizer of Event " + event.getName()
+				+ " had removed you from the event:\n";
+		result += "Event Name: " + event.getName() + "\n";
+		result += "Event Start Date: " + event.getStartTime() + "\n";
+		result += "Event End Date: " + event.getEndTime() + "\n\n";
+		//result += "If you have any question please contact the event organizer: "
+	//			+ organizer.getEmail() + "\n\n";
+		result += "Thank you\n\n";
+		result += "Team XYZs\n\nPurdue Budget Event Planner\n";
+		return result;
+	}
+
+	private String getConfirmationEmailBody(Attendee attendee, Event event) {
+		String result = "Dear " + attendee.getName() + ":\n\n";
+		result += "You just updated your information for the event:\n";
+		result += "Event Name: " + event.getName() + "\n";
+		result += "Event Start Date: " +event.getStartTime() + "\n";
+		result += "Event End Date: " + event.getEndTime()  + "\n\n";
+		result += "This is Your information:\n";
+		result += attendee.toString() + "\n";
+		result += "you can still use the same regustration code " + attendee.getAttendeeId()
+				+ " to renew your information through purduebep.appspot.com.\n\n";
+	//	result += "If you have any question please contact the event organizer: "
+		//		+ organizer.getEmail() + "\n\n";
+		result += "Thank you\n\n";
+		result += "Team XYZs\n\nPurdue Budget Event Planner\n";
+		return result;
 	}
 }

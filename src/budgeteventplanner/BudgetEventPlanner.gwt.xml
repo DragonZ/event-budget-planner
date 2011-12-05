@@ -18,7 +18,6 @@
   <!-- Specify the app entry point class.                         -->
   <entry-point class='budgeteventplanner.client.BudgetEventPlanner'/>
   <entry-point class='budgeteventplanner.client.AttendeeRegistration'/>
-  <entry-point class='budgeteventplanner.client.DatabaseTestPage'/>
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
   <source path='shared'/>
