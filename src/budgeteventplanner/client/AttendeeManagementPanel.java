@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -42,7 +43,10 @@ public class AttendeeManagementPanel extends Composite {
 
 	final Tree treeAllAttendee = new Tree();
 	final Tree treeEventAttendee = new Tree();
-
+	final Button btnCreateAttendee = new Button("Create");
+	final Button btnDuplicateAttendee = new Button("Duplicate");
+	final Button btnRemoveAttendee = new Button("Remove");
+	final Button btnApplyAttendee = new Button("Apply All Changes");
 	private final String eventId;
 
 	public AttendeeManagementPanel(final String eventName, final String eventId, final String organizerId) {
@@ -58,8 +62,10 @@ public class AttendeeManagementPanel extends Composite {
 		HorizontalPanel hpanelTopEventAll = new HorizontalPanel();
 		
 		final VerticalPanel vpanelAttendeeInfo = new VerticalPanel();
-		Button btnEdit = new Button("Edit");
-		Button btnCanceledit = new Button("Cancel");
+		final Button btnEdit = new Button("Edit");
+		btnEdit.setEnabled(false);
+		final Button btnCanceledit = new Button("Cancel");
+		btnCanceledit.setEnabled(false);
 		HorizontalPanel hpanelEdit = new HorizontalPanel();
 		HorizontalPanel hpanelEditInner = new HorizontalPanel();
 		hpanelEdit.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
@@ -69,22 +75,36 @@ public class AttendeeManagementPanel extends Composite {
 		hpanelEditInner.setSpacing(5);
 		hpanelEdit.add(hpanelEditInner);
 		
+		
+		btnCanceledit.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				String attendeeId = ((AttendeeInfoPanel)vpanelAttendeeInfo.getWidget(0)).getAttendeeId();
+				vpanelAttendeeInfo.clear();
+				vpanelAttendeeInfo.add(new AttendeeInfoPanel(attendeeId));
+				
+			}
+		});
 		btnEdit.addClickHandler( new ClickHandler(){
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				listToBeDupicate.clear();
-				listToBeRemove.clear();
-				uncheckCheckBox(treeAllAttendee);
-				uncheckCheckBox(treeEventAttendee);
+				
 				AttendeeInfoPanel at = (AttendeeInfoPanel)vpanelAttendeeInfo.getWidget(0);
-				at.setEnable(true);
+				Attendee attendee = getAttendeeByAttendeeId(at.getAttendeeId());
+				
+				if(!listToBeDupicate.contains(attendee))
+				showDialogForEditting(at);
+				else{
+				Window.alert("You need to apply changes before editting this attendee." );
+				showDialog("Attendee Manager","You need to apply changes before editting this attendee.");
+				}
 			}});
 		
 		// ToolBox
 	
-		final Button btnCreateAttendee = new Button("Create");
+		
 		btnCreateAttendee.setEnabled(false);
 		btnCreateAttendee.addClickHandler(new ClickHandler() {
 			@Override
@@ -93,7 +113,7 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		final Button btnDuplicateAttendee = new Button("Duplicate");
+
 		btnDuplicateAttendee.setEnabled(false);
 		
 		btnDuplicateAttendee.addClickHandler(new ClickHandler() {
@@ -118,7 +138,6 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		final Button btnRemoveAttendee = new Button("Remove");
 		btnRemoveAttendee.setEnabled(false);
 		btnRemoveAttendee.addClickHandler(new ClickHandler() {
 			@Override
@@ -138,7 +157,6 @@ public class AttendeeManagementPanel extends Composite {
 			}
 		});
 
-		final Button btnApplyAttendee = new Button("Apply");
 		btnApplyAttendee.setEnabled(false);
 		btnApplyAttendee.addClickHandler(new ClickHandler() {
 			@Override
@@ -155,6 +173,7 @@ public class AttendeeManagementPanel extends Composite {
 								for (Attendee a : result) {
 									//listEventAttendee.add(a);
 									putAttendeeInTree(a, treeEventAttendee);
+									loadAttendees(organizerId,eventName);
 								}
 								listToBeDupicate.clear();
 							}
@@ -169,6 +188,7 @@ public class AttendeeManagementPanel extends Composite {
 							@Override
 							public void onSuccess(Void result) {
 								listToBeRemove.clear();
+								loadAttendees(organizerId,eventName);
 							}
 
 							@Override
@@ -178,8 +198,9 @@ public class AttendeeManagementPanel extends Composite {
 
 				uncheckCheckBox(treeAllAttendee);
 				uncheckCheckBox(treeEventAttendee);
+				
 			}
-
+			
 		});
 		
 		Button btnBack = new Button("Go Back");
@@ -187,7 +208,6 @@ public class AttendeeManagementPanel extends Composite {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				RootPanel.get("XiaYuan").setVisible(true);
 				RootPanel.get("XuXuan").setVisible(false);
 			}
@@ -198,70 +218,7 @@ public class AttendeeManagementPanel extends Composite {
 			@Override
 			public void onClick(ClickEvent event) {
 				//load all
-				attendeeService.getSortedAttendeeList(organizerId, eventId,
-						new AsyncCallback<SetMultimap<String, Attendee>>() {
-							public void onFailure(Throwable caught) {
-								showDialog("Attendee Management", "Error while load attendee list.");
-							}
-
-							public void onSuccess(
-									SetMultimap<String, Attendee> multimapEventAttendee) {
-								treeAllAttendee.clear();
-								listAllAttendee.clear();
-
-								for (String eventName : multimapEventAttendee.keySet()) {
-									treeAllAttendee.add(new Label(eventName));
-									for (Attendee attendee : multimapEventAttendee.get(eventName)) {
-										CheckBox cb = new CheckBox(attendee.getName());
-										cb.setTitle(attendee.getAttendeeId());
-										treeAllAttendee.add(cb);
-										listAllAttendee.add(attendee);
-									}
-								}
-							}
-						});
-				//load current event
-				attendeeService.getSortedEventAttendeeByStatus(eventId,new AsyncCallback<SetMultimap<Integer,Attendee>>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						
-					}
-
-					@Override
-					public void onSuccess(SetMultimap<Integer, Attendee> result) {
-						listEventAttendee.clear();
-						treeEventAttendee.clear();
-						treeEventAttendee.add(new Label(eventName));
-						for (Integer status : result.keySet()) {
-							switch (status) {
-							case Attendee.YES:
-								  treeEventAttendee.add(new Label("Will Attend"));
-								  break;
-							case Attendee.NO:
-								  treeEventAttendee.add(new Label("Not Attend"));
-								  break;
-							case Attendee.MAYBE:
-								  treeEventAttendee.add(new Label("May Attend"));
-								  break;
-							case Attendee.PENDING:
-								  treeEventAttendee.add(new Label("Pending"));
-								  break;
-							  default:
-							}
-							
-							for (Attendee a : result.get(status)) {
-								putAttendeeInTree(a, treeEventAttendee);
-							}
-							listEventAttendee.addAll(result.get(status));
-						}
-					}
-				});
-				// setenable
-				btnCreateAttendee.setEnabled(true);
-				btnDuplicateAttendee.setEnabled(true);
-				btnRemoveAttendee.setEnabled(true);
-				btnApplyAttendee.setEnabled(true);
+				loadAttendees(organizerId,eventName);
 			}
 		});
 		hpanelToolBox.add(btnLoad);
@@ -279,6 +236,8 @@ public class AttendeeManagementPanel extends Composite {
 		treeAllAttendee.addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
+				btnCanceledit.setEnabled(true);
+				btnEdit.setEnabled(true);
 				vpanelAttendeeInfo.clear();
 				vpanelAttendeeInfo.add(new AttendeeInfoPanel(event.getSelectedItem().getWidget().getTitle()));
 			}
@@ -362,6 +321,7 @@ public class AttendeeManagementPanel extends Composite {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
 				vpanelAttendeeInfo.clear();
+				btnEdit.setEnabled(true);
 				vpanelAttendeeInfo.add(new AttendeeInfoPanel(event.getSelectedItem().getWidget().getTitle()));
 			}
 		});
@@ -402,7 +362,7 @@ public class AttendeeManagementPanel extends Composite {
 		btnClose.getElement().setId("btnClose");
 		VerticalPanel panelError = new VerticalPanel();
 		panelError.add(new Label(text));
-		panelError.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		panelError.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		panelError.add(btnClose);
 		dialogError.setWidget(panelError);
 
@@ -416,9 +376,47 @@ public class AttendeeManagementPanel extends Composite {
 		btnClose.setFocus(true);
 	}
 
+	
+	public  void showDialogForEditting(final AttendeeInfoPanel ati) {
+		final DialogBox dialogError = new DialogBox();
+		final Button btnClose = new Button("Cancel");
+		final Button btnOk = new Button("Ok");
+		dialogError.setText("Editing");
+		dialogError.setAnimationEnabled(true);
+		btnClose.getElement().setId("btnClose");
+		VerticalPanel panelError = new VerticalPanel();
+		panelError.add(new Label("Editing current attendee will clear the change you've made,\nBe sure applying all change before edit"));
+		panelError.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(btnOk);
+		hp.add(btnClose);
+		panelError.add(hp);
+		dialogError.setWidget(panelError);
+
+		btnOk.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				listToBeDupicate.clear();
+				listToBeRemove.clear();
+				uncheckCheckBox(treeAllAttendee);
+				uncheckCheckBox(treeEventAttendee);
+				ati.setEnable(true);
+				dialogError.hide();
+			}
+		});
+		btnClose.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dialogError.hide();
+			}
+		});
+		dialogError.center();
+		btnClose.setFocus(true);
+	}
 	private void createAttendee() {
 		final DialogBox dialogBox = new DialogBox();
-
+		dialogBox.center();
 		VerticalPanel vpanelMain = new VerticalPanel();
 
 		VerticalPanel vpanelInfo = new VerticalPanel();
@@ -529,6 +527,74 @@ public class AttendeeManagementPanel extends Composite {
 		return null;
 	}
 
+	private void loadAttendees(String organizerId, final String eventName){
+		attendeeService.getSortedAttendeeList(organizerId, eventId,
+				new AsyncCallback<SetMultimap<String, Attendee>>() {
+					public void onFailure(Throwable caught) {
+						showDialog("Attendee Management", "Error while load attendee list.");
+					}
+
+					public void onSuccess(
+							SetMultimap<String, Attendee> multimapEventAttendee) {
+						treeAllAttendee.clear();
+						listAllAttendee.clear();
+						listToBeDupicate.clear();
+						treeAllAttendee.add(new  HTML("<h3>"+"All Attendees"+"</h3>"));
+						for (String eventName : multimapEventAttendee.keySet()) {
+							treeAllAttendee.add(new  HTML("<h2>"+eventName+"</h2>"));
+							for (Attendee attendee : multimapEventAttendee.get(eventName)) {
+								CheckBox cb = new CheckBox(attendee.getName());
+								cb.setTitle(attendee.getAttendeeId());
+								treeAllAttendee.add(cb);
+								listAllAttendee.add(attendee);
+							}
+						}
+					}
+				});
+		//load current event
+		attendeeService.getSortedEventAttendeeByStatus(eventId,new AsyncCallback<SetMultimap<Integer,Attendee>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(SetMultimap<Integer, Attendee> result) {
+				listEventAttendee.clear();
+				treeEventAttendee.clear();
+				listToBeRemove.clear();
+				treeEventAttendee.add(new HTML("<h3>"+eventName+"</h3>"));
+				for (Integer status : result.keySet()) {
+					switch (status) {
+					case Attendee.YES:
+						  treeEventAttendee.add(new HTML("<h2>Will Attend</h2>"));
+						  break;
+					case Attendee.NO:
+						  treeEventAttendee.add(new HTML("<h2>Not Attend</h2>"));
+						  break;
+					case Attendee.MAYBE:
+						  treeEventAttendee.add(new HTML("<h2>May Attend</h2>"));
+						  break;
+					case Attendee.PENDING:
+						  treeEventAttendee.add(new HTML("<h2>Pending</h2>"));
+						  break;
+					  default:
+					}
+					
+					for (Attendee a : result.get(status)) {
+						putAttendeeInTree(a, treeEventAttendee);
+					}
+					listEventAttendee.addAll(result.get(status));
+				}
+			}
+		});
+		// setenable
+		btnCreateAttendee.setEnabled(true);
+		btnDuplicateAttendee.setEnabled(true);
+		btnRemoveAttendee.setEnabled(true);
+		btnApplyAttendee.setEnabled(true);
+	}
 	private void uncheckCheckBox(Tree tree) {
 		for (Widget w : tree) {
 			if (w instanceof CheckBox) {
