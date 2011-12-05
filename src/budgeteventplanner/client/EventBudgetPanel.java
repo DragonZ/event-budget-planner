@@ -64,17 +64,19 @@ public class EventBudgetPanel extends Composite {
   private final VendorServiceAsync vendorService = GWT.create(VendorService.class);
   private final BudgetServiceAsync budgetService = GWT.create(BudgetService.class);
 
+//<<<<<<< .mine
+//=======
   private Tree treeBudget;
   private Button modifyBudget;
   // private Button deleteBudget;
   private HorizontalPanel chartPanel;
   private HorizontalPanel buttonPanel;
-
+//
+//>>>>>>> .r334
   private String sentBudgetID;
 
   private List<Event> tempEventList;
   private List<Category> tempCategoryList;
-
   public EventBudgetPanel(String usrID) {
     super();
 
@@ -799,7 +801,7 @@ public class EventBudgetPanel extends Composite {
 
   public void attendee_pop_up(String event_id, String event_name) {
     RootPanel.get("XuXuan").clear();
-    RootPanel.get("XuXuan").add(new AttendeeManagementPanel(event_name, event_id, "YuanXia"));
+    RootPanel.get("XuXuan").add(new AttendeeManagementPanel(event_name, event_id, organizerId));
     RootPanel.get("XiaYuan").setVisible(false);
     RootPanel.get("XuXuan").setVisible(true);
 
